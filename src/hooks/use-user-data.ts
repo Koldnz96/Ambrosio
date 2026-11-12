@@ -3,6 +3,7 @@ import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 
 import { ALLERGEN_LABELS, type Allergen } from '@/data/products';
 import { EMPTY_PROFILE, type Profile } from '@/data/warnings';
+import { claimNickname, type NicknameResult } from '@/data/nickname-store';
 import { db } from '@/firebase';
 
 export const DAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const;
@@ -67,7 +68,14 @@ export function useUserData(uid: string | null) {
   const saveProfile = useCallback((next: Profile) => save({ allergies: next.allergies, vegan: next.vegan }), [save]);
   const saveWeek = useCallback((next: Week) => save({ week: next }), [save]);
 
-  const saveDisplayName = useCallback((name: string) => save({ displayName: name.trim() }), [save]);
+  // Nicknames are unique: this fails with reason "taken" when someone else has it.
+  const saveDisplayName = useCallback(
+    async (name: string): Promise<NicknameResult> => {
+      if (!uid) return { ok: false, reason: 'error', message: 'Not signed in' };
+      return claimNickname(uid, name, displayName);
+    },
+    [uid, displayName],
+  );
 
   // Signed in, settings loaded, and still no nickname: the screens ask for one first.
   const needsNickname = uid !== null && loaded && displayName === '';

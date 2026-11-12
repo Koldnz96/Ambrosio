@@ -5,23 +5,29 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { NICKNAME_MAX, cleanNickname, isValidNickname } from '@/data/nickname';
+import type { NicknameResult } from '@/data/nickname-store';
 import { useTheme } from '@/hooks/use-theme';
 import { useLanguage } from '@/i18n/language';
 
 // Shown to a signed-in person who has no nickname yet. They pick one before using the app.
-export function NicknameForm({ onSave }: { onSave: (name: string) => void }) {
+export function NicknameForm({ onSave }: { onSave: (name: string) => Promise<NicknameResult> }) {
   const theme = useTheme();
   const { t } = useLanguage();
   const [text, setText] = useState('');
   const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
 
-  function submit() {
+  async function submit() {
+    if (busy) return;
     if (!isValidNickname(text)) {
       setError(t('errNickname'));
       return;
     }
     setError('');
-    onSave(cleanNickname(text));
+    setBusy(true);
+    const result = await onSave(cleanNickname(text));
+    setBusy(false);
+    if (!result.ok) setError(result.reason === 'taken' ? t('errNicknameTaken') : t('errSave', { message: result.message }));
   }
 
   return (
@@ -41,7 +47,7 @@ export function NicknameForm({ onSave }: { onSave: (name: string) => void }) {
         onChangeText={setText}
         onSubmitEditing={submit}
       />
-      <Pressable style={styles.button} onPress={submit}>
+      <Pressable style={styles.button} disabled={busy} onPress={submit}>
         <ThemedText type="smallBold">{t('nicknameContinue')}</ThemedText>
       </Pressable>
       {error ? <ThemedText type="small">{error}</ThemedText> : null}

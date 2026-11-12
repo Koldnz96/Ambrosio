@@ -147,6 +147,7 @@ const en = {
   nicknameContinue: 'Continue',
   nicknameSignup: 'Nickname (only for a new account)',
   errNickname: 'Choose a nickname with 2 to 24 characters (not an email address).',
+  errNicknameTaken: 'That nickname is already taken. Try another one.',
 };
 
 export type StringKey = keyof typeof en;
@@ -283,6 +284,7 @@ const pt: Record<StringKey, string> = {
   nicknameContinue: 'Continuar',
   nicknameSignup: 'Alcunha (só para uma conta nova)',
   errNickname: 'Escolha uma alcunha com 2 a 24 caracteres (não um endereço de email).',
+  errNicknameTaken: 'Essa alcunha já está a ser usada. Experimente outra.',
 };
 
 const fr: Record<StringKey, string> = {
@@ -417,6 +419,7 @@ const fr: Record<StringKey, string> = {
   nicknameContinue: 'Continuer',
   nicknameSignup: 'Pseudo (uniquement pour un nouveau compte)',
   errNickname: 'Choisissez un pseudo de 2 à 24 caractères (pas une adresse e-mail).',
+  errNicknameTaken: 'Ce pseudo est déjà pris. Essayez-en un autre.',
 };
 
 export const STRINGS: Record<Lang, Record<StringKey, string>> = { en, pt, fr };

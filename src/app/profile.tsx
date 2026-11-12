@@ -19,9 +19,10 @@ import { LANG_ORDER } from '@/i18n/lang';
 import { Flag } from '@/components/flag';
 import { useUserData } from '@/hooks/use-user-data';
 import { useTheme } from '@/hooks/use-theme';
-import { doc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 
 import { NICKNAME_MAX, cleanNickname, isValidNickname } from '@/data/nickname';
+import { claimNickname, isNicknameFree, type NicknameResult } from '@/data/nickname-store';
 import { useRecipes } from '@/hooks/use-recipes';
 import { auth, db } from '@/firebase';
 
@@ -49,21 +50,22 @@ function friendlyError(error: unknown, t: ReturnType<typeof useLanguage>['t']): 
 }
 
 // The nickname shown on shared recipes. It saves when you press Save (or Enter).
-function DisplayNameField(props: { saved: string; disabled: boolean; onSave: (name: string) => void }) {
+function DisplayNameField(props: { saved: string; disabled: boolean; onSave: (name: string) => Promise<NicknameResult> }) {
   const theme = useTheme();
   const { t } = useLanguage();
   const [text, setText] = useState(props.saved);
   const [error, setError] = useState('');
   const changed = cleanNickname(text) !== props.saved;
 
-  function submit() {
+  async function submit() {
     if (!changed || props.disabled) return;
     if (!isValidNickname(text)) {
       setError(t('errNickname'));
       return;
     }
     setError('');
-    props.onSave(cleanNickname(text));
+    const result = await props.onSave(cleanNickname(text));
+    if (!result.ok) setError(result.reason === 'taken' ? t('errNicknameTaken') : t('errSave', { message: result.message }));
   }
 
   return (
@@ -113,22 +115,41 @@ export default function ProfileScreen() {
       setMessage(t('errNickname'));
       return;
     }
+    const wanted = cleanNickname(nickname);
+    // Check first, so we do not create an account for a nickname that is taken.
+    try {
+      if (!(await isNicknameFree(wanted, null))) {
+        setMessage(t('errNicknameTaken'));
+        return;
+      }
+    } catch (error) {
+      setMessage(friendlyError(error, t));
+      return;
+    }
     await run(async () => {
       const created = await createUserWithEmailAndPassword(auth, email.trim(), password);
-      await setDoc(doc(db, 'users', created.user.uid), { displayName: cleanNickname(nickname) }, { merge: true });
+      // If someone took it in that same second, the app simply asks for another nickname.
+      await claimNickname(created.user.uid, wanted, '');
       setNickname('');
     });
   }
 
   // Save the new nickname, and put it on the recipes this person already shared.
-  async function changeNickname(name: string) {
-    await saveDisplayName(name);
+  async function changeNickname(name: string): Promise<NicknameResult> {
+    const result = await saveDisplayName(name);
+    if (!result.ok) return result;
     for (const recipe of recipes) {
       if (recipe.visibility === 'public' && recipe.authorName !== name) {
         updateDoc(doc(db, 'recipes', recipe.id), { authorName: name }).catch(() => {});
       }
     }
+    return result;
   }
+
+  // A nickname saved before nicknames were unique is reserved the first time Profile opens.
+  useEffect(() => {
+    if (user && loaded && displayName) claimNickname(user.uid, displayName, displayName);
+  }, [user, loaded, displayName]);
 
   function toggleAllergy(allergen: (typeof ALLERGEN_ORDER)[number]) {
     const has = profile.allergies.includes(allergen);
