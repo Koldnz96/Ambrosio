@@ -12,13 +12,13 @@ export type Needed = {
 
 export type ShoppingItem = {
   key: string;
-  name: string;
-  quantities: string[]; // for example ["1.5 kg", "2 unit"]
+  name: string; // the name as typed (or the English name); screens show the catalog name in the chosen language
+  productId: string | null;
+  quantities: string[]; // for example ["1.5 kg", "2"]. Empty means no amount was given ("some")
 };
 
 export type ShoppingGroup = {
   category: Category | 'other';
-  label: string;
   items: ShoppingItem[];
 };
 
@@ -73,9 +73,8 @@ export function buildShoppingList(needed: Needed[]): ShoppingGroup[] {
   const groups = new Map<Category | 'other', ShoppingItem[]>();
   for (const acc of all.values()) {
     const quantities = [...acc.sums.entries()].map(([unit, amount]) => formatQuantity(amount, unit));
-    if (acc.some && quantities.length === 0) quantities.push('some');
     const list = groups.get(acc.category) ?? [];
-    list.push({ key: acc.key, name: acc.name, quantities });
+    list.push({ key: acc.key, name: acc.name, productId: acc.key.startsWith('free:') ? null : acc.key, quantities });
     groups.set(acc.category, list);
   }
 
@@ -84,7 +83,6 @@ export function buildShoppingList(needed: Needed[]): ShoppingGroup[] {
     .filter((c) => groups.has(c))
     .map((c) => ({
       category: c,
-      label: c === 'other' ? 'Other' : CATEGORY_LABELS[c],
       items: groups.get(c)!.sort((a, b) => a.name.localeCompare(b.name)),
     }));
 }

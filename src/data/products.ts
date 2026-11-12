@@ -12,6 +12,9 @@
 // - aliases: other names people type, separated by ;
 // - allergens and mayContain: codes separated by , (see ALLERGEN_LABELS)
 
+import { FR_NAMES, PT_FIXES } from '@/data/product-names';
+import type { Lang } from '@/i18n/lang';
+
 export type Category =
   | 'vegetables'
   | 'fruit'
@@ -91,6 +94,8 @@ export type Product = {
   form: Form;
   unit: Unit;
   aliases: string[];
+  pt: string; // Portuguese name
+  fr: string; // French name
   allergens: Allergen[];
   mayContain: Allergen[];
   vegan: VeganStatus;
@@ -106,9 +111,15 @@ const FORMS = ['fresh', 'dried', 'canned', 'jarred', 'ground', 'cured', 'smoked'
 export function normalize(text: string): string {
   return text
     .toLowerCase()
+    .replace(/œ/g, 'oe')
+    .replace(/æ/g, 'ae')
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')
     .trim();
+}
+
+function capitalise(text: string): string {
+  return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
 function slug(text: string): string {
@@ -165,6 +176,8 @@ function parse(category: Category, defaultUnit: Unit, rows: string): Product[] {
         form: (form || 'fresh') as Form,
         unit: (unit || defaultUnit) as Unit,
         aliases: list(aliases),
+        pt: PT_FIXES[name] ?? capitalise(list(aliases)[0] ?? name),
+        fr: FR_NAMES[name] ?? name,
         allergens: list(allergens) as Allergen[],
         mayContain: list(mayContain) as Allergen[],
         vegan: veganStatus(name, category, list(allergens) as Allergen[]),
@@ -790,10 +803,16 @@ export function getProduct(id: string | null | undefined): Product | undefined {
   return id ? BY_ID.get(id) : undefined;
 }
 
-// Search names are prepared once, when the app starts.
+// The name of a product in the chosen language.
+export function productName(product: Product, lang: Lang): string {
+  return lang === 'pt' ? product.pt : lang === 'fr' ? product.fr : product.name;
+}
+
+// Search names are prepared once, when the app starts. Every language is searched,
+// whatever language the app is showing: you can type "arroz" in the English app.
 const INDEX = PRODUCTS.map((product) => ({
   product,
-  name: normalize(product.name),
+  names: [...new Set([product.name, product.pt, product.fr].map(normalize))],
   aliases: product.aliases.map(normalize),
 }));
 
@@ -801,25 +820,25 @@ const INDEX = PRODUCTS.map((product) => ({
 //   1. the text is exactly a name or alias ("arroz" -> White rice)
 //   2. a name starts with it, then an alias starts with it
 //   3. a name contains it, then an alias contains it (only from 2 letters up)
-// Maximum 8 suggestions by default.
-export function searchProducts(text: string, limit = 8): Product[] {
+// "lang" only decides which name is shown (and used to sort equal matches).
+export function searchProducts(text: string, lang: Lang = 'en', limit = 8): Product[] {
   const q = normalize(text);
   if (!q) return [];
   const scored: { product: Product; score: number }[] = [];
   for (const entry of INDEX) {
     let score = -1;
-    if (entry.name === q || entry.aliases.includes(q)) score = 0;
-    else if (entry.name.startsWith(q)) score = 1;
+    if (entry.names.includes(q) || entry.aliases.includes(q)) score = 0;
+    else if (entry.names.some((n) => n.startsWith(q))) score = 1;
     else if (entry.aliases.some((a) => a.startsWith(q))) score = 2;
-    else if (q.length >= 2 && entry.name.includes(q)) score = 3;
+    else if (q.length >= 2 && entry.names.some((n) => n.includes(q))) score = 3;
     else if (q.length >= 2 && entry.aliases.some((a) => a.includes(q))) score = 4;
     if (score >= 0) scored.push({ product: entry.product, score });
   }
   scored.sort(
     (a, b) =>
       a.score - b.score ||
-      a.product.name.length - b.product.name.length ||
-      a.product.name.localeCompare(b.product.name),
+      productName(a.product, lang).length - productName(b.product, lang).length ||
+      productName(a.product, lang).localeCompare(productName(b.product, lang)),
   );
   return scored.slice(0, limit).map((s) => s.product);
 }
