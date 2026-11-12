@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { onAuthStateChanged, type User } from 'firebase/auth';
 import {
@@ -10,40 +10,36 @@ import {
   onSnapshot,
   query,
   serverTimestamp,
+  updateDoc,
   where,
 } from 'firebase/firestore';
 
+import { RecipeForm, type IngredientInput, type RecipeInput } from '@/components/recipe-form';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
 import { auth, db } from '@/firebase';
 
-type Ingredient = { name: string; amount: number | null; unit: string };
 type Recipe = {
   id: string;
   name: string;
   visibility: 'private' | 'public';
-  ingredients: Ingredient[];
+  ingredients: IngredientInput[];
   createdAtMs: number;
 };
 
+function describeIngredient(ing: IngredientInput): string {
+  return [ing.amount ?? '', ing.unit, ing.name].filter((part) => part !== '').join(' ');
+}
+
 export default function MyRecipesScreen() {
-  const theme = useTheme();
   const [user, setUser] = useState<User | null>(null);
   const [ready, setReady] = useState(false);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [error, setError] = useState('');
 
-  // The form
-  const [name, setName] = useState('');
-  const [ingredientName, setIngredientName] = useState('');
-  const [amount, setAmount] = useState('');
-  const [unit, setUnit] = useState('');
-  const [saving, setSaving] = useState(false);
-
-  // Which recipe is waiting for "Yes, delete" (null = none)
-  const [confirmingId, setConfirmingId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null); // recipe being edited
+  const [confirmingId, setConfirmingId] = useState<string | null>(null); // recipe waiting for "Yes, delete"
 
   // Know who is signed in.
   useEffect(() => {
@@ -69,7 +65,12 @@ export default function MyRecipesScreen() {
             id: d.id,
             name: data.name ?? '',
             visibility: data.visibility ?? 'private',
-            ingredients: data.ingredients ?? [],
+            ingredients: (data.ingredients ?? []).map((ing: Partial<IngredientInput>) => ({
+              name: ing.name ?? '',
+              amount: ing.amount ?? null,
+              unit: ing.unit ?? '',
+              productId: ing.productId ?? null,
+            })),
             createdAtMs: data.createdAt?.toMillis?.() ?? Date.now(),
           };
         });
@@ -80,39 +81,24 @@ export default function MyRecipesScreen() {
     );
   }, [user]);
 
-  async function saveRecipe() {
+  async function createRecipe(input: RecipeInput) {
     if (!user) return;
-    if (!name.trim()) {
-      setError('Please give the recipe a name.');
-      return;
-    }
-    setSaving(true);
-    setError('');
-    try {
-      const parsedAmount = amount.trim() === '' ? null : Number(amount.replace(',', '.'));
-      if (parsedAmount !== null && Number.isNaN(parsedAmount)) {
-        setError('The amount must be a number, like 200 or 1.5.');
-        return;
-      }
-      const ingredients: Ingredient[] = ingredientName.trim()
-        ? [{ name: ingredientName.trim(), amount: parsedAmount, unit: unit.trim() }]
-        : [];
-      await addDoc(collection(db, 'recipes'), {
-        ownerId: user.uid,
-        name: name.trim(),
-        visibility: 'private',
-        ingredients,
-        createdAt: serverTimestamp(),
-      });
-      setName('');
-      setIngredientName('');
-      setAmount('');
-      setUnit('');
-    } catch (err) {
-      setError(`Could not save: ${(err as Error).message}`);
-    } finally {
-      setSaving(false);
-    }
+    await addDoc(collection(db, 'recipes'), {
+      ownerId: user.uid,
+      name: input.name,
+      visibility: 'private',
+      ingredients: input.ingredients,
+      createdAt: serverTimestamp(),
+    });
+  }
+
+  async function updateRecipe(id: string, input: RecipeInput) {
+    await updateDoc(doc(db, 'recipes', id), {
+      name: input.name,
+      ingredients: input.ingredients,
+      updatedAt: serverTimestamp(),
+    });
+    setEditingId(null);
   }
 
   async function deleteRecipe(id: string) {
@@ -126,12 +112,10 @@ export default function MyRecipesScreen() {
     }
   }
 
-  const inputStyle = [styles.input, { color: theme.text, borderColor: theme.backgroundSelected }];
-
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <ScrollView contentContainerStyle={styles.content}>
+        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           <ThemedText type="subtitle">My recipes</ThemedText>
 
           {!ready ? (
@@ -142,82 +126,64 @@ export default function MyRecipesScreen() {
             </ThemedText>
           ) : (
             <>
-              <ThemedView type="backgroundElement" style={styles.form}>
-                <ThemedText type="smallBold">New recipe</ThemedText>
-                <TextInput
-                  style={inputStyle}
-                  placeholder="Recipe name"
-                  placeholderTextColor={theme.textSecondary}
-                  value={name}
-                  onChangeText={setName}
-                />
-                <ThemedText type="small" themeColor="textSecondary">
-                  One ingredient for now (more later):
-                </ThemedText>
-                <TextInput
-                  style={inputStyle}
-                  placeholder="Ingredient, for example rice"
-                  placeholderTextColor={theme.textSecondary}
-                  value={ingredientName}
-                  onChangeText={setIngredientName}
-                />
-                <ThemedView type="backgroundElement" style={styles.row}>
-                  <TextInput
-                    style={[inputStyle, styles.amount]}
-                    placeholder="Amount"
-                    placeholderTextColor={theme.textSecondary}
-                    keyboardType="decimal-pad"
-                    value={amount}
-                    onChangeText={setAmount}
-                  />
-                  <TextInput
-                    style={[inputStyle, styles.unit]}
-                    placeholder="Unit (g, ml, unit)"
-                    placeholderTextColor={theme.textSecondary}
-                    autoCapitalize="none"
-                    value={unit}
-                    onChangeText={setUnit}
-                  />
-                </ThemedView>
-                <Pressable style={styles.button} disabled={saving} onPress={saveRecipe}>
-                  <ThemedText type="smallBold">{saving ? 'Saving...' : 'Save recipe'}</ThemedText>
-                </Pressable>
-                {error ? <ThemedText type="small">{error}</ThemedText> : null}
-              </ThemedView>
+              <RecipeForm title="New recipe" submitLabel="Save recipe" clearOnSave onSubmit={createRecipe} />
+
+              {error ? <ThemedText type="small">{error}</ThemedText> : null}
 
               {recipes.length === 0 ? (
                 <ThemedText themeColor="textSecondary">
                   No recipes yet. Write your first one above.
                 </ThemedText>
               ) : (
-                recipes.map((recipe) => (
-                  <ThemedView key={recipe.id} type="backgroundElement" style={styles.card}>
-                    <ThemedText type="smallBold">{recipe.name}</ThemedText>
-                    {recipe.ingredients.map((ing, index) => (
-                      <ThemedText key={index} type="small" themeColor="textSecondary">
-                        {ing.amount ?? ''} {ing.unit} {ing.name}
+                recipes.map((recipe) =>
+                  editingId === recipe.id ? (
+                    <RecipeForm
+                      key={recipe.id}
+                      title="Edit recipe"
+                      submitLabel="Save changes"
+                      initial={{ name: recipe.name, ingredients: recipe.ingredients }}
+                      onSubmit={(input) => updateRecipe(recipe.id, input)}
+                      onCancel={() => setEditingId(null)}
+                    />
+                  ) : (
+                    <ThemedView key={recipe.id} type="backgroundElement" style={styles.card}>
+                      <ThemedText type="smallBold">{recipe.name}</ThemedText>
+                      {recipe.ingredients.map((ing, index) => (
+                        <ThemedText key={index} type="small" themeColor="textSecondary">
+                          {describeIngredient(ing)}
+                        </ThemedText>
+                      ))}
+                      <ThemedText type="small" themeColor="textSecondary">
+                        {recipe.visibility === 'public' ? 'Public' : 'Private'}
                       </ThemedText>
-                    ))}
-                    <ThemedText type="small" themeColor="textSecondary">
-                      {recipe.visibility === 'public' ? 'Public' : 'Private'}
-                    </ThemedText>
-                    {confirmingId === recipe.id ? (
-                      <ThemedView type="backgroundElement" style={styles.row}>
-                        <ThemedText type="small">Delete this recipe for good?</ThemedText>
-                        <Pressable style={styles.smallButton} onPress={() => deleteRecipe(recipe.id)}>
-                          <ThemedText type="smallBold">Yes, delete</ThemedText>
-                        </Pressable>
-                        <Pressable style={styles.smallButton} onPress={() => setConfirmingId(null)}>
-                          <ThemedText type="smallBold">Cancel</ThemedText>
-                        </Pressable>
-                      </ThemedView>
-                    ) : (
-                      <Pressable style={styles.smallButton} onPress={() => setConfirmingId(recipe.id)}>
-                        <ThemedText type="smallBold">Delete</ThemedText>
-                      </Pressable>
-                    )}
-                  </ThemedView>
-                ))
+                      {confirmingId === recipe.id ? (
+                        <ThemedView type="backgroundElement" style={styles.row}>
+                          <ThemedText type="small">Delete this recipe for good?</ThemedText>
+                          <Pressable style={styles.smallButton} onPress={() => deleteRecipe(recipe.id)}>
+                            <ThemedText type="smallBold">Yes, delete</ThemedText>
+                          </Pressable>
+                          <Pressable style={styles.smallButton} onPress={() => setConfirmingId(null)}>
+                            <ThemedText type="smallBold">Cancel</ThemedText>
+                          </Pressable>
+                        </ThemedView>
+                      ) : (
+                        <ThemedView type="backgroundElement" style={styles.row}>
+                          <Pressable
+                            style={styles.smallButton}
+                            onPress={() => {
+                              setEditingId(recipe.id);
+                              setConfirmingId(null);
+                            }}>
+                            <ThemedText type="smallBold">Edit</ThemedText>
+                          </Pressable>
+                          <Pressable style={styles.smallButton} onPress={() => setConfirmingId(recipe.id)}>
+                            <ThemedText type="smallBold">Delete</ThemedText>
+                          </Pressable>
+                        </ThemedView>
+                      )}
+                    </ThemedView>
+                  ),
+                )
               )}
             </>
           )}
@@ -236,24 +202,7 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'web' ? 96 : Spacing.five,
   },
   content: { gap: Spacing.three, paddingBottom: BottomTabInset + Spacing.five },
-  form: { padding: Spacing.three, borderRadius: Spacing.three, gap: Spacing.two, maxWidth: 520 },
-  input: {
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    fontSize: 16,
-  },
-  row: { flexDirection: 'row', gap: Spacing.two },
-  amount: { flex: 1 },
-  unit: { flex: 2 },
-  button: {
-    alignSelf: 'flex-start',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-  },
+  row: { flexDirection: 'row', gap: Spacing.two, alignItems: 'center' },
   smallButton: {
     alignSelf: 'flex-start',
     paddingVertical: 4,
