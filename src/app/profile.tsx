@@ -13,37 +13,42 @@ import { LEVEL_COLORS } from '@/components/warning-chips';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-import { ALLERGEN_LABELS } from '@/data/products';
 import { ALLERGEN_ICONS, ALLERGEN_ORDER } from '@/data/warnings';
+import { useLanguage } from '@/i18n/language';
+import { LANG_ORDER } from '@/i18n/lang';
+import { Flag } from '@/components/flag';
 import { useUserData } from '@/hooks/use-user-data';
 import { useTheme } from '@/hooks/use-theme';
 import { auth } from '@/firebase';
 
 // Turns Firebase's technical error codes into short messages a person can read.
-function friendlyError(error: unknown): string {
+function friendlyError(error: unknown, t: ReturnType<typeof useLanguage>['t']): string {
   const code = (error as { code?: string })?.code ?? '';
   switch (code) {
     case 'auth/invalid-email':
-      return 'That email does not look right.';
+      return t('errInvalidEmail');
     case 'auth/missing-password':
-      return 'Please type a password.';
+      return t('errMissingPassword');
     case 'auth/weak-password':
-      return 'The password is too short. Use at least 6 characters.';
+      return t('errWeakPassword');
     case 'auth/email-already-in-use':
-      return 'There is already an account with that email. Try Sign in.';
+      return t('errEmailInUse');
     case 'auth/invalid-credential':
     case 'auth/wrong-password':
     case 'auth/user-not-found':
-      return 'Wrong email or password.';
+      return t('errWrongLogin');
     case 'auth/too-many-requests':
-      return 'Too many tries. Wait a moment and try again.';
+      return t('errTooMany');
     default:
-      return `Something went wrong (${code || String(error)}).`;
+      return t('errGeneric', { code: code || String(error) });
   }
 }
 
+const LANGUAGE_NAMES = { en: 'English', pt: 'Português', fr: 'Français' } as const;
+
 export default function ProfileScreen() {
   const theme = useTheme();
+  const { t, lang, setLang, allergenName } = useLanguage();
   const [user, setUser] = useState<User | null>(null);
   const [ready, setReady] = useState(false);
   const [email, setEmail] = useState('');
@@ -75,7 +80,7 @@ export default function ProfileScreen() {
       await action();
       setPassword('');
     } catch (error) {
-      setMessage(friendlyError(error));
+      setMessage(friendlyError(error, t));
     } finally {
       setBusy(false);
     }
@@ -87,30 +92,49 @@ export default function ProfileScreen() {
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <ThemedText type="subtitle">Profile</ThemedText>
+        <ThemedText type="subtitle">{t('profileTitle')}</ThemedText>
+
+        <ThemedText type="smallBold">{t('language')}</ThemedText>
+        <ThemedView style={styles.options}>
+          {LANG_ORDER.map((code) => (
+            <Pressable
+              key={code}
+              onPress={() => setLang(code)}
+              style={[styles.option, styles.languageOption, lang === code && { backgroundColor: theme.backgroundSelected }]}>
+              <Flag lang={code} />
+              <ThemedText type={lang === code ? 'smallBold' : 'small'}>
+                {lang === code ? '✓ ' : ''}
+                {LANGUAGE_NAMES[code]}
+              </ThemedText>
+            </Pressable>
+          ))}
+        </ThemedView>
+        <ThemedText themeColor="textSecondary" type="small">
+          {t('languageHelp')}
+        </ThemedText>
 
         {!ready ? (
-          <ThemedText themeColor="textSecondary">Checking if you are signed in...</ThemedText>
+          <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
         ) : user ? (
           <>
-            <ThemedText>Signed in as {user.email}</ThemedText>
+            <ThemedText>{t('signedInAs', { email: user.email ?? '' })}</ThemedText>
             <Pressable style={styles.button} disabled={busy} onPress={() => run(() => signOut(auth))}>
-              <ThemedText type="smallBold">Sign out</ThemedText>
+              <ThemedText type="smallBold">{t('signOut')}</ThemedText>
             </Pressable>
 
-            <ThemedText type="smallBold">Diet</ThemedText>
+            <ThemedText type="smallBold">{t('diet')}</ThemedText>
             <Pressable
               disabled={!loaded}
               onPress={() => saveProfile({ ...profile, vegan: !profile.vegan })}
               style={[styles.option, profile.vegan && { backgroundColor: theme.backgroundSelected }]}>
               <ThemedText type={profile.vegan ? 'smallBold' : 'small'}>
-                {profile.vegan ? '✓ ' : ''}🌱 I am vegan
+                {profile.vegan ? '✓ ' : ''}🌱 {t('imVegan')}
               </ThemedText>
             </Pressable>
 
-            <ThemedText type="smallBold">My allergies</ThemedText>
+            <ThemedText type="smallBold">{t('myAllergies')}</ThemedText>
             <ThemedText themeColor="textSecondary" type="small">
-              Tap the ones that apply to you. Recipes will show a warning next to them.
+              {t('allergiesHelp')}
             </ThemedText>
             <ThemedView style={styles.options}>
               {ALLERGEN_ORDER.map((allergen) => {
@@ -123,20 +147,24 @@ export default function ProfileScreen() {
                     style={[styles.option, on && { backgroundColor: theme.backgroundSelected }]}>
                     <ThemedText type={on ? 'smallBold' : 'small'}>
                       {on ? '✓ ' : ''}
-                      {ALLERGEN_ICONS[allergen]} {ALLERGEN_LABELS[allergen]}
+                      {ALLERGEN_ICONS[allergen]} {allergenName(allergen)}
                     </ThemedText>
                   </Pressable>
                 );
               })}
             </ThemedView>
-            {dataError ? <ThemedText type="small">{dataError}</ThemedText> : null}
+            {dataError ? (
+              <ThemedText type="small">
+                {t(dataError.kind === 'load' ? 'errLoadSettings' : 'errSave', { message: dataError.message })}
+              </ThemedText>
+            ) : null}
 
-            <ThemedText type="smallBold">What the colours mean</ThemedText>
+            <ThemedText type="smallBold">{t('legendTitle')}</ThemedText>
             <ThemedView style={styles.legend}>
               {([
-                ['contains', 'Contains it (or is not vegan)'],
-                ['may', 'May contain it (traces, or depends on the brand)'],
-                ['unchecked', "Can't check (not in our product list)"],
+                ['contains', t('legendContains')],
+                ['may', t('legendMay')],
+                ['unchecked', t('legendUnchecked')],
               ] as const).map(([level, text]) => (
                 <ThemedView key={level} style={styles.row}>
                   <ThemedView style={[styles.dot, { backgroundColor: LEVEL_COLORS[level].border }]} />
@@ -145,17 +173,17 @@ export default function ProfileScreen() {
               ))}
             </ThemedView>
             <ThemedText themeColor="textSecondary" type="small">
-              These warnings are only a guide. Brands and recipes differ, so always read the label.
+              {t('guideNote')}
             </ThemedText>
           </>
         ) : (
           <>
             <ThemedText themeColor="textSecondary">
-              Create an account or sign in to save your recipes.
+              {t('signInPrompt')}
             </ThemedText>
             <TextInput
               style={inputStyle}
-              placeholder="Email"
+              placeholder={t('emailPlaceholder')}
               placeholderTextColor={theme.textSecondary}
               autoCapitalize="none"
               autoCorrect={false}
@@ -165,7 +193,7 @@ export default function ProfileScreen() {
             />
             <TextInput
               style={inputStyle}
-              placeholder="Password (at least 6 characters)"
+              placeholder={t('passwordPlaceholder')}
               placeholderTextColor={theme.textSecondary}
               secureTextEntry
               value={password}
@@ -176,13 +204,13 @@ export default function ProfileScreen() {
                 style={styles.button}
                 disabled={busy}
                 onPress={() => run(() => signInWithEmailAndPassword(auth, email.trim(), password))}>
-                <ThemedText type="smallBold">Sign in</ThemedText>
+                <ThemedText type="smallBold">{t('signIn')}</ThemedText>
               </Pressable>
               <Pressable
                 style={styles.button}
                 disabled={busy}
                 onPress={() => run(() => createUserWithEmailAndPassword(auth, email.trim(), password))}>
-                <ThemedText type="smallBold">Create account</ThemedText>
+                <ThemedText type="smallBold">{t('createAccount')}</ThemedText>
               </Pressable>
             </ThemedView>
             {message ? <ThemedText type="small">{message}</ThemedText> : null}
@@ -204,6 +232,7 @@ const styles = StyleSheet.create({
   },
   content: { gap: Spacing.three, paddingBottom: BottomTabInset + Spacing.five },
   options: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two },
+  languageOption: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
   option: {
     alignSelf: 'flex-start',
     paddingVertical: 6,

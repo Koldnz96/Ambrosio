@@ -7,16 +7,6 @@ import { db } from '@/firebase';
 
 export const DAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const;
 export type Day = (typeof DAYS)[number];
-export const DAY_LABELS: Record<Day, string> = {
-  mon: 'Monday',
-  tue: 'Tuesday',
-  wed: 'Wednesday',
-  thu: 'Thursday',
-  fri: 'Friday',
-  sat: 'Saturday',
-  sun: 'Sunday',
-};
-
 // For every day, the ids of the recipes planned for it (the same recipe can appear twice).
 export type Week = Record<Day, string[]>;
 export const EMPTY_WEEK: Week = { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [], sun: [] };
@@ -27,7 +17,7 @@ export function useUserData(uid: string | null) {
   const [profile, setProfile] = useState<Profile>(EMPTY_PROFILE);
   const [week, setWeek] = useState<Week>(EMPTY_WEEK);
   const [loaded, setLoaded] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<{ kind: 'load' | 'save'; message: string } | null>(null);
 
   useEffect(() => {
     if (!uid) {
@@ -54,18 +44,18 @@ export function useUserData(uid: string | null) {
         setWeek(nextWeek);
         setLoaded(true);
       },
-      (err) => setError(`Could not load your settings: ${err.message}`),
+      (err) => setError({ kind: 'load', message: err.message }),
     );
   }, [uid]);
 
   const save = useCallback(
     async (fields: Record<string, unknown>) => {
       if (!uid) return;
-      setError('');
+      setError(null);
       try {
         await setDoc(doc(db, 'users', uid), fields, { merge: true });
       } catch (err) {
-        setError(`Could not save: ${(err as Error).message}`);
+        setError({ kind: 'save', message: (err as Error).message });
       }
     },
     [uid],

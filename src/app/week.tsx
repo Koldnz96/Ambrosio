@@ -9,9 +9,11 @@ import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { recipeWarnings } from '@/data/warnings';
 import { useAuthUser } from '@/hooks/use-auth-user';
 import { useRecipes } from '@/hooks/use-recipes';
-import { DAYS, DAY_LABELS, useUserData, type Day } from '@/hooks/use-user-data';
+import { DAYS, useUserData, type Day } from '@/hooks/use-user-data';
+import { useLanguage } from '@/i18n/language';
 
 export default function WeekScreen() {
+  const { t } = useLanguage();
   const { user, ready } = useAuthUser();
   const { recipes } = useRecipes(user?.uid ?? null);
   const { profile, week, loaded, error, saveWeek } = useUserData(user?.uid ?? null);
@@ -30,30 +32,34 @@ export default function WeekScreen() {
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-          <ThemedText type="subtitle">Week</ThemedText>
+          <ThemedText type="subtitle">{t('weekTitle')}</ThemedText>
 
           {!ready ? (
-            <ThemedText themeColor="textSecondary">Checking if you are signed in...</ThemedText>
+            <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
           ) : !user ? (
-            <ThemedText themeColor="textSecondary">Sign in on the Profile tab to plan your week.</ThemedText>
+            <ThemedText themeColor="textSecondary">{t('weekSignIn')}</ThemedText>
           ) : (
             <>
               <ThemedText themeColor="textSecondary">
-                Choose what you will cook each day. The Shopping tab adds it all up for you.
+                {t('weekHelp')}
               </ThemedText>
-              {!loaded && !error ? <ThemedText type="small">Loading your plan...</ThemedText> : null}
-              {error ? <ThemedText type="small">{error}</ThemedText> : null}
+              {!loaded && !error ? <ThemedText type="small">{t('loadingPlan')}</ThemedText> : null}
+              {error ? (
+                <ThemedText type="small">
+                  {t(error.kind === 'load' ? 'errLoadSettings' : 'errSave', { message: error.message })}
+                </ThemedText>
+              ) : null}
               {recipes.length === 0 ? (
-                <ThemedText type="small">You have no recipes yet. Write one on the My recipes tab first.</ThemedText>
+                <ThemedText type="small">{t('weekNoRecipes')}</ThemedText>
               ) : null}
 
               {DAYS.map((day) => (
                 <ThemedView key={day} type="backgroundElement" style={styles.card}>
-                  <ThemedText type="smallBold">{DAY_LABELS[day]}</ThemedText>
+                  <ThemedText type="smallBold">{t(day)}</ThemedText>
 
                   {week[day].length === 0 ? (
                     <ThemedText type="small" themeColor="textSecondary">
-                      Nothing planned.
+                      {t('nothingPlanned')}
                     </ThemedText>
                   ) : null}
 
@@ -62,7 +68,7 @@ export default function WeekScreen() {
                     return (
                       <ThemedView key={`${recipeId}-${index}`} type="backgroundElement" style={styles.itemRow}>
                         <ThemedView type="backgroundElement" style={styles.itemText}>
-                          <ThemedText type="small">{recipe ? recipe.name : 'A recipe that no longer exists'}</ThemedText>
+                          <ThemedText type="small">{recipe ? recipe.name : t('recipeGone')}</ThemedText>
                           {recipe ? <WarningChips warnings={recipeWarnings(recipe.ingredients, profile)} /> : null}
                         </ThemedView>
                         <Pressable style={styles.smallButton} onPress={() => removeRecipe(day, index)}>
@@ -75,7 +81,7 @@ export default function WeekScreen() {
                   {pickingDay === day ? (
                     <ThemedView type="backgroundElement" style={styles.picker}>
                       <ThemedText type="small" themeColor="textSecondary">
-                        Tap a recipe to add it:
+                        {t('tapToAdd')}
                       </ThemedText>
                       {recipes.map((recipe) => (
                         <Pressable key={recipe.id} style={styles.pickRow} onPress={() => addRecipe(day, recipe.id)}>
@@ -84,7 +90,7 @@ export default function WeekScreen() {
                         </Pressable>
                       ))}
                       <Pressable style={styles.smallButton} onPress={() => setPickingDay(null)}>
-                        <ThemedText type="smallBold">Cancel</ThemedText>
+                        <ThemedText type="smallBold">{t('cancel')}</ThemedText>
                       </Pressable>
                     </ThemedView>
                   ) : (
@@ -92,7 +98,7 @@ export default function WeekScreen() {
                       style={styles.smallButton}
                       disabled={recipes.length === 0 || !loaded}
                       onPress={() => setPickingDay(day)}>
-                      <ThemedText type="smallBold">+ Add recipe</ThemedText>
+                      <ThemedText type="smallBold">{t('addRecipe')}</ThemedText>
                     </Pressable>
                   )}
                 </ThemedView>

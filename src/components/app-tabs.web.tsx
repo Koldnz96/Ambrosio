@@ -10,12 +10,14 @@ import { Pressable, View, StyleSheet } from 'react-native';
 
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { useLanguage } from '@/i18n/language';
 
 import { ThemedText } from './themed-text';
 import { ThemedView } from './themed-view';
 
 export default function AppTabs() {
   const theme = useTheme();
+  const { t } = useLanguage();
 
   return (
     <Tabs>
@@ -23,19 +25,19 @@ export default function AppTabs() {
       <TabList asChild>
         <CustomTabList>
           <TabTrigger name="recipes" href="/" asChild>
-            <TabButton>My recipes</TabButton>
+            <TabButton>{t('tabRecipes')}</TabButton>
           </TabTrigger>
           <TabTrigger name="week" href="/week" asChild>
-            <TabButton>Week</TabButton>
+            <TabButton>{t('tabWeek')}</TabButton>
           </TabTrigger>
           <TabTrigger name="shopping" href="/shopping" asChild>
-            <TabButton>Shopping</TabButton>
+            <TabButton>{t('tabShopping')}</TabButton>
           </TabTrigger>
           <TabTrigger name="discover" href="/discover" asChild>
-            <TabButton>Discover</TabButton>
+            <TabButton>{t('tabDiscover')}</TabButton>
           </TabTrigger>
           <TabTrigger name="profile" href="/profile" asChild>
-            <TabButton>Profile</TabButton>
+            <TabButton>{t('tabProfile')}</TabButton>
           </TabTrigger>
         </CustomTabList>
       </TabList>

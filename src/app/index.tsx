@@ -13,17 +13,15 @@ import { db } from '@/firebase';
 import { useAuthUser } from '@/hooks/use-auth-user';
 import { useRecipes } from '@/hooks/use-recipes';
 import { useUserData } from '@/hooks/use-user-data';
-
-function describeIngredient(ing: IngredientInput): string {
-  return [ing.amount ?? '', ing.unit, ing.name].filter((part) => part !== '').join(' ');
-}
+import { useLanguage } from '@/i18n/language';
 
 export default function MyRecipesScreen() {
+  const { t, ingredient: ingredientLabel } = useLanguage();
   const { user, ready } = useAuthUser();
   const { recipes, error: recipesError } = useRecipes(user?.uid ?? null);
   const { profile } = useUserData(user?.uid ?? null);
   const [actionError, setActionError] = useState('');
-  const error = actionError || recipesError;
+  const error = actionError || (recipesError ? t('errLoadRecipes', { message: recipesError }) : '');
 
   const [editingId, setEditingId] = useState<string | null>(null); // recipe being edited
   const [confirmingId, setConfirmingId] = useState<string | null>(null); // recipe waiting for "Yes, delete"
@@ -53,7 +51,7 @@ export default function MyRecipesScreen() {
     try {
       await deleteDoc(doc(db, 'recipes', id));
     } catch (err) {
-      setActionError(`Could not delete: ${(err as Error).message}`);
+      setActionError(t('errDelete', { message: (err as Error).message }));
     } finally {
       setConfirmingId(null);
     }
@@ -63,31 +61,31 @@ export default function MyRecipesScreen() {
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-          <ThemedText type="subtitle">My recipes</ThemedText>
+          <ThemedText type="subtitle">{t('recipesTitle')}</ThemedText>
 
           {!ready ? (
-            <ThemedText themeColor="textSecondary">Checking if you are signed in...</ThemedText>
+            <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
           ) : !user ? (
             <ThemedText themeColor="textSecondary">
-              Sign in on the Profile tab to see and save your recipes.
+              {t('recipesSignIn')}
             </ThemedText>
           ) : (
             <>
-              <RecipeForm title="New recipe" submitLabel="Save recipe" clearOnSave profile={profile} onSubmit={createRecipe} />
+              <RecipeForm title={t('newRecipe')} submitLabel={t('saveRecipe')} clearOnSave profile={profile} onSubmit={createRecipe} />
 
               {error ? <ThemedText type="small">{error}</ThemedText> : null}
 
               {recipes.length === 0 ? (
                 <ThemedText themeColor="textSecondary">
-                  No recipes yet. Write your first one above.
+                  {t('noRecipes')}
                 </ThemedText>
               ) : (
                 recipes.map((recipe) =>
                   editingId === recipe.id ? (
                     <RecipeForm
                       key={recipe.id}
-                      title="Edit recipe"
-                      submitLabel="Save changes"
+                      title={t('editRecipe')}
+                      submitLabel={t('saveChanges')}
                       initial={{ name: recipe.name, ingredients: recipe.ingredients }}
                       profile={profile}
                       onSubmit={(input) => updateRecipe(recipe.id, input)}
@@ -99,20 +97,20 @@ export default function MyRecipesScreen() {
                       <WarningChips warnings={recipeWarnings(recipe.ingredients, profile)} />
                       {recipe.ingredients.map((ing, index) => (
                         <ThemedText key={index} type="small" themeColor="textSecondary">
-                          {describeIngredient(ing)}
+                          {[ing.amount ?? '', ing.unit, ingredientLabel(ing)].filter((part) => part !== '').join(' ')}
                         </ThemedText>
                       ))}
                       <ThemedText type="small" themeColor="textSecondary">
-                        {recipe.visibility === 'public' ? 'Public' : 'Private'}
+                        {recipe.visibility === 'public' ? t('public') : t('private')}
                       </ThemedText>
                       {confirmingId === recipe.id ? (
                         <ThemedView type="backgroundElement" style={styles.row}>
-                          <ThemedText type="small">Delete this recipe for good?</ThemedText>
+                          <ThemedText type="small">{t('deleteAsk')}</ThemedText>
                           <Pressable style={styles.smallButton} onPress={() => deleteRecipe(recipe.id)}>
-                            <ThemedText type="smallBold">Yes, delete</ThemedText>
+                            <ThemedText type="smallBold">{t('deleteYes')}</ThemedText>
                           </Pressable>
                           <Pressable style={styles.smallButton} onPress={() => setConfirmingId(null)}>
-                            <ThemedText type="smallBold">Cancel</ThemedText>
+                            <ThemedText type="smallBold">{t('cancel')}</ThemedText>
                           </Pressable>
                         </ThemedView>
                       ) : (
@@ -123,10 +121,10 @@ export default function MyRecipesScreen() {
                               setEditingId(recipe.id);
                               setConfirmingId(null);
                             }}>
-                            <ThemedText type="smallBold">Edit</ThemedText>
+                            <ThemedText type="smallBold">{t('edit')}</ThemedText>
                           </Pressable>
                           <Pressable style={styles.smallButton} onPress={() => setConfirmingId(recipe.id)}>
-                            <ThemedText type="smallBold">Delete</ThemedText>
+                            <ThemedText type="smallBold">{t('delete')}</ThemedText>
                           </Pressable>
                         </ThemedView>
                       )}

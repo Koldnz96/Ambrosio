@@ -9,8 +9,11 @@ import { buildShoppingList, type Needed } from '@/data/shopping';
 import { useAuthUser } from '@/hooks/use-auth-user';
 import { useRecipes } from '@/hooks/use-recipes';
 import { DAYS, useUserData } from '@/hooks/use-user-data';
+import { getProduct } from '@/data/products';
+import { useLanguage } from '@/i18n/language';
 
 export default function ShoppingScreen() {
+  const { t, product: productLabel, categoryName } = useLanguage();
   const { user, ready } = useAuthUser();
   const { recipes } = useRecipes(user?.uid ?? null);
   const { week, loaded } = useUserData(user?.uid ?? null);
@@ -44,41 +47,43 @@ export default function ShoppingScreen() {
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.content}>
-          <ThemedText type="subtitle">Shopping</ThemedText>
+          <ThemedText type="subtitle">{t('shoppingTitle')}</ThemedText>
 
           {!ready ? (
-            <ThemedText themeColor="textSecondary">Checking if you are signed in...</ThemedText>
+            <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
           ) : !user ? (
-            <ThemedText themeColor="textSecondary">Sign in on the Profile tab to see your shopping list.</ThemedText>
+            <ThemedText themeColor="textSecondary">{t('shoppingSignIn')}</ThemedText>
           ) : !loaded ? (
-            <ThemedText themeColor="textSecondary">Loading your plan...</ThemedText>
+            <ThemedText themeColor="textSecondary">{t('loadingPlan')}</ThemedText>
           ) : recipeCount === 0 ? (
             <ThemedText themeColor="textSecondary">
-              Nothing to buy yet. Plan some recipes on the Week tab and the list appears here.
+              {t('nothingToBuy')}
             </ThemedText>
           ) : (
             <>
               <ThemedText themeColor="textSecondary">
-                From {recipeCount} planned {recipeCount === 1 ? 'recipe' : 'recipes'} this week. Tap an item to tick it off.
+                {recipeCount === 1 ? t('fromRecipesOne') : t('fromRecipesMany', { count: recipeCount })}
               </ThemedText>
               {ticked.size > 0 ? (
                 <Pressable style={styles.smallButton} onPress={() => setTicked(new Set())}>
-                  <ThemedText type="smallBold">Clear ticks</ThemedText>
+                  <ThemedText type="smallBold">{t('clearTicks')}</ThemedText>
                 </Pressable>
               ) : null}
 
               {groups.map((group) => (
                 <ThemedView key={group.category} type="backgroundElement" style={styles.card}>
-                  <ThemedText type="smallBold">{group.label}</ThemedText>
+                  <ThemedText type="smallBold">
+                    {group.category === 'other' ? t('categoryOther') : categoryName(group.category)}
+                  </ThemedText>
                   {group.items.map((item) => {
                     const done = ticked.has(item.key);
                     return (
                       <Pressable key={item.key} style={styles.itemRow} onPress={() => toggle(item.key)}>
                         <ThemedText type="small" themeColor={done ? 'textSecondary' : 'text'}>
-                          {done ? '☑' : '☐'} {item.name}
+                          {done ? '☑' : '☐'} {item.productId && getProduct(item.productId) ? productLabel(getProduct(item.productId)!) : item.name}
                         </ThemedText>
                         <ThemedText type="small" themeColor="textSecondary">
-                          {item.quantities.join(' + ')}
+                          {item.quantities.length > 0 ? item.quantities.join(' + ') : t('quantitySome')}
                         </ThemedText>
                       </Pressable>
                     );

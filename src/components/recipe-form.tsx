@@ -9,9 +9,10 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { WarningChips } from '@/components/warning-chips';
 import { Spacing } from '@/constants/theme';
-import { CATEGORY_LABELS, getProduct, searchProducts, type Product } from '@/data/products';
+import { getProduct, searchProducts, type Product } from '@/data/products';
 import { ALLERGEN_ICONS, EMPTY_PROFILE, ingredientWarnings, type Profile } from '@/data/warnings';
 import { useTheme } from '@/hooks/use-theme';
+import { useLanguage } from '@/i18n/language';
 
 export type IngredientInput = {
   name: string;
@@ -43,10 +44,6 @@ function suggestionIcons(productId: string, profile: Profile): string {
     .join(' ');
 }
 
-function describe(ing: IngredientInput): string {
-  return [ing.amount ?? '', ing.unit, ing.name].filter((part) => part !== '').join(' ');
-}
-
 type Props = {
   title: string;
   submitLabel: string;
@@ -59,6 +56,7 @@ type Props = {
 
 export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile = EMPTY_PROFILE, onSubmit, onCancel }: Props) {
   const theme = useTheme();
+  const { t, lang, product: productLabel, ingredient: ingredientLabel, categoryName } = useLanguage();
   const [name, setName] = useState(initial?.name ?? '');
   const [items, setItems] = useState<Item[]>(() =>
     (initial?.ingredients ?? []).map((ing) => ({ ...ing, productId: ing.productId ?? null, key: nextKey() })),
@@ -73,7 +71,7 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
   const unitRef = useRef<TextInputInstance>(null);
 
   const suggestions =
-    suggesting && draft.name.trim() !== '' && !draft.productId ? searchProducts(draft.name) : [];
+    suggesting && draft.name.trim() !== '' && !draft.productId ? searchProducts(draft.name, lang) : [];
   const draftProduct = getProduct(draft.productId);
 
   function changeDraft(patch: Partial<Draft>) {
@@ -83,7 +81,7 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
   function pickProduct(product: Product) {
     setDraft((current) => ({
       ...current,
-      name: product.name,
+      name: productLabel(product),
       productId: product.id,
       unit: current.unit.trim() ? current.unit : product.unit,
     }));
@@ -94,10 +92,10 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
   // Turn the typed line into an ingredient, or return it as an error message.
   function draftToItem(): IngredientInput | string {
     const text = draft.name.trim();
-    if (!text) return 'Type an ingredient name first.';
+    if (!text) return t('errTypeIngredient');
     const amount = draft.amount.trim() === '' ? null : Number(draft.amount.replace(',', '.'));
     if (amount !== null && Number.isNaN(amount)) {
-      return `The amount for "${text}" must be a number, like 200 or 1.5.`;
+      return t('errAmount', { name: text });
     }
     return { name: text, amount, unit: draft.unit.trim(), productId: draft.productId };
   }
@@ -122,7 +120,7 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
   // Bring an added ingredient back up to the typing line, to change it.
   function editItem(item: Item) {
     if (draft.name.trim() !== '') {
-      setError('Add (or clear) the ingredient you are typing first.');
+      setError(t('errAddFirst'));
       return;
     }
     setError('');
@@ -139,7 +137,7 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
   async function submit() {
     setError('');
     if (!name.trim()) {
-      setError('Please give the recipe a name.');
+      setError(t('errRecipeName'));
       return;
     }
     const ingredients: IngredientInput[] = items.map(({ key: _key, ...ing }) => ing);
@@ -162,7 +160,7 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
         setSuggesting(false);
       }
     } catch (err) {
-      setError(`Could not save: ${(err as Error).message}`);
+      setError(t('errSave', { message: (err as Error).message }));
     } finally {
       setSaving(false);
     }
@@ -175,7 +173,7 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
       <ThemedText type="smallBold">{title}</ThemedText>
       <TextInput
         style={inputStyle}
-        placeholder="Recipe name"
+        placeholder={t('recipeNamePlaceholder')}
         placeholderTextColor={theme.textSecondary}
         value={name}
         onChangeText={setName}
@@ -183,14 +181,14 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
       />
 
       <ThemedText type="small" themeColor="textSecondary">
-        Ingredients: start typing (English or Portuguese). Enter picks the first suggestion and moves on.
+        {t('ingredientsHelp')}
       </ThemedText>
 
       {/* The typing line: it always stays here, at the top. */}
       <TextInput
         ref={ingredientRef}
         style={inputStyle}
-        placeholder="Ingredient, for example rice or arroz"
+        placeholder={t('ingredientPlaceholder')}
         placeholderTextColor={theme.textSecondary}
         value={draft.name}
         submitBehavior="submit"
@@ -207,21 +205,21 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
       {suggestions.map((p) => (
         <Pressable key={p.id} style={styles.suggestion} onPress={() => pickProduct(p)}>
           <ThemedText type="small">
-            {p.name} {suggestionIcons(p.id, profile)}
+            {productLabel(p)} {suggestionIcons(p.id, profile)}
           </ThemedText>
           <ThemedText type="small" themeColor="textSecondary">
-            {CATEGORY_LABELS[p.category]}
+            {categoryName(p.category)}
           </ThemedText>
         </Pressable>
       ))}
       {suggesting && suggestions.length === 0 && !draft.productId && draft.name.trim().length >= 2 ? (
         <ThemedText type="small" themeColor="textSecondary">
-          Not in the catalog yet. You can still use it as typed.
+          {t('notInCatalog')}
         </ThemedText>
       ) : null}
       {draftProduct ? (
         <ThemedText type="small" themeColor="textSecondary">
-          {CATEGORY_LABELS[draftProduct.category]}
+          {categoryName(draftProduct.category)}
         </ThemedText>
       ) : null}
       {draftProduct ? <WarningChips warnings={ingredientWarnings(draftProduct.id, profile)} /> : null}
@@ -229,7 +227,7 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
         <TextInput
           ref={amountRef}
           style={[inputStyle, styles.amount]}
-          placeholder="Amount"
+          placeholder={t('amountPlaceholder')}
           placeholderTextColor={theme.textSecondary}
           keyboardType="decimal-pad"
           value={draft.amount}
@@ -241,7 +239,7 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
         <TextInput
           ref={unitRef}
           style={[inputStyle, styles.unit]}
-          placeholder="Unit (g, ml, unit)"
+          placeholder={t('unitPlaceholder')}
           placeholderTextColor={theme.textSecondary}
           autoCapitalize="none"
           value={draft.unit}
@@ -252,18 +250,20 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
         />
       </ThemedView>
       <Pressable style={styles.smallButton} onPress={addIngredient}>
-        <ThemedText type="smallBold">+ Add ingredient</ThemedText>
+        <ThemedText type="smallBold">{t('addIngredient')}</ThemedText>
       </Pressable>
 
       {/* The ingredients added so far: the list grows downward. */}
       {items.map((item) => (
         <ThemedView key={item.key} type="backgroundElement" style={styles.itemRow}>
           <ThemedView type="backgroundElement" style={styles.itemText}>
-            <ThemedText type="small">{describe(item)}</ThemedText>
+            <ThemedText type="small">
+              {[item.amount ?? '', item.unit, ingredientLabel(item)].filter((part) => part !== '').join(' ')}
+            </ThemedText>
             <WarningChips warnings={ingredientWarnings(item.productId, profile)} />
           </ThemedView>
           <Pressable style={styles.smallButton} onPress={() => editItem(item)}>
-            <ThemedText type="smallBold">Edit</ThemedText>
+            <ThemedText type="smallBold">{t('edit')}</ThemedText>
           </Pressable>
           <Pressable style={styles.smallButton} onPress={() => removeItem(item.key)}>
             <ThemedText type="smallBold">✕</ThemedText>
@@ -276,11 +276,11 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
       <ThemedView type="backgroundElement" style={styles.footer}>
         {onCancel ? (
           <Pressable style={styles.button} disabled={saving} onPress={onCancel}>
-            <ThemedText type="smallBold">Cancel</ThemedText>
+            <ThemedText type="smallBold">{t('cancel')}</ThemedText>
           </Pressable>
         ) : null}
         <Pressable style={styles.button} disabled={saving} onPress={submit}>
-          <ThemedText type="smallBold">{saving ? 'Saving...' : submitLabel}</ThemedText>
+          <ThemedText type="smallBold">{saving ? t('saving') : submitLabel}</ThemedText>
         </Pressable>
       </ThemedView>
       {error ? <ThemedText type="small">{error}</ThemedText> : null}

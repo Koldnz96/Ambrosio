@@ -44,7 +44,7 @@ export function useRecipes(uid: string | null) {
         list.sort((a, b) => b.createdAtMs - a.createdAtMs);
         setRecipes(list);
       },
-      (err) => setError(`Could not load recipes: ${err.message}`),
+      (err) => setError(err.message),
     );
   }, [uid]);
 
