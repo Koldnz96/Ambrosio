@@ -11,6 +11,7 @@ export type PublicRecipe = {
   authorName: string;
   name: string;
   ingredients: IngredientInput[];
+  photo: string; // a small picture saved as text ('' = no photo)
   createdAtMs: number;
 } & CopyInfo;
 
@@ -44,6 +45,7 @@ export function usePublicRecipes(enabled: boolean) {
               productId: ing.productId ?? null,
             })),
             createdAtMs: data.createdAt?.toMillis?.() ?? Date.now(),
+            photo: typeof data.photo === 'string' ? data.photo : '',
             copiedFrom: data.copiedFrom ?? '',
             originalAuthor: data.originalAuthor ?? '',
             originalSignature: data.originalSignature ?? '',

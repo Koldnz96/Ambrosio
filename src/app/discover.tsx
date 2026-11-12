@@ -3,7 +3,9 @@ import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 
+import { Comments } from '@/components/comments';
 import { NicknameForm } from '@/components/nickname-form';
+import { Photo } from '@/components/photo';
 import { RecipeHeading } from '@/components/recipe-heading';
 import { StarRating } from '@/components/star-rating';
 import { ThemedText } from '@/components/themed-text';
@@ -22,7 +24,7 @@ export default function DiscoverScreen() {
   const { t, ingredient: ingredientLabel } = useLanguage();
   const { user, ready } = useAuthUser();
   const { recipes, loaded, error: loadError } = usePublicRecipes(user !== null);
-  const { profile, needsNickname, saveDisplayName } = useUserData(user?.uid ?? null);
+  const { profile, displayName, needsNickname, saveDisplayName } = useUserData(user?.uid ?? null);
   const [copied, setCopied] = useState<Set<string>>(new Set()); // recipes copied in this visit
   const [error, setError] = useState('');
 
@@ -51,6 +53,7 @@ export default function DiscoverScreen() {
         name: recipe.name,
         visibility: 'private',
         ingredients: recipe.ingredients,
+        photo: recipe.photo,
         copiedFrom: recipe.id,
         originalAuthor: repostOf({ ...recipe, ...copyInfo(recipe) }) || recipe.authorName,
         originalSignature: recipeSignature(recipe),
@@ -88,6 +91,7 @@ export default function DiscoverScreen() {
                 const original = repostOf({ ...recipe, ...copyInfo(recipe) });
                 return (
                   <ThemedView key={recipe.id} type="backgroundElement" style={styles.card}>
+                    {recipe.photo ? <Photo photo={recipe.photo} /> : null}
                     <RecipeHeading
                       name={recipe.name}
                       author={recipe.authorName || t('anonymousCook')}
@@ -101,6 +105,7 @@ export default function DiscoverScreen() {
                       </ThemedText>
                     ))}
                     <StarRating recipeId={recipe.id} uid={user.uid} canRate={!mine} />
+                    <Comments recipeId={recipe.id} recipeOwnerId={recipe.ownerId} uid={user.uid} nickname={displayName} />
                     {mine ? null : copied.has(recipe.id) ? (
                       <ThemedText type="small">{t('copySaved')}</ThemedText>
                     ) : (

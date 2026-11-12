@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { addDoc, collection, deleteDoc, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 
 import { NicknameForm } from '@/components/nickname-form';
+import { Photo } from '@/components/photo';
 import { RecipeHeading } from '@/components/recipe-heading';
 import { RecipeForm, type IngredientInput, type RecipeInput } from '@/components/recipe-form';
 import { ThemedText } from '@/components/themed-text';
@@ -12,6 +13,7 @@ import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { repostOf } from '@/data/repost';
 import { recipeWarnings } from '@/data/warnings';
+import { pickPhoto } from '@/lib/pick-photo';
 import { db } from '@/firebase';
 import { useAuthUser } from '@/hooks/use-auth-user';
 import { useRecipes } from '@/hooks/use-recipes';
@@ -59,6 +61,25 @@ export default function MyRecipesScreen() {
       await updateDoc(doc(db, 'recipes', id), { visibility, authorName: displayName, updatedAt: serverTimestamp() });
     } catch (err) {
       setActionError(t('errPublish', { message: (err as Error).message }));
+    }
+  }
+
+  // Choose a picture, shrink it, and save it on the recipe. An empty photo removes it.
+  async function changePhoto(id: string, remove: boolean) {
+    setActionError('');
+    let photo = '';
+    if (!remove) {
+      const result = await pickPhoto();
+      if (!result.ok) {
+        if (result.reason !== 'cancelled') setActionError(t(result.reason === 'too-big' ? 'errPhotoBig' : 'errPhoto'));
+        return;
+      }
+      photo = result.photo;
+    }
+    try {
+      await updateDoc(doc(db, 'recipes', id), { photo, updatedAt: serverTimestamp() });
+    } catch (err) {
+      setActionError(t('errSavePhoto', { message: (err as Error).message }));
     }
   }
 
@@ -111,6 +132,7 @@ export default function MyRecipesScreen() {
                     />
                   ) : (
                     <ThemedView key={recipe.id} type="backgroundElement" style={styles.card}>
+                      {recipe.photo ? <Photo photo={recipe.photo} /> : null}
                       <RecipeHeading
                         name={recipe.name}
                         author={recipe.visibility === 'public' ? displayName : undefined}
@@ -153,6 +175,14 @@ export default function MyRecipesScreen() {
                             }}>
                             <ThemedText type="smallBold">{t('edit')}</ThemedText>
                           </Pressable>
+                          <Pressable style={styles.smallButton} onPress={() => changePhoto(recipe.id, false)}>
+                            <ThemedText type="smallBold">📷 {recipe.photo ? t('changePhoto') : t('addPhoto')}</ThemedText>
+                          </Pressable>
+                          {recipe.photo ? (
+                            <Pressable style={styles.smallButton} onPress={() => changePhoto(recipe.id, true)}>
+                              <ThemedText type="smallBold">{t('removePhoto')}</ThemedText>
+                            </Pressable>
+                          ) : null}
                           <Pressable
                             style={styles.smallButton}
                             onPress={() => setVisibility(recipe.id, recipe.visibility === 'public' ? 'private' : 'public')}>
