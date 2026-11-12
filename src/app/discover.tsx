@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 
 import { NicknameForm } from '@/components/nickname-form';
+import { RecipeHeading } from '@/components/recipe-heading';
 import { StarRating } from '@/components/star-rating';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -68,11 +69,11 @@ export default function DiscoverScreen() {
                 const mine = recipe.ownerId === user.uid;
                 return (
                   <ThemedView key={recipe.id} type="backgroundElement" style={styles.card}>
-                    <ThemedText type="smallBold">{recipe.name}</ThemedText>
-                    <ThemedText type="small" themeColor="textSecondary">
-                      {t('byAuthor', { name: recipe.authorName || t('anonymousCook') })}
-                      {mine ? ` · ${t('yourRecipe')}` : ''}
-                    </ThemedText>
+                    <RecipeHeading
+                      name={recipe.name}
+                      author={recipe.authorName || t('anonymousCook')}
+                      note={mine ? t('yourRecipe') : undefined}
+                    />
                     <WarningChips warnings={recipeWarnings(recipe.ingredients, profile)} />
                     {recipe.ingredients.map((ing, index) => (
                       <ThemedText key={index} type="small" themeColor="textSecondary">

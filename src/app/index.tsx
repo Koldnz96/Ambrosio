@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { addDoc, collection, deleteDoc, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 
 import { NicknameForm } from '@/components/nickname-form';
+import { RecipeHeading } from '@/components/recipe-heading';
 import { RecipeForm, type IngredientInput, type RecipeInput } from '@/components/recipe-form';
 import { ThemedText } from '@/components/themed-text';
 import { WarningChips } from '@/components/warning-chips';
@@ -109,18 +110,22 @@ export default function MyRecipesScreen() {
                     />
                   ) : (
                     <ThemedView key={recipe.id} type="backgroundElement" style={styles.card}>
-                      <ThemedText type="smallBold">{recipe.name}</ThemedText>
+                      <RecipeHeading
+                        name={recipe.name}
+                        author={recipe.visibility === 'public' ? displayName : undefined}
+                        note={recipe.visibility === 'public' ? `🌍 ${t('public')}` : undefined}
+                      />
                       <WarningChips warnings={recipeWarnings(recipe.ingredients, profile)} />
                       {recipe.ingredients.map((ing, index) => (
                         <ThemedText key={index} type="small" themeColor="textSecondary">
                           {[ing.amount ?? '', ing.unit, ingredientLabel(ing)].filter((part) => part !== '').join(' ')}
                         </ThemedText>
                       ))}
-                      <ThemedText type="small" themeColor="textSecondary">
-                        {recipe.visibility === 'public'
-                          ? `🌍 ${t('public')} · ${t('byAuthor', { name: displayName })}`
-                          : `🔒 ${t('private')}`}
-                      </ThemedText>
+                      {recipe.visibility === 'public' ? null : (
+                        <ThemedText type="small" themeColor="textSecondary">
+                          🔒 {t('private')}
+                        </ThemedText>
+                      )}
                       {confirmingId === recipe.id ? (
                         <ThemedView type="backgroundElement" style={styles.row}>
                           <ThemedText type="small">{t('deleteAsk')}</ThemedText>
