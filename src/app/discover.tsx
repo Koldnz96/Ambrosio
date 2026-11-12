@@ -70,7 +70,8 @@ export default function DiscoverScreen() {
                   <ThemedView key={recipe.id} type="backgroundElement" style={styles.card}>
                     <ThemedText type="smallBold">{recipe.name}</ThemedText>
                     <ThemedText type="small" themeColor="textSecondary">
-                      {mine ? t('yourRecipe') : t('byAuthor', { name: recipe.authorName || t('anonymousCook') })}
+                      {t('byAuthor', { name: recipe.authorName || t('anonymousCook') })}
+                      {mine ? ` · ${t('yourRecipe')}` : ''}
                     </ThemedText>
                     <WarningChips warnings={recipeWarnings(recipe.ingredients, profile)} />
                     {recipe.ingredients.map((ing, index) => (

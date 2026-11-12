@@ -19,12 +19,11 @@ import { LANG_ORDER } from '@/i18n/lang';
 import { Flag } from '@/components/flag';
 import { useUserData } from '@/hooks/use-user-data';
 import { useTheme } from '@/hooks/use-theme';
-import { doc, updateDoc } from 'firebase/firestore';
-
 import { NICKNAME_MAX, cleanNickname, isValidNickname } from '@/data/nickname';
 import { claimNickname, isNicknameFree, type NicknameResult } from '@/data/nickname-store';
 import { useRecipes } from '@/hooks/use-recipes';
-import { auth, db } from '@/firebase';
+import { useSyncAuthorName } from '@/hooks/use-sync-author-name';
+import { auth } from '@/firebase';
 
 // Turns Firebase's technical error codes into short messages a person can read.
 function friendlyError(error: unknown, t: ReturnType<typeof useLanguage>['t']): string {
@@ -136,15 +135,9 @@ export default function ProfileScreen() {
 
   // Save the new nickname, and put it on the recipes this person already shared.
   async function changeNickname(name: string): Promise<NicknameResult> {
-    const result = await saveDisplayName(name);
-    if (!result.ok) return result;
-    for (const recipe of recipes) {
-      if (recipe.visibility === 'public' && recipe.authorName !== name) {
-        updateDoc(doc(db, 'recipes', recipe.id), { authorName: name }).catch(() => {});
-      }
-    }
-    return result;
+    return saveDisplayName(name);
   }
+  useSyncAuthorName(recipes, displayName);
 
   // A nickname saved before nicknames were unique is reserved the first time Profile opens.
   useEffect(() => {
