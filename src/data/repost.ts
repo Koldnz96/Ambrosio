@@ -29,3 +29,31 @@ export function repostOf(recipe: Content & CopyInfo): string {
   if (!recipe.originalAuthor || !recipe.originalSignature) return '';
   return recipeSignature(recipe) === recipe.originalSignature ? recipe.originalAuthor : '';
 }
+
+type Listed = Content & { id: string; ownerId: string };
+
+// Discover should not show the same recipe twice. An unchanged repost is hidden when the
+// original (or an older identical repost) is already listed. Your own recipes always stay.
+// "isRepost" says whether each recipe is an unchanged copy. The list is newest first.
+export function hideDuplicateReposts<T extends Listed>(
+  recipes: T[],
+  isRepost: (recipe: T) => boolean,
+  myId: string,
+): T[] {
+  const seen = new Set<string>(); // signatures of recipes that are listed as "real"
+  for (const recipe of recipes) {
+    if (!isRepost(recipe)) seen.add(recipeSignature(recipe));
+  }
+  // Walk from the oldest repost to the newest: the first one of each kind is kept.
+  const keepReposts = new Set<string>();
+  for (const recipe of [...recipes].reverse()) {
+    if (!isRepost(recipe)) continue;
+    const sig = recipeSignature(recipe);
+    if (seen.has(sig)) continue;
+    seen.add(sig);
+    keepReposts.add(recipe.id);
+  }
+  return recipes.filter(
+    (recipe) => !isRepost(recipe) || recipe.ownerId === myId || keepReposts.has(recipe.id),
+  );
+}

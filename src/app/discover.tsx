@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { useMemo, useState } from 'react';
+import { Platform, Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 
@@ -12,7 +12,9 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { WarningChips } from '@/components/warning-chips';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-import { recipeSignature, repostOf, type CopyInfo } from '@/data/repost';
+import { useTheme } from '@/hooks/use-theme';
+import { normalize } from '@/data/products';
+import { hideDuplicateReposts, recipeSignature, repostOf, type CopyInfo } from '@/data/repost';
 import { recipeWarnings } from '@/data/warnings';
 import { db } from '@/firebase';
 import { useAuthUser } from '@/hooks/use-auth-user';
@@ -27,6 +29,8 @@ export default function DiscoverScreen() {
   const { profile, displayName, needsNickname, saveDisplayName } = useUserData(user?.uid ?? null);
   const [copied, setCopied] = useState<Set<string>>(new Set()); // recipes copied in this visit
   const [error, setError] = useState('');
+  const [search, setSearch] = useState('');
+  const theme = useTheme();
 
   // Who wrote the original, and what it looked like. Copies made before this was saved
   // on the recipe are worked out from the original, when it is still public.
@@ -41,6 +45,30 @@ export default function DiscoverScreen() {
       originalSignature: recipeSignature(source),
     };
   }
+
+  // No double listings, then the search filter (name, cook, ingredients; accents and capitals ignored).
+  const visible = useMemo(() => {
+    const myId = user?.uid ?? '';
+    const single = hideDuplicateReposts(
+      recipes,
+      (recipe) => repostOf({ ...recipe, ...copyInfo(recipe) }) !== '',
+      myId,
+    );
+    const words = normalize(search).split(/\s+/).filter(Boolean);
+    if (words.length === 0) return single;
+    return single.filter((recipe) => {
+      const text = normalize(
+        [
+          recipe.name,
+          recipe.authorName,
+          repostOf({ ...recipe, ...copyInfo(recipe) }),
+          ...recipe.ingredients.map((ing) => `${ing.name} ${ingredientLabel(ing)}`),
+        ].join(' '),
+      );
+      return words.every((word) => text.includes(word));
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recipes, search, user?.uid, ingredientLabel]);
 
   // A copy is a new private recipe of your own. Changing it never changes the original.
   // It remembers the original cook: copying a repost still credits the first cook.
@@ -82,11 +110,24 @@ export default function DiscoverScreen() {
               <ThemedText themeColor="textSecondary">{t('discoverHelp')}</ThemedText>
               {loadError ? <ThemedText type="small">{t('errLoadPublic', { message: loadError })}</ThemedText> : null}
               {error ? <ThemedText type="small">{error}</ThemedText> : null}
+              {recipes.length > 0 ? (
+                <TextInput
+                  style={[styles.search, { color: theme.text, borderColor: theme.backgroundSelected }]}
+                  placeholder={t('searchPlaceholder')}
+                  placeholderTextColor={theme.textSecondary}
+                  value={search}
+                  onChangeText={setSearch}
+                />
+              ) : null}
               {loaded && recipes.length === 0 ? (
                 <ThemedText themeColor="textSecondary">{t('discoverEmpty')}</ThemedText>
               ) : null}
+              {recipes.length > 0 && visible.length === 0 ? (
+                <ThemedText themeColor="textSecondary">{t('noResults')}</ThemedText>
+              ) : null}
 
-              {recipes.map((recipe) => {
+              <ThemedView style={styles.grid}>
+              {visible.map((recipe) => {
                 const mine = recipe.ownerId === user.uid;
                 const original = repostOf({ ...recipe, ...copyInfo(recipe) });
                 return (
@@ -116,6 +157,7 @@ export default function DiscoverScreen() {
                   </ThemedView>
                 );
               })}
+              </ThemedView>
             </>
           )}
         </ScrollView>
@@ -133,7 +175,16 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'web' ? 96 : Spacing.five,
   },
   content: { gap: Spacing.three, paddingBottom: BottomTabInset + Spacing.five },
-  card: { padding: Spacing.three, borderRadius: Spacing.three, gap: Spacing.one, maxWidth: 520 },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.three, alignItems: 'flex-start' },
+  search: {
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    fontSize: 16,
+    maxWidth: 520,
+  },
+  card: { padding: Spacing.three, borderRadius: Spacing.three, gap: Spacing.one, flexGrow: 1, flexBasis: 320, maxWidth: 520 },
   smallButton: {
     alignSelf: 'flex-start',
     paddingVertical: 4,

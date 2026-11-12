@@ -119,17 +119,19 @@ export default function MyRecipesScreen() {
                   {t('noRecipes')}
                 </ThemedText>
               ) : (
-                recipes.map((recipe) =>
+                <ThemedView style={styles.grid}>
+                {recipes.map((recipe) =>
                   editingId === recipe.id ? (
-                    <RecipeForm
-                      key={recipe.id}
-                      title={t('editRecipe')}
-                      submitLabel={t('saveChanges')}
-                      initial={{ name: recipe.name, ingredients: recipe.ingredients }}
-                      profile={profile}
-                      onSubmit={(input) => updateRecipe(recipe.id, input)}
-                      onCancel={() => setEditingId(null)}
-                    />
+                    <ThemedView key={recipe.id} style={styles.fullRow}>
+                      <RecipeForm
+                        title={t('editRecipe')}
+                        submitLabel={t('saveChanges')}
+                        initial={{ name: recipe.name, ingredients: recipe.ingredients }}
+                        profile={profile}
+                        onSubmit={(input) => updateRecipe(recipe.id, input)}
+                        onCancel={() => setEditingId(null)}
+                      />
+                    </ThemedView>
                   ) : (
                     <ThemedView key={recipe.id} type="backgroundElement" style={styles.card}>
                       {recipe.photo ? <Photo photo={recipe.photo} /> : null}
@@ -197,7 +199,8 @@ export default function MyRecipesScreen() {
                       )}
                     </ThemedView>
                   ),
-                )
+                )}
+                </ThemedView>
               )}
             </>
           )}
@@ -224,5 +227,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
   },
-  card: { padding: Spacing.three, borderRadius: Spacing.three, gap: Spacing.one, maxWidth: 520 },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.three, alignItems: 'flex-start' },
+  fullRow: { width: '100%' },
+  card: { padding: Spacing.three, borderRadius: Spacing.three, gap: Spacing.one, flexGrow: 1, flexBasis: 320, maxWidth: 520 },
 });
