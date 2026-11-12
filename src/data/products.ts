@@ -93,7 +93,11 @@ export type Product = {
   aliases: string[];
   allergens: Allergen[];
   mayContain: Allergen[];
+  vegan: VeganStatus;
 };
+
+// yes = vegan, maybe = depends on the brand or recipe, no = not vegan.
+export type VeganStatus = 'yes' | 'maybe' | 'no';
 
 const UNITS = ['g', 'ml', 'unit'];
 const FORMS = ['fresh', 'dried', 'canned', 'jarred', 'ground', 'cured', 'smoked', 'processed'];
@@ -111,6 +115,31 @@ function slug(text: string): string {
   return normalize(text)
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
+}
+
+// Vegan status is worked out by rules, so the catalog rows stay short:
+// - meat and fish are never vegan
+// - anything that normally contains milk, eggs, fish, crustaceans or molluscs is not vegan
+// - the lists below cover the rest (names are lower case, no accents)
+const NOT_VEGAN = new Set([
+  'honey', 'lard', 'duck fat', 'ghee', 'gelatine', 'worcestershire sauce',
+  'stock cube (beef)', 'stock cube (chicken)', 'stock cube (fish)',
+  'beef stock', 'chicken stock', 'fish stock', 'egg noodles',
+]);
+const MAYBE_VEGAN = new Set([
+  'red wine', 'white wine', 'port wine', 'madeira wine', 'sparkling wine', 'beer', 'cider',
+  'dark chocolate', 'chocolate chips', 'thai curry paste', 'gnocchi', 'custard powder',
+  'maria biscuits', 'muesli', 'stock cube (vegetable)',
+]);
+
+function veganStatus(name: string, category: Category, allergens: Allergen[]): VeganStatus {
+  if (category === 'meat' || category === 'fish' || category === 'dairy') return 'no';
+  const animal: Allergen[] = ['milk', 'eggs', 'fish', 'crustaceans', 'molluscs'];
+  if (allergens.some((a) => animal.includes(a))) return 'no';
+  const key = normalize(name);
+  if (NOT_VEGAN.has(key)) return 'no';
+  if (MAYBE_VEGAN.has(key)) return 'maybe';
+  return 'yes';
 }
 
 function parse(category: Category, defaultUnit: Unit, rows: string): Product[] {
@@ -138,6 +167,7 @@ function parse(category: Category, defaultUnit: Unit, rows: string): Product[] {
         aliases: list(aliases),
         allergens: list(allergens) as Allergen[],
         mayContain: list(mayContain) as Allergen[],
+        vegan: veganStatus(name, category, list(allergens) as Allergen[]),
       };
     });
 }
