@@ -16,6 +16,7 @@ export const EMPTY_WEEK: Week = { mon: [], tue: [], wed: [], thu: [], fri: [], s
 export function useUserData(uid: string | null) {
   const [profile, setProfile] = useState<Profile>(EMPTY_PROFILE);
   const [week, setWeek] = useState<Week>(EMPTY_WEEK);
+  const [displayName, setDisplayName] = useState('');
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState<{ kind: 'load' | 'save'; message: string } | null>(null);
 
@@ -23,6 +24,7 @@ export function useUserData(uid: string | null) {
     if (!uid) {
       setProfile(EMPTY_PROFILE);
       setWeek(EMPTY_WEEK);
+      setDisplayName('');
       setLoaded(false);
       return;
     }
@@ -42,6 +44,7 @@ export function useUserData(uid: string | null) {
           nextWeek[day] = Array.isArray(ids) ? ids.filter((id: unknown) => typeof id === 'string') : [];
         }
         setWeek(nextWeek);
+        setDisplayName(typeof data.displayName === 'string' ? data.displayName : '');
         setLoaded(true);
       },
       (err) => setError({ kind: 'load', message: err.message }),
@@ -64,5 +67,7 @@ export function useUserData(uid: string | null) {
   const saveProfile = useCallback((next: Profile) => save({ allergies: next.allergies, vegan: next.vegan }), [save]);
   const saveWeek = useCallback((next: Week) => save({ week: next }), [save]);
 
-  return { profile, week, loaded, error, saveProfile, saveWeek };
+  const saveDisplayName = useCallback((name: string) => save({ displayName: name.trim() }), [save]);
+
+  return { profile, week, displayName, loaded, error, saveProfile, saveWeek, saveDisplayName };
 }

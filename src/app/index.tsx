@@ -19,7 +19,7 @@ export default function MyRecipesScreen() {
   const { t, ingredient: ingredientLabel } = useLanguage();
   const { user, ready } = useAuthUser();
   const { recipes, error: recipesError } = useRecipes(user?.uid ?? null);
-  const { profile } = useUserData(user?.uid ?? null);
+  const { profile, displayName } = useUserData(user?.uid ?? null);
   const [actionError, setActionError] = useState('');
   const error = actionError || (recipesError ? t('errLoadRecipes', { message: recipesError }) : '');
 
@@ -44,6 +44,17 @@ export default function MyRecipesScreen() {
       updatedAt: serverTimestamp(),
     });
     setEditingId(null);
+  }
+
+  // Public recipes show up on the Discover tab for everyone. The display name is copied
+  // onto the recipe at that moment, because other people cannot read your profile.
+  async function setVisibility(id: string, visibility: 'private' | 'public') {
+    setActionError('');
+    try {
+      await updateDoc(doc(db, 'recipes', id), { visibility, authorName: displayName, updatedAt: serverTimestamp() });
+    } catch (err) {
+      setActionError(t('errPublish', { message: (err as Error).message }));
+    }
   }
 
   async function deleteRecipe(id: string) {
@@ -101,7 +112,7 @@ export default function MyRecipesScreen() {
                         </ThemedText>
                       ))}
                       <ThemedText type="small" themeColor="textSecondary">
-                        {recipe.visibility === 'public' ? t('public') : t('private')}
+                        {recipe.visibility === 'public' ? `🌍 ${t('public')}` : `🔒 ${t('private')}`}
                       </ThemedText>
                       {confirmingId === recipe.id ? (
                         <ThemedView type="backgroundElement" style={styles.row}>
@@ -122,6 +133,13 @@ export default function MyRecipesScreen() {
                               setConfirmingId(null);
                             }}>
                             <ThemedText type="smallBold">{t('edit')}</ThemedText>
+                          </Pressable>
+                          <Pressable
+                            style={styles.smallButton}
+                            onPress={() => setVisibility(recipe.id, recipe.visibility === 'public' ? 'private' : 'public')}>
+                            <ThemedText type="smallBold">
+                              {recipe.visibility === 'public' ? t('makePrivate') : t('makePublic')}
+                            </ThemedText>
                           </Pressable>
                           <Pressable style={styles.smallButton} onPress={() => setConfirmingId(recipe.id)}>
                             <ThemedText type="smallBold">{t('delete')}</ThemedText>
@@ -149,7 +167,7 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'web' ? 96 : Spacing.five,
   },
   content: { gap: Spacing.three, paddingBottom: BottomTabInset + Spacing.five },
-  row: { flexDirection: 'row', gap: Spacing.two, alignItems: 'center' },
+  row: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two, alignItems: 'center' },
   smallButton: {
     alignSelf: 'flex-start',
     paddingVertical: 4,

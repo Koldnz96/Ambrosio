@@ -44,6 +44,32 @@ function friendlyError(error: unknown, t: ReturnType<typeof useLanguage>['t']): 
   }
 }
 
+// The name shown on public recipes. It saves when you press Save (or Enter).
+function DisplayNameField(props: { saved: string; disabled: boolean; onSave: (name: string) => void }) {
+  const theme = useTheme();
+  const { t } = useLanguage();
+  const [text, setText] = useState(props.saved);
+  const changed = text.trim() !== props.saved;
+  return (
+    <ThemedView style={styles.row}>
+      <TextInput
+        style={[styles.input, styles.nameInput, { color: theme.text, borderColor: theme.backgroundSelected }]}
+        placeholder={t('displayNamePlaceholder')}
+        placeholderTextColor={theme.textSecondary}
+        maxLength={40}
+        value={text}
+        onChangeText={setText}
+        onSubmitEditing={() => props.onSave(text)}
+      />
+      {changed ? (
+        <Pressable style={styles.button} disabled={props.disabled} onPress={() => props.onSave(text)}>
+          <ThemedText type="smallBold">{t('saveChanges')}</ThemedText>
+        </Pressable>
+      ) : null}
+    </ThemedView>
+  );
+}
+
 const LANGUAGE_NAMES = { en: 'English', pt: 'Português', fr: 'Français' } as const;
 
 export default function ProfileScreen() {
@@ -55,7 +81,7 @@ export default function ProfileScreen() {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
-  const { profile, loaded, error: dataError, saveProfile } = useUserData(user?.uid ?? null);
+  const { profile, displayName, loaded, error: dataError, saveProfile, saveDisplayName } = useUserData(user?.uid ?? null);
 
   function toggleAllergy(allergen: (typeof ALLERGEN_ORDER)[number]) {
     const has = profile.allergies.includes(allergen);
@@ -121,6 +147,12 @@ export default function ProfileScreen() {
             <Pressable style={styles.button} disabled={busy} onPress={() => run(() => signOut(auth))}>
               <ThemedText type="smallBold">{t('signOut')}</ThemedText>
             </Pressable>
+
+            <ThemedText type="smallBold">{t('displayName')}</ThemedText>
+            <DisplayNameField key={displayName} saved={displayName} disabled={!loaded} onSave={saveDisplayName} />
+            <ThemedText themeColor="textSecondary" type="small">
+              {t('displayNameHelp')}
+            </ThemedText>
 
             <ThemedText type="smallBold">{t('diet')}</ThemedText>
             <Pressable
@@ -251,7 +283,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     fontSize: 16,
   },
-  row: { flexDirection: 'row', gap: Spacing.three },
+  row: { flexDirection: 'row', gap: Spacing.three, alignItems: 'center' },
+  nameInput: { flex: 1 },
   button: {
     alignSelf: 'flex-start',
     paddingVertical: 8,

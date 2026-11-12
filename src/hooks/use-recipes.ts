@@ -8,6 +8,7 @@ export type Recipe = {
   id: string;
   name: string;
   visibility: 'private' | 'public';
+  authorName: string; // shown when the recipe is public (empty = anonymous)
   ingredients: IngredientInput[];
   createdAtMs: number;
 };
@@ -32,6 +33,7 @@ export function useRecipes(uid: string | null) {
             id: d.id,
             name: data.name ?? '',
             visibility: data.visibility ?? 'private',
+            authorName: data.authorName ?? '',
             ingredients: (data.ingredients ?? []).map((ing: Partial<IngredientInput>) => ({
               name: ing.name ?? '',
               amount: ing.amount ?? null,
