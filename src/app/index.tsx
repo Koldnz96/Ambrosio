@@ -3,6 +3,7 @@ import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { addDoc, collection, deleteDoc, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 
+import { NicknameForm } from '@/components/nickname-form';
 import { RecipeForm, type IngredientInput, type RecipeInput } from '@/components/recipe-form';
 import { ThemedText } from '@/components/themed-text';
 import { WarningChips } from '@/components/warning-chips';
@@ -19,7 +20,7 @@ export default function MyRecipesScreen() {
   const { t, ingredient: ingredientLabel } = useLanguage();
   const { user, ready } = useAuthUser();
   const { recipes, error: recipesError } = useRecipes(user?.uid ?? null);
-  const { profile, displayName } = useUserData(user?.uid ?? null);
+  const { profile, displayName, needsNickname, saveDisplayName } = useUserData(user?.uid ?? null);
   const [actionError, setActionError] = useState('');
   const error = actionError || (recipesError ? t('errLoadRecipes', { message: recipesError }) : '');
 
@@ -80,6 +81,8 @@ export default function MyRecipesScreen() {
             <ThemedText themeColor="textSecondary">
               {t('recipesSignIn')}
             </ThemedText>
+          ) : needsNickname ? (
+            <NicknameForm onSave={saveDisplayName} />
           ) : (
             <>
               <RecipeForm title={t('newRecipe')} submitLabel={t('saveRecipe')} clearOnSave profile={profile} onSubmit={createRecipe} />

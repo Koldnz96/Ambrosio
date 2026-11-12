@@ -69,5 +69,8 @@ export function useUserData(uid: string | null) {
 
   const saveDisplayName = useCallback((name: string) => save({ displayName: name.trim() }), [save]);
 
-  return { profile, week, displayName, loaded, error, saveProfile, saveWeek, saveDisplayName };
+  // Signed in, settings loaded, and still no nickname: the screens ask for one first.
+  const needsNickname = uid !== null && loaded && displayName === '';
+
+  return { profile, week, displayName, needsNickname, loaded, error, saveProfile, saveWeek, saveDisplayName };
 }

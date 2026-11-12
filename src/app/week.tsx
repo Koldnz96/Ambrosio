@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { NicknameForm } from '@/components/nickname-form';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { WarningChips } from '@/components/warning-chips';
@@ -16,7 +17,7 @@ export default function WeekScreen() {
   const { t } = useLanguage();
   const { user, ready } = useAuthUser();
   const { recipes } = useRecipes(user?.uid ?? null);
-  const { profile, week, loaded, error, saveWeek } = useUserData(user?.uid ?? null);
+  const { profile, week, loaded, error, saveWeek, needsNickname, saveDisplayName } = useUserData(user?.uid ?? null);
   const [pickingDay, setPickingDay] = useState<Day | null>(null); // the day whose recipe list is open
 
   function addRecipe(day: Day, recipeId: string) {
@@ -38,6 +39,8 @@ export default function WeekScreen() {
             <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
           ) : !user ? (
             <ThemedText themeColor="textSecondary">{t('weekSignIn')}</ThemedText>
+          ) : needsNickname ? (
+            <NicknameForm onSave={saveDisplayName} />
           ) : (
             <>
               <ThemedText themeColor="textSecondary">

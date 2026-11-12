@@ -120,9 +120,9 @@ const en = {
   warnCantCheck: "Can't check",
 
   // sharing and discover
-  displayName: 'Display name',
-  displayNameHelp: 'Shown on recipes you make public. Leave it empty to stay anonymous.',
-  displayNamePlaceholder: 'Your name or nickname',
+  displayName: 'Nickname',
+  displayNameHelp: 'Other people see this name on recipes you share. Your email is never shown to anyone.',
+  displayNamePlaceholder: 'Your nickname',
   makePublic: 'Make public',
   makePrivate: 'Make private',
   anonymousCook: 'Anonymous cook',
@@ -142,6 +142,11 @@ const en = {
   errCopy: 'Could not save the copy: {message}',
   errPublish: 'Could not change the recipe: {message}',
   errLoadPublic: 'Could not load public recipes: {message}',
+  nicknameTitle: 'Choose a nickname',
+  nicknameHelp: 'Pick the name other people will see on recipes you share. Your email is never shown. You can change it later on the Profile tab.',
+  nicknameContinue: 'Continue',
+  nicknameSignup: 'Nickname (only for a new account)',
+  errNickname: 'Choose a nickname with 2 to 24 characters (not an email address).',
 };
 
 export type StringKey = keyof typeof en;
@@ -251,9 +256,9 @@ const pt: Record<StringKey, string> = {
   warnMayNotVegan: 'Pode não ser vegan',
   warnCantCheck: 'Não dá para verificar',
 
-  displayName: 'Nome a mostrar',
-  displayNameHelp: 'Aparece nas receitas que tornar públicas. Deixe vazio para ficar anónimo.',
-  displayNamePlaceholder: 'O seu nome ou alcunha',
+  displayName: 'Alcunha',
+  displayNameHelp: 'As outras pessoas veem este nome nas receitas que partilhar. O seu email nunca é mostrado a ninguém.',
+  displayNamePlaceholder: 'A sua alcunha',
   makePublic: 'Tornar pública',
   makePrivate: 'Tornar privada',
   anonymousCook: 'Cozinheiro anónimo',
@@ -273,6 +278,11 @@ const pt: Record<StringKey, string> = {
   errCopy: 'Não foi possível guardar a cópia: {message}',
   errPublish: 'Não foi possível alterar a receita: {message}',
   errLoadPublic: 'Não foi possível carregar as receitas públicas: {message}',
+  nicknameTitle: 'Escolha uma alcunha',
+  nicknameHelp: 'Escolha o nome que as outras pessoas vão ver nas receitas que partilhar. O seu email nunca é mostrado. Pode mudá-lo depois no separador Perfil.',
+  nicknameContinue: 'Continuar',
+  nicknameSignup: 'Alcunha (só para uma conta nova)',
+  errNickname: 'Escolha uma alcunha com 2 a 24 caracteres (não um endereço de email).',
 };
 
 const fr: Record<StringKey, string> = {
@@ -380,9 +390,9 @@ const fr: Record<StringKey, string> = {
   warnMayNotVegan: 'Peut ne pas être végane',
   warnCantCheck: 'Impossible à vérifier',
 
-  displayName: "Nom affiché",
-  displayNameHelp: "Affiché sur les recettes que vous rendez publiques. Laissez vide pour rester anonyme.",
-  displayNamePlaceholder: 'Votre nom ou pseudo',
+  displayName: 'Pseudo',
+  displayNameHelp: "Les autres voient ce nom sur les recettes que vous partagez. Votre e-mail n'est jamais montré à personne.",
+  displayNamePlaceholder: 'Votre pseudo',
   makePublic: 'Rendre publique',
   makePrivate: 'Rendre privée',
   anonymousCook: 'Cuisinier anonyme',
@@ -402,6 +412,11 @@ const fr: Record<StringKey, string> = {
   errCopy: "Impossible d'enregistrer la copie : {message}",
   errPublish: 'Impossible de modifier la recette : {message}',
   errLoadPublic: 'Impossible de charger les recettes publiques : {message}',
+  nicknameTitle: 'Choisissez un pseudo',
+  nicknameHelp: "Choisissez le nom que les autres verront sur les recettes que vous partagez. Votre e-mail n'est jamais affiché. Vous pourrez le changer plus tard dans l'onglet Profil.",
+  nicknameContinue: 'Continuer',
+  nicknameSignup: 'Pseudo (uniquement pour un nouveau compte)',
+  errNickname: 'Choisissez un pseudo de 2 à 24 caractères (pas une adresse e-mail).',
 };
 
 export const STRINGS: Record<Lang, Record<StringKey, string>> = { en, pt, fr };

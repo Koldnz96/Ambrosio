@@ -19,7 +19,11 @@ import { LANG_ORDER } from '@/i18n/lang';
 import { Flag } from '@/components/flag';
 import { useUserData } from '@/hooks/use-user-data';
 import { useTheme } from '@/hooks/use-theme';
-import { auth } from '@/firebase';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
+
+import { NICKNAME_MAX, cleanNickname, isValidNickname } from '@/data/nickname';
+import { useRecipes } from '@/hooks/use-recipes';
+import { auth, db } from '@/firebase';
 
 // Turns Firebase's technical error codes into short messages a person can read.
 function friendlyError(error: unknown, t: ReturnType<typeof useLanguage>['t']): string {
@@ -44,29 +48,46 @@ function friendlyError(error: unknown, t: ReturnType<typeof useLanguage>['t']): 
   }
 }
 
-// The name shown on public recipes. It saves when you press Save (or Enter).
+// The nickname shown on shared recipes. It saves when you press Save (or Enter).
 function DisplayNameField(props: { saved: string; disabled: boolean; onSave: (name: string) => void }) {
   const theme = useTheme();
   const { t } = useLanguage();
   const [text, setText] = useState(props.saved);
-  const changed = text.trim() !== props.saved;
+  const [error, setError] = useState('');
+  const changed = cleanNickname(text) !== props.saved;
+
+  function submit() {
+    if (!changed || props.disabled) return;
+    if (!isValidNickname(text)) {
+      setError(t('errNickname'));
+      return;
+    }
+    setError('');
+    props.onSave(cleanNickname(text));
+  }
+
   return (
-    <ThemedView style={styles.row}>
-      <TextInput
-        style={[styles.input, styles.nameInput, { color: theme.text, borderColor: theme.backgroundSelected }]}
-        placeholder={t('displayNamePlaceholder')}
-        placeholderTextColor={theme.textSecondary}
-        maxLength={40}
-        value={text}
-        onChangeText={setText}
-        onSubmitEditing={() => props.onSave(text)}
-      />
-      {changed ? (
-        <Pressable style={styles.button} disabled={props.disabled} onPress={() => props.onSave(text)}>
-          <ThemedText type="smallBold">{t('saveChanges')}</ThemedText>
-        </Pressable>
-      ) : null}
-    </ThemedView>
+    <>
+      <ThemedView style={styles.row}>
+        <TextInput
+          style={[styles.input, styles.nameInput, { color: theme.text, borderColor: theme.backgroundSelected }]}
+          placeholder={t('displayNamePlaceholder')}
+          placeholderTextColor={theme.textSecondary}
+          maxLength={NICKNAME_MAX}
+          autoCapitalize="none"
+          autoCorrect={false}
+          value={text}
+          onChangeText={setText}
+          onSubmitEditing={submit}
+        />
+        {changed ? (
+          <Pressable style={styles.button} disabled={props.disabled} onPress={submit}>
+            <ThemedText type="smallBold">{t('saveChanges')}</ThemedText>
+          </Pressable>
+        ) : null}
+      </ThemedView>
+      {error ? <ThemedText type="small">{error}</ThemedText> : null}
+    </>
   );
 }
 
@@ -82,6 +103,32 @@ export default function ProfileScreen() {
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
   const { profile, displayName, loaded, error: dataError, saveProfile, saveDisplayName } = useUserData(user?.uid ?? null);
+
+  const { recipes } = useRecipes(user?.uid ?? null);
+  const [nickname, setNickname] = useState(''); // only used when creating an account
+
+  // A new account must come with a nickname. It is saved in the person's own document.
+  async function createAccount() {
+    if (!isValidNickname(nickname)) {
+      setMessage(t('errNickname'));
+      return;
+    }
+    await run(async () => {
+      const created = await createUserWithEmailAndPassword(auth, email.trim(), password);
+      await setDoc(doc(db, 'users', created.user.uid), { displayName: cleanNickname(nickname) }, { merge: true });
+      setNickname('');
+    });
+  }
+
+  // Save the new nickname, and put it on the recipes this person already shared.
+  async function changeNickname(name: string) {
+    await saveDisplayName(name);
+    for (const recipe of recipes) {
+      if (recipe.visibility === 'public' && recipe.authorName !== name) {
+        updateDoc(doc(db, 'recipes', recipe.id), { authorName: name }).catch(() => {});
+      }
+    }
+  }
 
   function toggleAllergy(allergen: (typeof ALLERGEN_ORDER)[number]) {
     const has = profile.allergies.includes(allergen);
@@ -149,7 +196,7 @@ export default function ProfileScreen() {
             </Pressable>
 
             <ThemedText type="smallBold">{t('displayName')}</ThemedText>
-            <DisplayNameField key={displayName} saved={displayName} disabled={!loaded} onSave={saveDisplayName} />
+            <DisplayNameField key={displayName} saved={displayName} disabled={!loaded} onSave={changeNickname} />
             <ThemedText themeColor="textSecondary" type="small">
               {t('displayNameHelp')}
             </ThemedText>
@@ -231,6 +278,16 @@ export default function ProfileScreen() {
               value={password}
               onChangeText={setPassword}
             />
+            <TextInput
+              style={inputStyle}
+              placeholder={t('nicknameSignup')}
+              placeholderTextColor={theme.textSecondary}
+              maxLength={NICKNAME_MAX}
+              autoCapitalize="none"
+              autoCorrect={false}
+              value={nickname}
+              onChangeText={setNickname}
+            />
             <ThemedView style={styles.row}>
               <Pressable
                 style={styles.button}
@@ -241,7 +298,7 @@ export default function ProfileScreen() {
               <Pressable
                 style={styles.button}
                 disabled={busy}
-                onPress={() => run(() => createUserWithEmailAndPassword(auth, email.trim(), password))}>
+                onPress={createAccount}>
                 <ThemedText type="smallBold">{t('createAccount')}</ThemedText>
               </Pressable>
             </ThemedView>

@@ -3,6 +3,7 @@ import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 
+import { NicknameForm } from '@/components/nickname-form';
 import { StarRating } from '@/components/star-rating';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -19,7 +20,7 @@ export default function DiscoverScreen() {
   const { t, ingredient: ingredientLabel } = useLanguage();
   const { user, ready } = useAuthUser();
   const { recipes, loaded, error: loadError } = usePublicRecipes(user !== null);
-  const { profile } = useUserData(user?.uid ?? null);
+  const { profile, needsNickname, saveDisplayName } = useUserData(user?.uid ?? null);
   const [copied, setCopied] = useState<Set<string>>(new Set()); // recipes copied in this visit
   const [error, setError] = useState('');
 
@@ -52,6 +53,8 @@ export default function DiscoverScreen() {
             <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
           ) : !user ? (
             <ThemedText themeColor="textSecondary">{t('discoverSignIn')}</ThemedText>
+          ) : needsNickname ? (
+            <NicknameForm onSave={saveDisplayName} />
           ) : (
             <>
               <ThemedText themeColor="textSecondary">{t('discoverHelp')}</ThemedText>

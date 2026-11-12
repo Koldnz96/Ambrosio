@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { NicknameForm } from '@/components/nickname-form';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
@@ -16,7 +17,7 @@ export default function ShoppingScreen() {
   const { t, product: productLabel, categoryName } = useLanguage();
   const { user, ready } = useAuthUser();
   const { recipes } = useRecipes(user?.uid ?? null);
-  const { week, loaded } = useUserData(user?.uid ?? null);
+  const { week, loaded, needsNickname, saveDisplayName } = useUserData(user?.uid ?? null);
   const [ticked, setTicked] = useState<Set<string>>(new Set()); // ticks live in memory only
 
   // Every ingredient of every planned recipe. A recipe planned twice counts twice.
@@ -53,6 +54,8 @@ export default function ShoppingScreen() {
             <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
           ) : !user ? (
             <ThemedText themeColor="textSecondary">{t('shoppingSignIn')}</ThemedText>
+          ) : needsNickname ? (
+            <NicknameForm onSave={saveDisplayName} />
           ) : !loaded ? (
             <ThemedText themeColor="textSecondary">{t('loadingPlan')}</ThemedText>
           ) : recipeCount === 0 ? (
