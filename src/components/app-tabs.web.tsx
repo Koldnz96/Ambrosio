@@ -12,6 +12,7 @@ import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useLanguage } from '@/i18n/language';
 
+import { LanguageSwitcher } from './language-switcher';
 import { ThemedText } from './themed-text';
 import { ThemedView } from './themed-view';
 
@@ -68,6 +69,7 @@ export function CustomTabList(props: TabListProps) {
         </ThemedText>
 
         {props.children}
+        <LanguageSwitcher />
       </ThemedView>
     </View>
   );

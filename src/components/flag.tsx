@@ -1,24 +1,84 @@
-import { Image, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import type { Lang } from '@/i18n/lang';
 
-// Small flag pictures. (Windows does not draw flag emoji, so these are drawn as images.)
-const SVG: Record<Lang, string> = {
-  en: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30"><clipPath id="s"><path d="M0,0 v30 h60 v-30 z"/></clipPath><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><g clip-path="url(#s)"><path d="M0,0 v30 h60 v-30 z" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#C8102E" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></g></svg>',
-  pt: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 40"><rect width="60" height="40" fill="#FF0000"/><rect width="24" height="40" fill="#006600"/><circle cx="24" cy="20" r="7" fill="#FFCC00"/><circle cx="24" cy="20" r="4.6" fill="#fff"/><circle cx="24" cy="20" r="2.6" fill="#FF0000"/></svg>',
-  fr: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 40"><rect width="20" height="40" fill="#0055A4"/><rect x="20" width="20" height="40" fill="#fff"/><rect x="40" width="20" height="40" fill="#EF4135"/></svg>',
-};
-
+// Small flags drawn with plain coloured boxes. (Windows does not draw flag emoji,
+// and picture files did not show up in the browser, so they are built from shapes.)
 export function Flag({ lang, width = 30 }: { lang: Lang; width?: number }) {
-  return (
-    <Image
-      accessibilityIgnoresInvertColors
-      source={{ uri: `data:image/svg+xml;utf8,${encodeURIComponent(SVG[lang])}` }}
-      style={[styles.flag, { width, height: Math.round((width * 2) / 3) }]}
+  const height = Math.round((width * 2) / 3);
+  const box = [styles.flag, { width, height }];
+
+  if (lang === 'fr') {
+    return (
+      <View style={[box, styles.row]}>
+        <View style={[styles.third, { backgroundColor: '#0055A4' }]} />
+        <View style={[styles.third, { backgroundColor: '#FFFFFF' }]} />
+        <View style={[styles.third, { backgroundColor: '#EF4135' }]} />
+      </View>
+    );
+  }
+
+  if (lang === 'pt') {
+    const circle = Math.round(height * 0.5);
+    return (
+      <View style={[box, styles.row, { backgroundColor: '#FF0000' }]}>
+        <View style={{ width: width * 0.4, backgroundColor: '#006600' }} />
+        <View
+          style={{
+            position: 'absolute',
+            left: width * 0.4 - circle / 2,
+            top: (height - circle) / 2,
+            width: circle,
+            height: circle,
+            borderRadius: circle / 2,
+            backgroundColor: '#FFCC00',
+          }}
+        />
+      </View>
+    );
+  }
+
+  // United Kingdom: blue, white and red diagonals, then the white and red cross on top.
+  const diagonal = Math.sqrt(width * width + height * height);
+  const angle = `${(Math.atan(height / width) * 180) / Math.PI}deg`;
+  const bar = (thickness: number, color: string, rotate: string) => (
+    <View
+      style={{
+        position: 'absolute',
+        left: (width - diagonal) / 2,
+        top: (height - thickness) / 2,
+        width: diagonal,
+        height: thickness,
+        backgroundColor: color,
+        transform: [{ rotate }],
+      }}
     />
+  );
+  const cross = (thickness: number, color: string) => (
+    <>
+      <View style={{ position: 'absolute', left: (width - thickness) / 2, top: 0, width: thickness, height, backgroundColor: color }} />
+      <View style={{ position: 'absolute', left: 0, top: (height - thickness) / 2, width, height: thickness, backgroundColor: color }} />
+    </>
+  );
+  return (
+    <View style={[box, { backgroundColor: '#012169' }]}>
+      {bar(height * 0.2, '#FFFFFF', angle)}
+      {bar(height * 0.2, '#FFFFFF', `-${angle}`)}
+      {bar(height * 0.08, '#C8102E', angle)}
+      {bar(height * 0.08, '#C8102E', `-${angle}`)}
+      {cross(height * 0.34, '#FFFFFF')}
+      {cross(height * 0.2, '#C8102E')}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  flag: { borderRadius: 3, borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(128,128,128,0.6)' },
+  flag: {
+    borderRadius: 3,
+    overflow: 'hidden',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(128,128,128,0.6)',
+  },
+  row: { flexDirection: 'row' },
+  third: { flex: 1 },
 });

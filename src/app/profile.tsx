@@ -9,18 +9,17 @@ import {
   type User,
 } from 'firebase/auth';
 
+import { NicknameForm } from '@/components/nickname-form';
 import { LEVEL_COLORS } from '@/components/warning-chips';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { ALLERGEN_ICONS, ALLERGEN_ORDER } from '@/data/warnings';
 import { useLanguage } from '@/i18n/language';
-import { LANG_ORDER } from '@/i18n/lang';
-import { Flag } from '@/components/flag';
 import { useUserData } from '@/hooks/use-user-data';
 import { useTheme } from '@/hooks/use-theme';
 import { NICKNAME_MAX, cleanNickname, isValidNickname } from '@/data/nickname';
-import { claimNickname, isNicknameFree, type NicknameResult } from '@/data/nickname-store';
+import { claimNickname, type NicknameResult } from '@/data/nickname-store';
 import { useRecipes } from '@/hooks/use-recipes';
 import { useSyncAuthorName } from '@/hooks/use-sync-author-name';
 import { auth } from '@/firebase';
@@ -92,47 +91,19 @@ function DisplayNameField(props: { saved: string; disabled: boolean; onSave: (na
   );
 }
 
-const LANGUAGE_NAMES = { en: 'English', pt: 'Português', fr: 'Français' } as const;
-
 export default function ProfileScreen() {
   const theme = useTheme();
-  const { t, lang, setLang, allergenName } = useLanguage();
+  const { t, allergenName } = useLanguage();
   const [user, setUser] = useState<User | null>(null);
   const [ready, setReady] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
-  const { profile, displayName, loaded, error: dataError, saveProfile, saveDisplayName } = useUserData(user?.uid ?? null);
+  const [confirmingSignOut, setConfirmingSignOut] = useState(false);
+  const { profile, displayName, needsNickname, loaded, error: dataError, saveProfile, saveDisplayName } = useUserData(user?.uid ?? null);
 
   const { recipes } = useRecipes(user?.uid ?? null);
-  const [nickname, setNickname] = useState(''); // only used when creating an account
-
-  // A new account must come with a nickname. It is saved in the person's own document.
-  async function createAccount() {
-    if (!isValidNickname(nickname)) {
-      setMessage(t('errNickname'));
-      return;
-    }
-    const wanted = cleanNickname(nickname);
-    // Check first, so we do not create an account for a nickname that is taken.
-    try {
-      if (!(await isNicknameFree(wanted, null))) {
-        setMessage(t('errNicknameTaken'));
-        return;
-      }
-    } catch (error) {
-      setMessage(friendlyError(error, t));
-      return;
-    }
-    await run(async () => {
-      const created = await createUserWithEmailAndPassword(auth, email.trim(), password);
-      // If someone took it in that same second, the app simply asks for another nickname.
-      await claimNickname(created.user.uid, wanted, '');
-      setNickname('');
-    });
-  }
-
   // Save the new nickname, and put it on the recipes this person already shared.
   async function changeNickname(name: string): Promise<NicknameResult> {
     return saveDisplayName(name);
@@ -181,39 +152,25 @@ export default function ProfileScreen() {
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <ThemedText type="subtitle">{t('profileTitle')}</ThemedText>
 
-        <ThemedText type="smallBold">{t('language')}</ThemedText>
-        <ThemedView style={styles.options}>
-          {LANG_ORDER.map((code) => (
-            <Pressable
-              key={code}
-              onPress={() => setLang(code)}
-              style={[styles.option, styles.languageOption, lang === code && { backgroundColor: theme.backgroundSelected }]}>
-              <Flag lang={code} />
-              <ThemedText type={lang === code ? 'smallBold' : 'small'}>
-                {lang === code ? '✓ ' : ''}
-                {LANGUAGE_NAMES[code]}
-              </ThemedText>
-            </Pressable>
-          ))}
-        </ThemedView>
-        <ThemedText themeColor="textSecondary" type="small">
-          {t('languageHelp')}
-        </ThemedText>
 
         {!ready ? (
           <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
         ) : user ? (
           <>
             <ThemedText>{t('signedInAs', { email: user.email ?? '' })}</ThemedText>
-            <Pressable style={styles.button} disabled={busy} onPress={() => run(() => signOut(auth))}>
-              <ThemedText type="smallBold">{t('signOut')}</ThemedText>
-            </Pressable>
 
-            <ThemedText type="smallBold">{t('displayName')}</ThemedText>
-            <DisplayNameField key={displayName} saved={displayName} disabled={!loaded} onSave={changeNickname} />
-            <ThemedText themeColor="textSecondary" type="small">
-              {t('displayNameHelp')}
-            </ThemedText>
+            {needsNickname ? (
+              // A new account (or an old one without a nickname): ask for it here, once.
+              <NicknameForm onSave={changeNickname} />
+            ) : (
+              <>
+                <ThemedText type="smallBold">{t('displayName')}</ThemedText>
+                <DisplayNameField key={displayName} saved={displayName} disabled={!loaded} onSave={changeNickname} />
+                <ThemedText themeColor="textSecondary" type="small">
+                  {t('displayNameHelp')}
+                </ThemedText>
+              </>
+            )}
 
             <ThemedText type="smallBold">{t('diet')}</ThemedText>
             <Pressable
@@ -268,6 +225,34 @@ export default function ProfileScreen() {
             <ThemedText themeColor="textSecondary" type="small">
               {t('guideNote')}
             </ThemedText>
+
+            {/* Sign out sits at the very end, in red, and asks before doing it. */}
+            <ThemedView style={[styles.divider, { backgroundColor: theme.backgroundSelected }]} />
+            {confirmingSignOut ? (
+              <ThemedView style={styles.signOutRow}>
+                <ThemedText type="small">{t('signOutAsk')}</ThemedText>
+                <Pressable
+                  style={[styles.button, styles.dangerButton]}
+                  disabled={busy}
+                  onPress={() => {
+                    setConfirmingSignOut(false);
+                    run(() => signOut(auth));
+                  }}>
+                  <ThemedText type="smallBold" style={styles.dangerText}>
+                    {t('signOutYes')}
+                  </ThemedText>
+                </Pressable>
+                <Pressable style={styles.button} onPress={() => setConfirmingSignOut(false)}>
+                  <ThemedText type="smallBold">{t('cancel')}</ThemedText>
+                </Pressable>
+              </ThemedView>
+            ) : (
+              <Pressable style={[styles.button, styles.dangerButton]} onPress={() => setConfirmingSignOut(true)}>
+                <ThemedText type="smallBold" style={styles.dangerText}>
+                  {t('signOut')}
+                </ThemedText>
+              </Pressable>
+            )}
           </>
         ) : (
           <>
@@ -292,16 +277,6 @@ export default function ProfileScreen() {
               value={password}
               onChangeText={setPassword}
             />
-            <TextInput
-              style={inputStyle}
-              placeholder={t('nicknameSignup')}
-              placeholderTextColor={theme.textSecondary}
-              maxLength={NICKNAME_MAX}
-              autoCapitalize="none"
-              autoCorrect={false}
-              value={nickname}
-              onChangeText={setNickname}
-            />
             <ThemedView style={styles.row}>
               <Pressable
                 style={styles.button}
@@ -312,7 +287,7 @@ export default function ProfileScreen() {
               <Pressable
                 style={styles.button}
                 disabled={busy}
-                onPress={createAccount}>
+                onPress={() => run(() => createUserWithEmailAndPassword(auth, email.trim(), password))}>
                 <ThemedText type="smallBold">{t('createAccount')}</ThemedText>
               </Pressable>
             </ThemedView>
@@ -335,7 +310,6 @@ const styles = StyleSheet.create({
   },
   content: { gap: Spacing.three, paddingBottom: BottomTabInset + Spacing.five },
   options: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two },
-  languageOption: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
   option: {
     alignSelf: 'flex-start',
     paddingVertical: 6,
@@ -344,6 +318,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(128,128,128,0.5)',
   },
+  divider: { height: 1, marginTop: Spacing.three },
+  signOutRow: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: Spacing.two },
+  dangerButton: { borderColor: '#D93025' },
+  dangerText: { color: '#D93025' },
   legend: { gap: Spacing.one },
   dot: { width: 12, height: 12, borderRadius: 6 },
   input: {
