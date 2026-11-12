@@ -18,6 +18,7 @@ import { ALLERGEN_ICONS, ALLERGEN_ORDER } from '@/data/warnings';
 import { useLanguage } from '@/i18n/language';
 import { useUserData } from '@/hooks/use-user-data';
 import { useTheme } from '@/hooks/use-theme';
+import { maskEmail } from '@/data/email';
 import { NICKNAME_MAX, cleanNickname, isValidNickname } from '@/data/nickname';
 import { claimNickname, type NicknameResult } from '@/data/nickname-store';
 import { useRecipes } from '@/hooks/use-recipes';
@@ -101,6 +102,7 @@ export default function ProfileScreen() {
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
   const [confirmingSignOut, setConfirmingSignOut] = useState(false);
+  const [showEmail, setShowEmail] = useState(false);
   const { profile, displayName, needsNickname, loaded, error: dataError, saveProfile, saveDisplayName } = useUserData(user?.uid ?? null);
 
   const { recipes } = useRecipes(user?.uid ?? null);
@@ -157,7 +159,15 @@ export default function ProfileScreen() {
           <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
         ) : user ? (
           <>
-            <ThemedText>{t('signedInAs', { email: user.email ?? '' })}</ThemedText>
+            {/* The email is hidden by default, in case someone else is looking at the screen. */}
+            <ThemedView style={styles.row}>
+              <ThemedText>
+                {t('signedInAs', { email: showEmail ? (user.email ?? '') : maskEmail(user.email ?? '') })}
+              </ThemedText>
+              <Pressable style={styles.option} onPress={() => setShowEmail(!showEmail)}>
+                <ThemedText type="small">{showEmail ? t('hide') : t('show')}</ThemedText>
+              </Pressable>
+            </ThemedView>
 
             {needsNickname ? (
               // A new account (or an old one without a nickname): ask for it here, once.
@@ -332,7 +342,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     fontSize: 16,
   },
-  row: { flexDirection: 'row', gap: Spacing.three, alignItems: 'center' },
+  row: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.three, alignItems: 'center' },
   nameInput: { flex: 1 },
   button: {
     alignSelf: 'flex-start',
