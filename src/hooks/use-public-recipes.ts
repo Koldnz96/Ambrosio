@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 
 import type { IngredientInput } from '@/components/recipe-form';
+import type { CopyInfo } from '@/data/repost';
 import { db } from '@/firebase';
 
 export type PublicRecipe = {
@@ -11,7 +12,7 @@ export type PublicRecipe = {
   name: string;
   ingredients: IngredientInput[];
   createdAtMs: number;
-};
+} & CopyInfo;
 
 // Every recipe that someone made public, newest first.
 export function usePublicRecipes(enabled: boolean) {
@@ -43,6 +44,9 @@ export function usePublicRecipes(enabled: boolean) {
               productId: ing.productId ?? null,
             })),
             createdAtMs: data.createdAt?.toMillis?.() ?? Date.now(),
+            copiedFrom: data.copiedFrom ?? '',
+            originalAuthor: data.originalAuthor ?? '',
+            originalSignature: data.originalSignature ?? '',
           };
         });
         list.sort((a, b) => b.createdAtMs - a.createdAtMs);

@@ -10,6 +10,7 @@ import { ThemedText } from '@/components/themed-text';
 import { WarningChips } from '@/components/warning-chips';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { repostOf } from '@/data/repost';
 import { recipeWarnings } from '@/data/warnings';
 import { db } from '@/firebase';
 import { useAuthUser } from '@/hooks/use-auth-user';
@@ -113,6 +114,7 @@ export default function MyRecipesScreen() {
                       <RecipeHeading
                         name={recipe.name}
                         author={recipe.visibility === 'public' ? displayName : undefined}
+                        original={repostOf(recipe) || undefined}
                         note={recipe.visibility === 'public' ? `🌍 ${t('public')}` : undefined}
                       />
                       <WarningChips warnings={recipeWarnings(recipe.ingredients, profile)} />
@@ -121,6 +123,11 @@ export default function MyRecipesScreen() {
                           {[ing.amount ?? '', ing.unit, ingredientLabel(ing)].filter((part) => part !== '').join(' ')}
                         </ThemedText>
                       ))}
+                      {recipe.originalAuthor ? (
+                        <ThemedText type="small" themeColor="textSecondary">
+                          {t(repostOf(recipe) ? 'copyUnchanged' : 'copyChanged', { original: recipe.originalAuthor })}
+                        </ThemedText>
+                      ) : null}
                       {recipe.visibility === 'public' ? null : (
                         <ThemedText type="small" themeColor="textSecondary">
                           🔒 {t('private')}

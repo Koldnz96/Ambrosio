@@ -10,6 +10,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { WarningChips } from '@/components/warning-chips';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { recipeSignature, repostOf, type CopyInfo } from '@/data/repost';
 import { recipeWarnings } from '@/data/warnings';
 import { db } from '@/firebase';
 import { useAuthUser } from '@/hooks/use-auth-user';
@@ -25,7 +26,22 @@ export default function DiscoverScreen() {
   const [copied, setCopied] = useState<Set<string>>(new Set()); // recipes copied in this visit
   const [error, setError] = useState('');
 
+  // Who wrote the original, and what it looked like. Copies made before this was saved
+  // on the recipe are worked out from the original, when it is still public.
+  function copyInfo(recipe: PublicRecipe): CopyInfo {
+    if (recipe.originalAuthor && recipe.originalSignature) return recipe;
+    const source = recipe.copiedFrom ? recipes.find((r) => r.id === recipe.copiedFrom) : undefined;
+    if (!source) return { copiedFrom: recipe.copiedFrom, originalAuthor: '', originalSignature: '' };
+    const sourceInfo = copyInfo(source);
+    return {
+      copiedFrom: recipe.copiedFrom,
+      originalAuthor: repostOf({ ...source, ...sourceInfo }) || source.authorName,
+      originalSignature: recipeSignature(source),
+    };
+  }
+
   // A copy is a new private recipe of your own. Changing it never changes the original.
+  // It remembers the original cook: copying a repost still credits the first cook.
   async function saveCopy(recipe: PublicRecipe) {
     if (!user) return;
     setError('');
@@ -36,6 +52,8 @@ export default function DiscoverScreen() {
         visibility: 'private',
         ingredients: recipe.ingredients,
         copiedFrom: recipe.id,
+        originalAuthor: repostOf({ ...recipe, ...copyInfo(recipe) }) || recipe.authorName,
+        originalSignature: recipeSignature(recipe),
         createdAt: serverTimestamp(),
       });
       setCopied((old) => new Set(old).add(recipe.id));
@@ -67,11 +85,13 @@ export default function DiscoverScreen() {
 
               {recipes.map((recipe) => {
                 const mine = recipe.ownerId === user.uid;
+                const original = repostOf({ ...recipe, ...copyInfo(recipe) });
                 return (
                   <ThemedView key={recipe.id} type="backgroundElement" style={styles.card}>
                     <RecipeHeading
                       name={recipe.name}
                       author={recipe.authorName || t('anonymousCook')}
+                      original={original || undefined}
                       note={mine ? t('yourRecipe') : undefined}
                     />
                     <WarningChips warnings={recipeWarnings(recipe.ingredients, profile)} />

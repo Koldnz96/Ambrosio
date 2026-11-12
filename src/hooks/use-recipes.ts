@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 
 import type { IngredientInput } from '@/components/recipe-form';
+import type { CopyInfo } from '@/data/repost';
 import { db } from '@/firebase';
 
 export type Recipe = {
@@ -11,7 +12,7 @@ export type Recipe = {
   authorName: string; // shown when the recipe is public (empty = anonymous)
   ingredients: IngredientInput[];
   createdAtMs: number;
-};
+} & CopyInfo;
 
 // This user's recipes, newest first. The list updates by itself when something is saved.
 export function useRecipes(uid: string | null) {
@@ -41,6 +42,9 @@ export function useRecipes(uid: string | null) {
               productId: ing.productId ?? null,
             })),
             createdAtMs: data.createdAt?.toMillis?.() ?? Date.now(),
+            copiedFrom: data.copiedFrom ?? '',
+            originalAuthor: data.originalAuthor ?? '',
+            originalSignature: data.originalSignature ?? '',
           };
         });
         list.sort((a, b) => b.createdAtMs - a.createdAtMs);

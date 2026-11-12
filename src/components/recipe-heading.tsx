@@ -9,26 +9,35 @@ export const NICKNAME_COLOR = '#E8590C';
 
 type Props = {
   name: string; // the recipe name: the biggest thing on the card
-  author?: string; // the cook's nickname (left out on private recipes)
-  note?: string; // small extra text after the nickname, for example "Your recipe"
+  author?: string; // nickname of the person who shared it (left out on private recipes)
+  original?: string; // set when it is an unchanged copy: nickname of the original cook
+  note?: string; // small extra text after the line, for example "Your recipe"
 };
 
-// The top of a recipe card: big recipe name, then "by NICKNAME" with the nickname in colour.
+// The top of a recipe card: big recipe name, then who made it, with nicknames in colour:
+//   "by NICKNAME"   or   "NICKNAME reposted a recipe by ORIGINAL"
 // (Later, the cook's photo of the dish can go right above this.)
-export function RecipeHeading({ name, author, note }: Props) {
+export function RecipeHeading({ name, author, original, note }: Props) {
   const { t } = useLanguage();
-  // "by {name}" is split around the name so only the nickname gets the colour.
-  const [before, after] = t('byAuthor', { name: '\u0000' }).split('\u0000');
+  // The sentence is split around the two names, so only the nicknames get the colour.
+  const A = '\u0000';
+  const B = '\u0001';
+  const sentence = original ? t('repostLine', { name: A, original: B }) : t('byAuthor', { name: A });
+  const parts = sentence.split(/(\u0000|\u0001)/);
   return (
     <ThemedView type="backgroundElement" style={styles.wrap}>
       <ThemedText style={styles.name}>{name}</ThemedText>
       {author ? (
         <ThemedText type="small" themeColor="textSecondary">
-          {before}
-          <ThemedText type="smallBold" style={styles.nickname}>
-            {author}
-          </ThemedText>
-          {after}
+          {parts.map((part, index) =>
+            part === A || part === B ? (
+              <ThemedText key={index} type="smallBold" style={styles.nickname}>
+                {part === A ? author : original}
+              </ThemedText>
+            ) : (
+              part
+            ),
+          )}
           {note ? ` · ${note}` : ''}
         </ThemedText>
       ) : null}
