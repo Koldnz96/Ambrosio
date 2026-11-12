@@ -1,85 +1,32 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { onAuthStateChanged, type User } from 'firebase/auth';
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  query,
-  serverTimestamp,
-  updateDoc,
-  where,
-} from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 
 import { RecipeForm, type IngredientInput, type RecipeInput } from '@/components/recipe-form';
 import { ThemedText } from '@/components/themed-text';
+import { WarningChips } from '@/components/warning-chips';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-import { auth, db } from '@/firebase';
-
-type Recipe = {
-  id: string;
-  name: string;
-  visibility: 'private' | 'public';
-  ingredients: IngredientInput[];
-  createdAtMs: number;
-};
+import { recipeWarnings } from '@/data/warnings';
+import { db } from '@/firebase';
+import { useAuthUser } from '@/hooks/use-auth-user';
+import { useRecipes } from '@/hooks/use-recipes';
+import { useUserData } from '@/hooks/use-user-data';
 
 function describeIngredient(ing: IngredientInput): string {
   return [ing.amount ?? '', ing.unit, ing.name].filter((part) => part !== '').join(' ');
 }
 
 export default function MyRecipesScreen() {
-  const [user, setUser] = useState<User | null>(null);
-  const [ready, setReady] = useState(false);
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [error, setError] = useState('');
+  const { user, ready } = useAuthUser();
+  const { recipes, error: recipesError } = useRecipes(user?.uid ?? null);
+  const { profile } = useUserData(user?.uid ?? null);
+  const [actionError, setActionError] = useState('');
+  const error = actionError || recipesError;
 
   const [editingId, setEditingId] = useState<string | null>(null); // recipe being edited
   const [confirmingId, setConfirmingId] = useState<string | null>(null); // recipe waiting for "Yes, delete"
-
-  // Know who is signed in.
-  useEffect(() => {
-    return onAuthStateChanged(auth, (nextUser) => {
-      setUser(nextUser);
-      setReady(true);
-    });
-  }, []);
-
-  // Listen to this user's recipes. The list updates by itself when something is saved.
-  useEffect(() => {
-    if (!user) {
-      setRecipes([]);
-      return;
-    }
-    const q = query(collection(db, 'recipes'), where('ownerId', '==', user.uid));
-    return onSnapshot(
-      q,
-      (snapshot) => {
-        const list: Recipe[] = snapshot.docs.map((d) => {
-          const data = d.data();
-          return {
-            id: d.id,
-            name: data.name ?? '',
-            visibility: data.visibility ?? 'private',
-            ingredients: (data.ingredients ?? []).map((ing: Partial<IngredientInput>) => ({
-              name: ing.name ?? '',
-              amount: ing.amount ?? null,
-              unit: ing.unit ?? '',
-              productId: ing.productId ?? null,
-            })),
-            createdAtMs: data.createdAt?.toMillis?.() ?? Date.now(),
-          };
-        });
-        list.sort((a, b) => b.createdAtMs - a.createdAtMs); // newest first
-        setRecipes(list);
-      },
-      (err) => setError(`Could not load recipes: ${err.message}`),
-    );
-  }, [user]);
 
   async function createRecipe(input: RecipeInput) {
     if (!user) return;
@@ -102,11 +49,11 @@ export default function MyRecipesScreen() {
   }
 
   async function deleteRecipe(id: string) {
-    setError('');
+    setActionError('');
     try {
       await deleteDoc(doc(db, 'recipes', id));
     } catch (err) {
-      setError(`Could not delete: ${(err as Error).message}`);
+      setActionError(`Could not delete: ${(err as Error).message}`);
     } finally {
       setConfirmingId(null);
     }
@@ -126,7 +73,7 @@ export default function MyRecipesScreen() {
             </ThemedText>
           ) : (
             <>
-              <RecipeForm title="New recipe" submitLabel="Save recipe" clearOnSave onSubmit={createRecipe} />
+              <RecipeForm title="New recipe" submitLabel="Save recipe" clearOnSave profile={profile} onSubmit={createRecipe} />
 
               {error ? <ThemedText type="small">{error}</ThemedText> : null}
 
@@ -142,12 +89,14 @@ export default function MyRecipesScreen() {
                       title="Edit recipe"
                       submitLabel="Save changes"
                       initial={{ name: recipe.name, ingredients: recipe.ingredients }}
+                      profile={profile}
                       onSubmit={(input) => updateRecipe(recipe.id, input)}
                       onCancel={() => setEditingId(null)}
                     />
                   ) : (
                     <ThemedView key={recipe.id} type="backgroundElement" style={styles.card}>
                       <ThemedText type="smallBold">{recipe.name}</ThemedText>
+                      <WarningChips warnings={recipeWarnings(recipe.ingredients, profile)} />
                       {recipe.ingredients.map((ing, index) => (
                         <ThemedText key={index} type="small" themeColor="textSecondary">
                           {describeIngredient(ing)}

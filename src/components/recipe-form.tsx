@@ -7,8 +7,10 @@ import { Pressable, StyleSheet, TextInput, type TextInputInstance } from 'react-
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { WarningChips } from '@/components/warning-chips';
 import { Spacing } from '@/constants/theme';
 import { CATEGORY_LABELS, getProduct, searchProducts, type Product } from '@/data/products';
+import { ALLERGEN_ICONS, EMPTY_PROFILE, ingredientWarnings, type Profile } from '@/data/warnings';
 import { useTheme } from '@/hooks/use-theme';
 
 export type IngredientInput = {
@@ -34,6 +36,13 @@ function nextKey(): number {
   return itemCounter;
 }
 
+// Tiny icons shown on a suggestion: the allergens (and vegan) that apply to this person.
+function suggestionIcons(productId: string, profile: Profile): string {
+  return ingredientWarnings(productId, profile)
+    .map((w) => (w.kind === 'allergen' ? ALLERGEN_ICONS[w.allergen] : w.kind === 'vegan' ? '🌱⚠️' : ''))
+    .join(' ');
+}
+
 function describe(ing: IngredientInput): string {
   return [ing.amount ?? '', ing.unit, ing.name].filter((part) => part !== '').join(' ');
 }
@@ -43,11 +52,12 @@ type Props = {
   submitLabel: string;
   initial?: RecipeInput;
   clearOnSave?: boolean; // true for "new recipe": empty the form after saving
+  profile?: Profile; // allergies and vegan: used to show warnings
   onSubmit: (input: RecipeInput) => Promise<void>;
   onCancel?: () => void;
 };
 
-export function RecipeForm({ title, submitLabel, initial, clearOnSave, onSubmit, onCancel }: Props) {
+export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile = EMPTY_PROFILE, onSubmit, onCancel }: Props) {
   const theme = useTheme();
   const [name, setName] = useState(initial?.name ?? '');
   const [items, setItems] = useState<Item[]>(() =>
@@ -196,7 +206,9 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, onSubmit,
       />
       {suggestions.map((p) => (
         <Pressable key={p.id} style={styles.suggestion} onPress={() => pickProduct(p)}>
-          <ThemedText type="small">{p.name}</ThemedText>
+          <ThemedText type="small">
+            {p.name} {suggestionIcons(p.id, profile)}
+          </ThemedText>
           <ThemedText type="small" themeColor="textSecondary">
             {CATEGORY_LABELS[p.category]}
           </ThemedText>
@@ -212,6 +224,7 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, onSubmit,
           {CATEGORY_LABELS[draftProduct.category]}
         </ThemedText>
       ) : null}
+      {draftProduct ? <WarningChips warnings={ingredientWarnings(draftProduct.id, profile)} /> : null}
       <ThemedView type="backgroundElement" style={styles.row}>
         <TextInput
           ref={amountRef}
@@ -245,9 +258,10 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, onSubmit,
       {/* The ingredients added so far: the list grows downward. */}
       {items.map((item) => (
         <ThemedView key={item.key} type="backgroundElement" style={styles.itemRow}>
-          <ThemedText type="small" style={styles.itemText}>
-            {describe(item)}
-          </ThemedText>
+          <ThemedView type="backgroundElement" style={styles.itemText}>
+            <ThemedText type="small">{describe(item)}</ThemedText>
+            <WarningChips warnings={ingredientWarnings(item.productId, profile)} />
+          </ThemedView>
           <Pressable style={styles.smallButton} onPress={() => editItem(item)}>
             <ThemedText type="smallBold">Edit</ThemedText>
           </Pressable>
@@ -295,7 +309,7 @@ const styles = StyleSheet.create({
   divider: { height: 1, marginTop: Spacing.four },
   footer: { flexDirection: 'row', justifyContent: 'flex-end', gap: Spacing.two, marginTop: Spacing.two },
   itemRow: { flexDirection: 'row', gap: Spacing.two, alignItems: 'center' },
-  itemText: { flex: 1 },
+  itemText: { flex: 1, gap: Spacing.one },
   amount: { flex: 1 },
   unit: { flex: 2 },
   button: {
