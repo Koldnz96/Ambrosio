@@ -3,6 +3,7 @@ import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { NicknameForm } from '@/components/nickname-form';
+import { RecipeHeading } from '@/components/recipe-heading';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { WarningChips } from '@/components/warning-chips';
@@ -71,7 +72,7 @@ export default function WeekScreen() {
                     return (
                       <ThemedView key={`${recipeId}-${index}`} type="backgroundElement" style={styles.itemRow}>
                         <ThemedView type="backgroundElement" style={styles.itemText}>
-                          <ThemedText type="small">{recipe ? recipe.name : t('recipeGone')}</ThemedText>
+                          <RecipeHeading name={recipe ? recipe.name : t('recipeGone')} />
                           {recipe ? <WarningChips warnings={recipeWarnings(recipe.ingredients, profile)} /> : null}
                         </ThemedView>
                         <Pressable style={styles.smallButton} onPress={() => removeRecipe(day, index)}>
@@ -88,7 +89,7 @@ export default function WeekScreen() {
                       </ThemedText>
                       {recipes.map((recipe) => (
                         <Pressable key={recipe.id} style={styles.pickRow} onPress={() => addRecipe(day, recipe.id)}>
-                          <ThemedText type="small">{recipe.name}</ThemedText>
+                          <RecipeHeading name={recipe.name} />
                           <WarningChips warnings={recipeWarnings(recipe.ingredients, profile)} />
                         </Pressable>
                       ))}
