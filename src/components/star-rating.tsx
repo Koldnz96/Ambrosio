@@ -13,11 +13,12 @@ type Props = {
   recipeId: string;
   uid: string;
   canRate: boolean; // false on your own recipe
+  compact?: boolean; // true: only the average, without the stars to tap (used on closed cards)
 };
 
 // Shows the average rating of a recipe and lets you give your own (one per person).
 // Ratings live in recipes/{recipeId}/ratings/{your user id}, so rating again just replaces yours.
-export function StarRating({ recipeId, uid, canRate }: Props) {
+export function StarRating({ recipeId, uid, canRate, compact }: Props) {
   const { t } = useLanguage();
   const [ratings, setRatings] = useState<Rating[]>([]);
   const [error, setError] = useState('');
@@ -53,7 +54,7 @@ export function StarRating({ recipeId, uid, canRate }: Props) {
             }`}
       </ThemedText>
 
-      {canRate ? (
+      {canRate && !compact ? (
         <ThemedView type="backgroundElement" style={styles.row}>
           <ThemedText type="small" themeColor="textSecondary">
             {summary.mine === null ? t('tapStar') : t('yourRating', { stars: summary.mine })}

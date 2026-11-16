@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { NicknameForm } from '@/components/nickname-form';
 import { ThemedText } from '@/components/themed-text';
+import { WelcomeCard } from '@/components/welcome-card';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { buildShoppingList, type Needed } from '@/data/shopping';
@@ -53,7 +54,10 @@ export default function ShoppingScreen() {
           {!ready ? (
             <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
           ) : !user ? (
-            <ThemedText themeColor="textSecondary">{t('shoppingSignIn')}</ThemedText>
+            <>
+              <ThemedText themeColor="textSecondary">{t('shoppingSignIn')}</ThemedText>
+              <WelcomeCard />
+            </>
           ) : needsNickname ? (
             <NicknameForm onSave={saveDisplayName} />
           ) : !loaded ? (

@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { NicknameForm } from '@/components/nickname-form';
 import { RecipeHeading } from '@/components/recipe-heading';
 import { ThemedText } from '@/components/themed-text';
+import { WelcomeCard } from '@/components/welcome-card';
 import { ThemedView } from '@/components/themed-view';
 import { WarningChips } from '@/components/warning-chips';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
@@ -39,7 +40,10 @@ export default function WeekScreen() {
           {!ready ? (
             <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
           ) : !user ? (
-            <ThemedText themeColor="textSecondary">{t('weekSignIn')}</ThemedText>
+            <>
+              <ThemedText themeColor="textSecondary">{t('weekSignIn')}</ThemedText>
+              <WelcomeCard />
+            </>
           ) : needsNickname ? (
             <NicknameForm onSave={saveDisplayName} />
           ) : (

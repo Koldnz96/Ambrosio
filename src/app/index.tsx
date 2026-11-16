@@ -8,6 +8,7 @@ import { Photo } from '@/components/photo';
 import { RecipeHeading } from '@/components/recipe-heading';
 import { RecipeForm, type IngredientInput, type RecipeInput } from '@/components/recipe-form';
 import { ThemedText } from '@/components/themed-text';
+import { WelcomeCard } from '@/components/welcome-card';
 import { WarningChips } from '@/components/warning-chips';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
@@ -103,9 +104,10 @@ export default function MyRecipesScreen() {
           {!ready ? (
             <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
           ) : !user ? (
-            <ThemedText themeColor="textSecondary">
-              {t('recipesSignIn')}
-            </ThemedText>
+            <>
+              <ThemedText themeColor="textSecondary">{t('recipesSignIn')}</ThemedText>
+              <WelcomeCard />
+            </>
           ) : needsNickname ? (
             <NicknameForm onSave={saveDisplayName} />
           ) : (

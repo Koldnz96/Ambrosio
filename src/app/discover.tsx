@@ -10,6 +10,7 @@ import { Photo } from '@/components/photo';
 import { RecipeHeading } from '@/components/recipe-heading';
 import { StarRating } from '@/components/star-rating';
 import { ThemedText } from '@/components/themed-text';
+import { WelcomeCard } from '@/components/welcome-card';
 import { ThemedView } from '@/components/themed-view';
 import { WarningChips } from '@/components/warning-chips';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
@@ -27,11 +28,12 @@ import { useLanguage } from '@/i18n/language';
 export default function DiscoverScreen() {
   const { t, ingredient: ingredientLabel } = useLanguage();
   const { user, ready } = useAuthUser();
-  const { recipes, loaded, error: loadError } = usePublicRecipes(user !== null);
+  const { recipes, loaded, error: loadError } = usePublicRecipes(ready);
   const { profile, displayName, needsNickname, hidden, saveHidden, saveDisplayName } = useUserData(user?.uid ?? null);
   const [copied, setCopied] = useState<Set<string>>(new Set()); // recipes copied in this visit
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
+  const [openIds, setOpenIds] = useState<Set<string>>(new Set()); // cards opened to show their details
   const theme = useTheme();
 
   // Who wrote the original, and what it looked like. Copies made before this was saved
@@ -74,6 +76,15 @@ export default function DiscoverScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recipes, search, user?.uid, ingredientLabel, hidden]);
 
+  function toggleOpen(id: string) {
+    setOpenIds((old) => {
+      const next = new Set(old);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
   // A copy is a new private recipe of your own. Changing it never changes the original.
   // It remembers the original cook: copying a repost still credits the first cook.
   async function saveCopy(recipe: PublicRecipe) {
@@ -106,7 +117,28 @@ export default function DiscoverScreen() {
           {!ready ? (
             <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
           ) : !user ? (
-            <ThemedText themeColor="textSecondary">{t('discoverSignIn')}</ThemedText>
+            <>
+              <ThemedText themeColor="textSecondary">{t('discoverSignIn')}</ThemedText>
+              <WelcomeCard />
+              {/* A read-only preview for visitors: no stars, comments or buttons. */}
+              {visible.length > 0 ? (
+                <>
+                  <ThemedText type="smallBold">{t('previewTitle')}</ThemedText>
+                  <ThemedView style={styles.grid}>
+                    {visible.slice(0, 12).map((recipe) => (
+                      <ThemedView key={recipe.id} type="backgroundElement" style={styles.card}>
+                        {recipe.photo ? <Photo photo={recipe.photo} /> : null}
+                        <RecipeHeading
+                          name={recipe.name}
+                          author={recipe.authorName || t('anonymousCook')}
+                          original={repostOf({ ...recipe, ...copyInfo(recipe) }) || undefined}
+                        />
+                      </ThemedView>
+                    ))}
+                  </ThemedView>
+                </>
+              ) : null}
+            </>
           ) : needsNickname ? (
             <NicknameForm onSave={saveDisplayName} />
           ) : (
@@ -134,6 +166,7 @@ export default function DiscoverScreen() {
               {visible.map((recipe) => {
                 const mine = recipe.ownerId === user.uid;
                 const original = repostOf({ ...recipe, ...copyInfo(recipe) });
+                const isOpen = openIds.has(recipe.id);
                 return (
                   <ThemedView key={recipe.id} type="backgroundElement" style={styles.card}>
                     {recipe.photo ? <Photo photo={recipe.photo} /> : null}
@@ -143,28 +176,38 @@ export default function DiscoverScreen() {
                       original={original || undefined}
                       note={mine ? t('yourRecipe') : undefined}
                     />
+                    <StarRating recipeId={recipe.id} uid={user.uid} canRate={!mine} compact={!isOpen} />
                     <WarningChips warnings={recipeWarnings(recipe.ingredients, profile)} />
-                    {recipe.ingredients.map((ing, index) => (
-                      <ThemedText key={index} type="small" themeColor="textSecondary">
-                        {[ing.amount ?? '', ing.unit, ingredientLabel(ing)].filter((part) => part !== '').join(' ')}
-                      </ThemedText>
-                    ))}
-                    <StarRating recipeId={recipe.id} uid={user.uid} canRate={!mine} />
-                    <Comments recipeId={recipe.id} recipeOwnerId={recipe.ownerId} uid={user.uid} nickname={displayName} />
-                    {mine ? null : (
-                      <ThemedView style={styles.buttonRow}>
-                        {copied.has(recipe.id) ? (
-                          <ThemedText type="small">{t('copySaved')}</ThemedText>
-                        ) : (
-                          <Pressable style={styles.smallButton} onPress={() => saveCopy(recipe)}>
-                            <ThemedText type="smallBold">{t('saveCopy')}</ThemedText>
-                          </Pressable>
-                        )}
+
+                    <ThemedView style={styles.buttonRow}>
+                      <Pressable style={styles.smallButton} onPress={() => toggleOpen(recipe.id)}>
+                        <ThemedText type="smallBold">{isOpen ? t('hideDetails') : t('showDetails')}</ThemedText>
+                      </Pressable>
+                      {mine ? null : copied.has(recipe.id) ? (
+                        <ThemedText type="small">{t('copySaved')}</ThemedText>
+                      ) : (
+                        <Pressable style={styles.smallButton} onPress={() => saveCopy(recipe)}>
+                          <ThemedText type="smallBold">{t('saveCopy')}</ThemedText>
+                        </Pressable>
+                      )}
+                      {mine ? null : (
                         <Pressable style={styles.smallButton} onPress={() => saveHidden(hideRecipe(hidden, recipe.id))}>
                           <ThemedText type="smallBold">{t('notInterested')}</ThemedText>
                         </Pressable>
-                      </ThemedView>
-                    )}
+                      )}
+                    </ThemedView>
+
+                    {/* The ingredients and comments only appear (and only load) when the card is open. */}
+                    {isOpen ? (
+                      <>
+                        {recipe.ingredients.map((ing, index) => (
+                          <ThemedText key={index} type="small" themeColor="textSecondary">
+                            {[ing.amount ?? '', ing.unit, ingredientLabel(ing)].filter((part) => part !== '').join(' ')}
+                          </ThemedText>
+                        ))}
+                        <Comments recipeId={recipe.id} recipeOwnerId={recipe.ownerId} uid={user.uid} nickname={displayName} />
+                      </>
+                    ) : null}
                   </ThemedView>
                 );
               })}
