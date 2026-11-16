@@ -9,7 +9,9 @@ import {
   type User,
 } from 'firebase/auth';
 
+import { HiddenRecipes } from '@/components/hidden-recipes';
 import { NicknameForm } from '@/components/nickname-form';
+import { PublishStarterRecipes } from '@/components/publish-starter-recipes';
 import { LEVEL_COLORS } from '@/components/warning-chips';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -19,7 +21,7 @@ import { useLanguage } from '@/i18n/language';
 import { useUserData } from '@/hooks/use-user-data';
 import { useTheme } from '@/hooks/use-theme';
 import { maskEmail } from '@/data/email';
-import { NICKNAME_MAX, cleanNickname, isValidNickname } from '@/data/nickname';
+import { NICKNAME_MAX, cleanNickname, isValidNickname, nicknameKey } from '@/data/nickname';
 import { claimNickname, type NicknameResult } from '@/data/nickname-store';
 import { useRecipes } from '@/hooks/use-recipes';
 import { useSyncAuthorName } from '@/hooks/use-sync-author-name';
@@ -235,6 +237,13 @@ export default function ProfileScreen() {
             <ThemedText themeColor="textSecondary" type="small">
               {t('guideNote')}
             </ThemedText>
+
+            {user ? <HiddenRecipes uid={user.uid} /> : null}
+
+            {/* TEMPORARY: only the Ambrosio account sees this. Remove after publishing. */}
+            {user && displayName && nicknameKey(displayName) === 'ambrosio' ? (
+              <PublishStarterRecipes uid={user.uid} authorName={displayName} existing={recipes.map((r) => ({ id: r.id, name: r.name, ingredientNames: r.ingredients.map((i) => i.name) }))} />
+            ) : null}
 
             {/* Sign out sits at the very end, in red, and asks before doing it. */}
             <ThemedView style={[styles.divider, { backgroundColor: theme.backgroundSelected }]} />

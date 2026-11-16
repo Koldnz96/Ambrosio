@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 
 import { Comments } from '@/components/comments';
+import { HiddenRecipes } from '@/components/hidden-recipes';
 import { NicknameForm } from '@/components/nickname-form';
 import { Photo } from '@/components/photo';
 import { RecipeHeading } from '@/components/recipe-heading';
@@ -13,6 +14,7 @@ import { ThemedView } from '@/components/themed-view';
 import { WarningChips } from '@/components/warning-chips';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { hideRecipe, splitByHidden } from '@/data/hidden';
 import { normalize } from '@/data/products';
 import { hideDuplicateReposts, recipeSignature, repostOf, type CopyInfo } from '@/data/repost';
 import { recipeWarnings } from '@/data/warnings';
@@ -26,7 +28,7 @@ export default function DiscoverScreen() {
   const { t, ingredient: ingredientLabel } = useLanguage();
   const { user, ready } = useAuthUser();
   const { recipes, loaded, error: loadError } = usePublicRecipes(user !== null);
-  const { profile, displayName, needsNickname, saveDisplayName } = useUserData(user?.uid ?? null);
+  const { profile, displayName, needsNickname, hidden, saveHidden, saveDisplayName } = useUserData(user?.uid ?? null);
   const [copied, setCopied] = useState<Set<string>>(new Set()); // recipes copied in this visit
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
@@ -46,14 +48,16 @@ export default function DiscoverScreen() {
     };
   }
 
-  // No double listings, then the search filter (name, cook, ingredients; accents and capitals ignored).
+  // No double listings, then the recipes you are not interested in, then the search filter
+  // (name, cook, ingredients; accents and capitals ignored).
   const visible = useMemo(() => {
     const myId = user?.uid ?? '';
-    const single = hideDuplicateReposts(
+    const noDuplicates = hideDuplicateReposts(
       recipes,
       (recipe) => repostOf({ ...recipe, ...copyInfo(recipe) }) !== '',
       myId,
     );
+    const single = splitByHidden(noDuplicates, hidden).visible;
     const words = normalize(search).split(/\s+/).filter(Boolean);
     if (words.length === 0) return single;
     return single.filter((recipe) => {
@@ -68,7 +72,7 @@ export default function DiscoverScreen() {
       return words.every((word) => text.includes(word));
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [recipes, search, user?.uid, ingredientLabel]);
+  }, [recipes, search, user?.uid, ingredientLabel, hidden]);
 
   // A copy is a new private recipe of your own. Changing it never changes the original.
   // It remembers the original cook: copying a repost still credits the first cook.
@@ -147,17 +151,26 @@ export default function DiscoverScreen() {
                     ))}
                     <StarRating recipeId={recipe.id} uid={user.uid} canRate={!mine} />
                     <Comments recipeId={recipe.id} recipeOwnerId={recipe.ownerId} uid={user.uid} nickname={displayName} />
-                    {mine ? null : copied.has(recipe.id) ? (
-                      <ThemedText type="small">{t('copySaved')}</ThemedText>
-                    ) : (
-                      <Pressable style={styles.smallButton} onPress={() => saveCopy(recipe)}>
-                        <ThemedText type="smallBold">{t('saveCopy')}</ThemedText>
-                      </Pressable>
+                    {mine ? null : (
+                      <ThemedView style={styles.buttonRow}>
+                        {copied.has(recipe.id) ? (
+                          <ThemedText type="small">{t('copySaved')}</ThemedText>
+                        ) : (
+                          <Pressable style={styles.smallButton} onPress={() => saveCopy(recipe)}>
+                            <ThemedText type="smallBold">{t('saveCopy')}</ThemedText>
+                          </Pressable>
+                        )}
+                        <Pressable style={styles.smallButton} onPress={() => saveHidden(hideRecipe(hidden, recipe.id))}>
+                          <ThemedText type="smallBold">{t('notInterested')}</ThemedText>
+                        </Pressable>
+                      </ThemedView>
                     )}
                   </ThemedView>
                 );
               })}
               </ThemedView>
+
+              <HiddenRecipes uid={user.uid} />
             </>
           )}
         </ScrollView>
@@ -185,6 +198,7 @@ const styles = StyleSheet.create({
     maxWidth: 520,
   },
   card: { padding: Spacing.three, borderRadius: Spacing.three, gap: Spacing.one, flexGrow: 1, flexBasis: 320, maxWidth: 520 },
+  buttonRow: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: Spacing.two, marginTop: Spacing.one },
   smallButton: {
     alignSelf: 'flex-start',
     paddingVertical: 4,

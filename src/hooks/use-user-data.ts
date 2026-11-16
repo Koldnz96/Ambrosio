@@ -18,6 +18,7 @@ export function useUserData(uid: string | null) {
   const [profile, setProfile] = useState<Profile>(EMPTY_PROFILE);
   const [week, setWeek] = useState<Week>(EMPTY_WEEK);
   const [displayName, setDisplayName] = useState('');
+  const [hidden, setHidden] = useState<string[]>([]); // ids of public recipes marked "not interested"
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState<{ kind: 'load' | 'save'; message: string } | null>(null);
 
@@ -26,6 +27,7 @@ export function useUserData(uid: string | null) {
       setProfile(EMPTY_PROFILE);
       setWeek(EMPTY_WEEK);
       setDisplayName('');
+      setHidden([]);
       setLoaded(false);
       return;
     }
@@ -46,6 +48,7 @@ export function useUserData(uid: string | null) {
         }
         setWeek(nextWeek);
         setDisplayName(typeof data.displayName === 'string' ? data.displayName : '');
+        setHidden(Array.isArray(data.hidden) ? data.hidden.filter((id: unknown) => typeof id === 'string') : []);
         setLoaded(true);
       },
       (err) => setError({ kind: 'load', message: err.message }),
@@ -67,6 +70,7 @@ export function useUserData(uid: string | null) {
 
   const saveProfile = useCallback((next: Profile) => save({ allergies: next.allergies, vegan: next.vegan }), [save]);
   const saveWeek = useCallback((next: Week) => save({ week: next }), [save]);
+  const saveHidden = useCallback((next: string[]) => save({ hidden: next }), [save]);
 
   // Nicknames are unique: this fails with reason "taken" when someone else has it.
   const saveDisplayName = useCallback(
@@ -80,5 +84,5 @@ export function useUserData(uid: string | null) {
   // Signed in, settings loaded, and still no nickname: the screens ask for one first.
   const needsNickname = uid !== null && loaded && displayName === '';
 
-  return { profile, week, displayName, needsNickname, loaded, error, saveProfile, saveWeek, saveDisplayName };
+    return { profile, week, displayName, needsNickname, loaded, error, hidden, saveProfile, saveWeek, saveHidden, saveDisplayName };
 }
