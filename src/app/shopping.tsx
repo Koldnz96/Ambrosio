@@ -1,12 +1,13 @@
 import { useMemo, useState } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Pressable, StyleSheet } from 'react-native';
 
 import { NicknameForm } from '@/components/nickname-form';
+import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { WelcomeCard } from '@/components/welcome-card';
 import { ThemedView } from '@/components/themed-view';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
+import { Layout } from '@/constants/layout';
 import { buildShoppingList, type Needed } from '@/data/shopping';
 import { useAuthUser } from '@/hooks/use-auth-user';
 import { useRecipes } from '@/hooks/use-recipes';
@@ -46,81 +47,61 @@ export default function ShoppingScreen() {
   }
 
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView contentContainerStyle={styles.content}>
-          <ThemedText type="subtitle">{t('shoppingTitle')}</ThemedText>
+    <Screen title={t('shoppingTitle')}>
+      {!ready ? (
+        <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
+      ) : !user ? (
+        <>
+          <ThemedText themeColor="textSecondary">{t('shoppingSignIn')}</ThemedText>
+          <WelcomeCard />
+        </>
+      ) : needsNickname ? (
+        <NicknameForm onSave={saveDisplayName} />
+      ) : !loaded ? (
+        <ThemedText themeColor="textSecondary">{t('loadingPlan')}</ThemedText>
+      ) : recipeCount === 0 ? (
+        <ThemedText themeColor="textSecondary">
+          {t('nothingToBuy')}
+        </ThemedText>
+      ) : (
+        <>
+          <ThemedText themeColor="textSecondary">
+            {recipeCount === 1 ? t('fromRecipesOne') : t('fromRecipesMany', { count: recipeCount })}
+          </ThemedText>
+          {ticked.size > 0 ? (
+            <Pressable style={Layout.smallButton} onPress={() => setTicked(new Set())}>
+              <ThemedText type="smallBold">{t('clearTicks')}</ThemedText>
+            </Pressable>
+          ) : null}
 
-          {!ready ? (
-            <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
-          ) : !user ? (
-            <>
-              <ThemedText themeColor="textSecondary">{t('shoppingSignIn')}</ThemedText>
-              <WelcomeCard />
-            </>
-          ) : needsNickname ? (
-            <NicknameForm onSave={saveDisplayName} />
-          ) : !loaded ? (
-            <ThemedText themeColor="textSecondary">{t('loadingPlan')}</ThemedText>
-          ) : recipeCount === 0 ? (
-            <ThemedText themeColor="textSecondary">
-              {t('nothingToBuy')}
-            </ThemedText>
-          ) : (
-            <>
-              <ThemedText themeColor="textSecondary">
-                {recipeCount === 1 ? t('fromRecipesOne') : t('fromRecipesMany', { count: recipeCount })}
-              </ThemedText>
-              {ticked.size > 0 ? (
-                <Pressable style={styles.smallButton} onPress={() => setTicked(new Set())}>
-                  <ThemedText type="smallBold">{t('clearTicks')}</ThemedText>
-                </Pressable>
-              ) : null}
-
-              {groups.map((group) => (
-                <ThemedView key={group.category} type="backgroundElement" style={styles.card}>
-                  <ThemedText type="smallBold">
-                    {group.category === 'other' ? t('categoryOther') : categoryName(group.category)}
-                  </ThemedText>
-                  {group.items.map((item) => {
-                    const done = ticked.has(item.key);
-                    return (
-                      <Pressable key={item.key} style={styles.itemRow} onPress={() => toggle(item.key)}>
-                        <ThemedText type="small" themeColor={done ? 'textSecondary' : 'text'}>
-                          {done ? '☑' : '☐'} {item.productId && getProduct(item.productId) ? productLabel(getProduct(item.productId)!) : item.name}
-                        </ThemedText>
-                        <ThemedText type="small" themeColor="textSecondary">
-                          {item.quantities.length > 0 ? item.quantities.join(' + ') : t('quantitySome')}
-                        </ThemedText>
-                      </Pressable>
-                    );
-                  })}
-                </ThemedView>
-              ))}
-            </>
-          )}
-        </ScrollView>
-      </SafeAreaView>
-    </ThemedView>
+          <ThemedView style={Layout.grid}>
+            {groups.map((group) => (
+              <ThemedView key={group.category} type="backgroundElement" style={Layout.card}>
+                <ThemedText type="smallBold">
+                  {group.category === 'other' ? t('categoryOther') : categoryName(group.category)}
+                </ThemedText>
+                {group.items.map((item) => {
+                  const done = ticked.has(item.key);
+                  return (
+                    <Pressable key={item.key} style={styles.itemRow} onPress={() => toggle(item.key)}>
+                      <ThemedText type="small" themeColor={done ? 'textSecondary' : 'text'}>
+                        {done ? '☑' : '☐'} {item.productId && getProduct(item.productId) ? productLabel(getProduct(item.productId)!) : item.name}
+                      </ThemedText>
+                      <ThemedText type="small" themeColor="textSecondary">
+                        {item.quantities.length > 0 ? item.quantities.join(' + ') : t('quantitySome')}
+                      </ThemedText>
+                    </Pressable>
+                  );
+                })}
+              </ThemedView>
+            ))}
+          </ThemedView>
+        </>
+      )}
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, flexDirection: 'row', justifyContent: 'center' },
-  safeArea: {
-    flex: 1,
-    maxWidth: MaxContentWidth,
-    paddingHorizontal: Spacing.four,
-    paddingTop: Platform.OS === 'web' ? 96 : Spacing.five,
-  },
-  content: { gap: Spacing.three, paddingBottom: BottomTabInset + Spacing.five },
-  card: { padding: Spacing.three, borderRadius: Spacing.three, gap: Spacing.two, maxWidth: 520 },
   itemRow: { flexDirection: 'row', justifyContent: 'space-between', gap: Spacing.two, paddingVertical: 2 },
-  smallButton: {
-    alignSelf: 'flex-start',
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderRadius: 10,
-    borderWidth: 1,
-  },
 });

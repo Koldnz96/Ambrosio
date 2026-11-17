@@ -2,17 +2,18 @@
 // It skips any recipe the account already has, so a second click cannot make duplicates.
 // Remove this file (and its line in profile.tsx) after the recipes are published.
 import { useState } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable } from 'react-native';
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
+import { Layout } from '@/constants/layout';
 import { PRODUCTS } from '@/data/products';
 import { SEED_RECIPES, type SeedRecipe } from '@/data/seed-recipes';
+import { SEED_STEPS } from '@/data/seed-steps';
 import { db } from '@/firebase';
 
-type Props = { uid: string; authorName: string; existing: { id: string; name: string; ingredientNames: string[] }[] };
+type Props = { uid: string; authorName: string; existing: { id: string; name: string; ingredientNames: string[]; steps: string[] }[] };
 
 // The first version was published with these English names. They are fixed to the Portuguese ones.
 const OLD_NAMES: Record<string, string> = {
@@ -50,7 +51,9 @@ export function PublishStarterRecipes({ uid, authorName, existing }: Props) {
   const toFix = existing.filter((r) => {
     if (r.name in OLD_NAMES) return true;
     const recipe = seedByName.get(key(r.name));
-    return recipe ? buildIngredients(recipe).map((i) => i.name).join('|') !== r.ingredientNames.join('|') : false;
+    if (!recipe) return false;
+    const stepsDiffer = (SEED_STEPS[recipe.name] ?? []).join('|') !== r.steps.join('|');
+    return stepsDiffer || buildIngredients(recipe).map((i) => i.name).join('|') !== r.ingredientNames.join('|');
   });
 
   async function publish() {
@@ -66,6 +69,7 @@ export function PublishStarterRecipes({ uid, authorName, existing }: Props) {
         await updateDoc(doc(db, 'recipes', old.id), {
           name: recipe.name,
           ingredients: buildIngredients(recipe),
+          steps: SEED_STEPS[recipe.name] ?? [],
           updatedAt: serverTimestamp(),
         });
         fixed += 1;
@@ -77,6 +81,7 @@ export function PublishStarterRecipes({ uid, authorName, existing }: Props) {
           visibility: 'public',
           authorName,
           ingredients: buildIngredients(recipe),
+          steps: SEED_STEPS[recipe.name] ?? [],
           photo: '',
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
@@ -92,7 +97,7 @@ export function PublishStarterRecipes({ uid, authorName, existing }: Props) {
   }
 
   return (
-    <ThemedView type="backgroundElement" style={styles.card}>
+    <ThemedView type="backgroundElement" style={Layout.card}>
       <ThemedText type="smallBold">Starter recipes (temporary)</ThemedText>
       <ThemedText type="small" themeColor="textSecondary">
         {missing.length === 0 && toFix.length === 0
@@ -100,16 +105,11 @@ export function PublishStarterRecipes({ uid, authorName, existing }: Props) {
           : `${missing.length} to publish, ${toFix.length} to fix (names in Portuguese).`}
       </ThemedText>
       {missing.length > 0 || toFix.length > 0 ? (
-        <Pressable style={styles.button} disabled={busy} onPress={publish}>
-          <ThemedText type="smallBold">{busy ? 'Working...' : 'Publish and fix names'}</ThemedText>
+        <Pressable style={Layout.smallButton} disabled={busy} onPress={publish}>
+          <ThemedText type="smallBold">{busy ? 'Working...' : 'Publish and fix recipes'}</ThemedText>
         </Pressable>
       ) : null}
       {message ? <ThemedText type="small">{message}</ThemedText> : null}
     </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  card: { padding: Spacing.three, borderRadius: Spacing.three, gap: Spacing.two, maxWidth: 520 },
-  button: { alignSelf: 'flex-start', paddingVertical: 6, paddingHorizontal: 12, borderRadius: 10, borderWidth: 1 },
-});

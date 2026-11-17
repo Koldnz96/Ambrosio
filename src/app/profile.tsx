@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Pressable, StyleSheet, TextInput } from 'react-native';
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -13,9 +12,11 @@ import { HiddenRecipes } from '@/components/hidden-recipes';
 import { NicknameForm } from '@/components/nickname-form';
 import { PublishStarterRecipes } from '@/components/publish-starter-recipes';
 import { LEVEL_COLORS } from '@/components/warning-chips';
+import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
+import { Layout } from '@/constants/layout';
 import { ALLERGEN_ICONS, ALLERGEN_ORDER } from '@/data/warnings';
 import { useLanguage } from '@/i18n/language';
 import { useUserData } from '@/hooks/use-user-data';
@@ -84,7 +85,7 @@ function DisplayNameField(props: { saved: string; disabled: boolean; onSave: (na
           onSubmitEditing={submit}
         />
         {changed ? (
-          <Pressable style={styles.button} disabled={props.disabled} onPress={submit}>
+          <Pressable style={Layout.button} disabled={props.disabled} onPress={submit}>
             <ThemedText type="smallBold">{t('saveChanges')}</ThemedText>
           </Pressable>
         ) : null}
@@ -151,184 +152,178 @@ export default function ProfileScreen() {
   const inputStyle = [styles.input, { color: theme.text, borderColor: theme.backgroundSelected }];
 
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <ThemedText type="subtitle">{t('profileTitle')}</ThemedText>
-
-
-        {!ready ? (
-          <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
-        ) : user ? (
-          <>
-            {/* The email is hidden by default, in case someone else is looking at the screen. */}
-            <ThemedView style={styles.row}>
-              <ThemedText>
-                {t('signedInAs', { email: showEmail ? (user.email ?? '') : maskEmail(user.email ?? '') })}
-              </ThemedText>
-              <Pressable style={styles.option} onPress={() => setShowEmail(!showEmail)}>
-                <ThemedText type="small">{showEmail ? t('hide') : t('show')}</ThemedText>
-              </Pressable>
-            </ThemedView>
-
-            {needsNickname ? (
-              // A new account (or an old one without a nickname): ask for it here, once.
-              <NicknameForm onSave={changeNickname} />
-            ) : (
-              <>
-                <ThemedText type="smallBold">{t('displayName')}</ThemedText>
-                <DisplayNameField key={displayName} saved={displayName} disabled={!loaded} onSave={changeNickname} />
-                <ThemedText themeColor="textSecondary" type="small">
-                  {t('displayNameHelp')}
+    <Screen title={t('profileTitle')}>
+      {!ready ? (
+        <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
+      ) : user ? (
+        <>
+          <ThemedView style={Layout.grid}>
+            <ThemedView type="backgroundElement" style={Layout.card}>
+              {/* The email is hidden by default, in case someone else is looking at the screen. */}
+              <ThemedView style={styles.row}>
+                <ThemedText>
+                  {t('signedInAs', { email: showEmail ? (user.email ?? '') : maskEmail(user.email ?? '') })}
                 </ThemedText>
-              </>
-            )}
+                <Pressable style={styles.option} onPress={() => setShowEmail(!showEmail)}>
+                  <ThemedText type="small">{showEmail ? t('hide') : t('show')}</ThemedText>
+                </Pressable>
+              </ThemedView>
 
-            <ThemedText type="smallBold">{t('diet')}</ThemedText>
-            <Pressable
-              disabled={!loaded}
-              onPress={() => saveProfile({ ...profile, vegan: !profile.vegan })}
-              style={[styles.option, profile.vegan && { backgroundColor: theme.backgroundSelected }]}>
-              <ThemedText type={profile.vegan ? 'smallBold' : 'small'}>
-                {profile.vegan ? '✓ ' : ''}🌱 {t('imVegan')}
-              </ThemedText>
-            </Pressable>
+              {needsNickname ? (
+                // A new account (or an old one without a nickname): ask for it here, once.
+                <NicknameForm onSave={changeNickname} />
+              ) : (
+                <>
+                  <ThemedText type="smallBold">{t('displayName')}</ThemedText>
+                  <DisplayNameField key={displayName} saved={displayName} disabled={!loaded} onSave={changeNickname} />
+                  <ThemedText themeColor="textSecondary" type="small">
+                    {t('displayNameHelp')}
+                  </ThemedText>
+                </>
+              )}
 
-            <ThemedText type="smallBold">{t('myAllergies')}</ThemedText>
-            <ThemedText themeColor="textSecondary" type="small">
-              {t('allergiesHelp')}
-            </ThemedText>
-            <ThemedView style={styles.options}>
-              {ALLERGEN_ORDER.map((allergen) => {
-                const on = profile.allergies.includes(allergen);
-                return (
-                  <Pressable
-                    key={allergen}
-                    disabled={!loaded}
-                    onPress={() => toggleAllergy(allergen)}
-                    style={[styles.option, on && { backgroundColor: theme.backgroundSelected }]}>
-                    <ThemedText type={on ? 'smallBold' : 'small'}>
-                      {on ? '✓ ' : ''}
-                      {ALLERGEN_ICONS[allergen]} {allergenName(allergen)}
-                    </ThemedText>
-                  </Pressable>
-                );
-              })}
             </ThemedView>
-            {dataError ? (
-              <ThemedText type="small">
-                {t(dataError.kind === 'load' ? 'errLoadSettings' : 'errSave', { message: dataError.message })}
+            <ThemedView type="backgroundElement" style={Layout.card}>
+              <ThemedText type="smallBold">{t('diet')}</ThemedText>
+              <Pressable
+                disabled={!loaded}
+                onPress={() => saveProfile({ ...profile, vegan: !profile.vegan })}
+                style={[styles.option, profile.vegan && { backgroundColor: theme.backgroundSelected }]}>
+                <ThemedText type={profile.vegan ? 'smallBold' : 'small'}>
+                  {profile.vegan ? '✓ ' : ''}🌱 {t('imVegan')}
+                </ThemedText>
+              </Pressable>
+
+              <ThemedText type="smallBold">{t('myAllergies')}</ThemedText>
+              <ThemedText themeColor="textSecondary" type="small">
+                {t('allergiesHelp')}
               </ThemedText>
-            ) : null}
+              <ThemedView style={styles.options}>
+                {ALLERGEN_ORDER.map((allergen) => {
+                  const on = profile.allergies.includes(allergen);
+                  return (
+                    <Pressable
+                      key={allergen}
+                      disabled={!loaded}
+                      onPress={() => toggleAllergy(allergen)}
+                      style={[styles.option, on && { backgroundColor: theme.backgroundSelected }]}>
+                      <ThemedText type={on ? 'smallBold' : 'small'}>
+                        {on ? '✓ ' : ''}
+                        {ALLERGEN_ICONS[allergen]} {allergenName(allergen)}
+                      </ThemedText>
+                    </Pressable>
+                  );
+                })}
+              </ThemedView>
+              {dataError ? (
+                <ThemedText type="small">
+                  {t(dataError.kind === 'load' ? 'errLoadSettings' : 'errSave', { message: dataError.message })}
+                </ThemedText>
+              ) : null}
 
-            <ThemedText type="smallBold">{t('legendTitle')}</ThemedText>
-            <ThemedView style={styles.legend}>
-              {([
-                ['contains', t('legendContains')],
-                ['may', t('legendMay')],
-                ['unchecked', t('legendUnchecked')],
-              ] as const).map(([level, text]) => (
-                <ThemedView key={level} style={styles.row}>
-                  <ThemedView style={[styles.dot, { backgroundColor: LEVEL_COLORS[level].border }]} />
-                  <ThemedText type="small">{text}</ThemedText>
-                </ThemedView>
-              ))}
             </ThemedView>
-            <ThemedText themeColor="textSecondary" type="small">
-              {t('guideNote')}
-            </ThemedText>
+            <ThemedView type="backgroundElement" style={Layout.card}>
+              <ThemedText type="smallBold">{t('legendTitle')}</ThemedText>
+              <ThemedView style={styles.legend}>
+                {([
+                  ['contains', t('legendContains')],
+                  ['may', t('legendMay')],
+                  ['unchecked', t('legendUnchecked')],
+                ] as const).map(([level, text]) => (
+                  <ThemedView key={level} style={styles.row}>
+                    <ThemedView style={[styles.dot, { backgroundColor: LEVEL_COLORS[level].border }]} />
+                    <ThemedText type="small">{text}</ThemedText>
+                  </ThemedView>
+                ))}
+              </ThemedView>
+              <ThemedText themeColor="textSecondary" type="small">
+                {t('guideNote')}
+              </ThemedText>
 
+            </ThemedView>
             {user ? <HiddenRecipes uid={user.uid} /> : null}
 
             {/* TEMPORARY: only the Ambrosio account sees this. Remove after publishing. */}
             {user && displayName && nicknameKey(displayName) === 'ambrosio' ? (
-              <PublishStarterRecipes uid={user.uid} authorName={displayName} existing={recipes.map((r) => ({ id: r.id, name: r.name, ingredientNames: r.ingredients.map((i) => i.name) }))} />
+              <PublishStarterRecipes uid={user.uid} authorName={displayName} existing={recipes.map((r) => ({ id: r.id, name: r.name, ingredientNames: r.ingredients.map((i) => i.name), steps: r.steps }))} />
             ) : null}
 
-            {/* Sign out sits at the very end, in red, and asks before doing it. */}
-            <ThemedView style={[styles.divider, { backgroundColor: theme.backgroundSelected }]} />
-            {confirmingSignOut ? (
-              <ThemedView style={styles.signOutRow}>
-                <ThemedText type="small">{t('signOutAsk')}</ThemedText>
-                <Pressable
-                  style={[styles.button, styles.dangerButton]}
-                  disabled={busy}
-                  onPress={() => {
-                    setConfirmingSignOut(false);
-                    run(() => signOut(auth));
-                  }}>
-                  <ThemedText type="smallBold" style={styles.dangerText}>
-                    {t('signOutYes')}
-                  </ThemedText>
-                </Pressable>
-                <Pressable style={styles.button} onPress={() => setConfirmingSignOut(false)}>
-                  <ThemedText type="smallBold">{t('cancel')}</ThemedText>
-                </Pressable>
-              </ThemedView>
-            ) : (
-              <Pressable style={[styles.button, styles.dangerButton]} onPress={() => setConfirmingSignOut(true)}>
+          </ThemedView>
+
+          {/* Sign out sits at the very end, in red, and asks before doing it. */}
+          <ThemedView style={[styles.divider, { backgroundColor: theme.backgroundSelected }]} />
+          {confirmingSignOut ? (
+            <ThemedView style={styles.signOutRow}>
+              <ThemedText type="small">{t('signOutAsk')}</ThemedText>
+              <Pressable
+                style={[Layout.button, styles.dangerButton]}
+                disabled={busy}
+                onPress={() => {
+                  setConfirmingSignOut(false);
+                  run(() => signOut(auth));
+                }}>
                 <ThemedText type="smallBold" style={styles.dangerText}>
-                  {t('signOut')}
+                  {t('signOutYes')}
                 </ThemedText>
               </Pressable>
-            )}
-          </>
-        ) : (
-          <>
-            <ThemedText themeColor="textSecondary">
-              {t('signInPrompt')}
-            </ThemedText>
-            <TextInput
-              style={inputStyle}
-              placeholder={t('emailPlaceholder')}
-              placeholderTextColor={theme.textSecondary}
-              autoCapitalize="none"
-              autoCorrect={false}
-              keyboardType="email-address"
-              value={email}
-              onChangeText={setEmail}
-            />
-            <TextInput
-              style={inputStyle}
-              placeholder={t('passwordPlaceholder')}
-              placeholderTextColor={theme.textSecondary}
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
-            />
-            <ThemedView style={styles.row}>
-              <Pressable
-                style={styles.button}
-                disabled={busy}
-                onPress={() => run(() => signInWithEmailAndPassword(auth, email.trim(), password))}>
-                <ThemedText type="smallBold">{t('signIn')}</ThemedText>
-              </Pressable>
-              <Pressable
-                style={styles.button}
-                disabled={busy}
-                onPress={() => run(() => createUserWithEmailAndPassword(auth, email.trim(), password))}>
-                <ThemedText type="smallBold">{t('createAccount')}</ThemedText>
+              <Pressable style={Layout.button} onPress={() => setConfirmingSignOut(false)}>
+                <ThemedText type="smallBold">{t('cancel')}</ThemedText>
               </Pressable>
             </ThemedView>
-            {message ? <ThemedText type="small">{message}</ThemedText> : null}
-          </>
-        )}
-        </ScrollView>
-      </SafeAreaView>
-    </ThemedView>
+          ) : (
+            <Pressable style={[Layout.button, styles.dangerButton]} onPress={() => setConfirmingSignOut(true)}>
+              <ThemedText type="smallBold" style={styles.dangerText}>
+                {t('signOut')}
+              </ThemedText>
+            </Pressable>
+          )}
+        </>
+      ) : (
+        <>
+          <ThemedText themeColor="textSecondary">
+            {t('signInPrompt')}
+          </ThemedText>
+          <TextInput
+            style={inputStyle}
+            placeholder={t('emailPlaceholder')}
+            placeholderTextColor={theme.textSecondary}
+            autoCapitalize="none"
+            autoCorrect={false}
+            keyboardType="email-address"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <TextInput
+            style={inputStyle}
+            placeholder={t('passwordPlaceholder')}
+            placeholderTextColor={theme.textSecondary}
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
+          <ThemedView style={styles.row}>
+            <Pressable
+              style={Layout.button}
+              disabled={busy}
+              onPress={() => run(() => signInWithEmailAndPassword(auth, email.trim(), password))}>
+              <ThemedText type="smallBold">{t('signIn')}</ThemedText>
+            </Pressable>
+            <Pressable
+              style={Layout.button}
+              disabled={busy}
+              onPress={() => run(() => createUserWithEmailAndPassword(auth, email.trim(), password))}>
+              <ThemedText type="smallBold">{t('createAccount')}</ThemedText>
+            </Pressable>
+          </ThemedView>
+          {message ? <ThemedText type="small">{message}</ThemedText> : null}
+        </>
+      )}
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, flexDirection: 'row', justifyContent: 'center' },
-  safeArea: {
-    flex: 1,
-    maxWidth: MaxContentWidth,
-    paddingHorizontal: Spacing.four,
-    paddingTop: Platform.OS === 'web' ? 96 : Spacing.five,
-  },
-  content: { gap: Spacing.three, paddingBottom: BottomTabInset + Spacing.five },
-  options: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two },
+  options: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two, backgroundColor: 'transparent' },
   option: {
     alignSelf: 'flex-start',
     paddingVertical: 6,
@@ -341,7 +336,7 @@ const styles = StyleSheet.create({
   signOutRow: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: Spacing.two },
   dangerButton: { borderColor: '#D93025' },
   dangerText: { color: '#D93025' },
-  legend: { gap: Spacing.one },
+  legend: { gap: Spacing.one, backgroundColor: 'transparent' },
   dot: { width: 12, height: 12, borderRadius: 6 },
   input: {
     maxWidth: 420,
@@ -351,13 +346,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     fontSize: 16,
   },
-  row: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.three, alignItems: 'center' },
+  row: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.three, alignItems: 'center', backgroundColor: 'transparent' },
   nameInput: { flex: 1 },
-  button: {
-    alignSelf: 'flex-start',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-  },
 });

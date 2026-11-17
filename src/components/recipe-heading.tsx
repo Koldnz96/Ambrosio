@@ -2,22 +2,24 @@ import { StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { Accent } from '@/constants/theme';
 import { useLanguage } from '@/i18n/language';
 
 // The colour used for nicknames, so the cook stands out on every card.
-export const NICKNAME_COLOR = '#E8590C';
+export const NICKNAME_COLOR = Accent;
 
 type Props = {
   name: string; // the recipe name: the biggest thing on the card
   author?: string; // nickname of the person who shared it (left out on private recipes)
   original?: string; // set when it is an unchanged copy: nickname of the original cook
   note?: string; // small extra text after the line, for example "Your recipe"
+  reserveTwoLines?: boolean; // keep room for a 2-line name, so cards in a grid get the same height
 };
 
 // The top of a recipe card: big recipe name, then who made it, with nicknames in colour:
 //   "by NICKNAME"   or   "NICKNAME reposted a recipe by ORIGINAL"
 // (Later, the cook's photo of the dish can go right above this.)
-export function RecipeHeading({ name, author, original, note }: Props) {
+export function RecipeHeading({ name, author, original, note, reserveTwoLines }: Props) {
   const { t } = useLanguage();
   // The sentence is split around the two names, so only the nicknames get the colour.
   const A = '\u0000';
@@ -26,7 +28,9 @@ export function RecipeHeading({ name, author, original, note }: Props) {
   const parts = sentence.split(/(\u0000|\u0001)/);
   return (
     <ThemedView type="backgroundElement" style={styles.wrap}>
-      <ThemedText style={styles.name}>{name}</ThemedText>
+      <ThemedText style={[styles.name, reserveTwoLines && styles.twoLines]} numberOfLines={reserveTwoLines ? 2 : undefined}>
+        {name}
+      </ThemedText>
       {author ? (
         <ThemedText type="small" themeColor="textSecondary">
           {parts.map((part, index) =>
@@ -48,5 +52,6 @@ export function RecipeHeading({ name, author, original, note }: Props) {
 const styles = StyleSheet.create({
   wrap: { gap: 2 },
   name: { fontSize: 22, lineHeight: 28, fontWeight: '700' },
+  twoLines: { minHeight: 56 }, // 2 lines x 28
   nickname: { color: NICKNAME_COLOR, fontSize: 15 },
 });

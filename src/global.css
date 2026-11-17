@@ -8,17 +8,9 @@
   --font-serif: Georgia, 'Times New Roman', serif;
 }
 
-/* Match the page background to the app theme, so no white shows between screens. */
+/* Match the page background to the app theme (Colors.light.background), so nothing else shows between screens. */
 html,
 body,
 #root {
-  background-color: #ffffff;
-}
-
-@media (prefers-color-scheme: dark) {
-  html,
-  body,
-  #root {
-    background-color: #000000;
-  }
+  background-color: #F0D5BC;
 }

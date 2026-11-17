@@ -1,14 +1,15 @@
 import { useState } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Pressable, StyleSheet } from 'react-native';
 
 import { NicknameForm } from '@/components/nickname-form';
 import { RecipeHeading } from '@/components/recipe-heading';
+import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { WelcomeCard } from '@/components/welcome-card';
 import { ThemedView } from '@/components/themed-view';
 import { WarningChips } from '@/components/warning-chips';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
+import { Layout } from '@/constants/layout';
 import { recipeWarnings } from '@/data/warnings';
 import { useAuthUser } from '@/hooks/use-auth-user';
 import { useRecipes } from '@/hooks/use-recipes';
@@ -32,112 +33,92 @@ export default function WeekScreen() {
   }
 
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-          <ThemedText type="subtitle">{t('weekTitle')}</ThemedText>
+    <Screen title={t('weekTitle')}>
+      {!ready ? (
+        <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
+      ) : !user ? (
+        <>
+          <ThemedText themeColor="textSecondary">{t('weekSignIn')}</ThemedText>
+          <WelcomeCard />
+        </>
+      ) : needsNickname ? (
+        <NicknameForm onSave={saveDisplayName} />
+      ) : (
+        <>
+          <ThemedText themeColor="textSecondary">
+            {t('weekHelp')}
+          </ThemedText>
+          {!loaded && !error ? <ThemedText type="small">{t('loadingPlan')}</ThemedText> : null}
+          {error ? (
+            <ThemedText type="small">
+              {t(error.kind === 'load' ? 'errLoadSettings' : 'errSave', { message: error.message })}
+            </ThemedText>
+          ) : null}
+          {recipes.length === 0 ? (
+            <ThemedText type="small">{t('weekNoRecipes')}</ThemedText>
+          ) : null}
 
-          {!ready ? (
-            <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
-          ) : !user ? (
-            <>
-              <ThemedText themeColor="textSecondary">{t('weekSignIn')}</ThemedText>
-              <WelcomeCard />
-            </>
-          ) : needsNickname ? (
-            <NicknameForm onSave={saveDisplayName} />
-          ) : (
-            <>
-              <ThemedText themeColor="textSecondary">
-                {t('weekHelp')}
-              </ThemedText>
-              {!loaded && !error ? <ThemedText type="small">{t('loadingPlan')}</ThemedText> : null}
-              {error ? (
-                <ThemedText type="small">
-                  {t(error.kind === 'load' ? 'errLoadSettings' : 'errSave', { message: error.message })}
-                </ThemedText>
-              ) : null}
-              {recipes.length === 0 ? (
-                <ThemedText type="small">{t('weekNoRecipes')}</ThemedText>
-              ) : null}
+          <ThemedView style={Layout.grid}>
+            {DAYS.map((day) => (
+              <ThemedView key={day} type="backgroundElement" style={Layout.card}>
+                <ThemedText type="smallBold">{t(day)}</ThemedText>
 
-              {DAYS.map((day) => (
-                <ThemedView key={day} type="backgroundElement" style={styles.card}>
-                  <ThemedText type="smallBold">{t(day)}</ThemedText>
+                {week[day].length === 0 ? (
+                  <ThemedText type="small" themeColor="textSecondary">
+                    {t('nothingPlanned')}
+                  </ThemedText>
+                ) : null}
 
-                  {week[day].length === 0 ? (
-                    <ThemedText type="small" themeColor="textSecondary">
-                      {t('nothingPlanned')}
-                    </ThemedText>
-                  ) : null}
-
-                  {week[day].map((recipeId, index) => {
-                    const recipe = recipes.find((r) => r.id === recipeId);
-                    return (
-                      <ThemedView key={`${recipeId}-${index}`} type="backgroundElement" style={styles.itemRow}>
-                        <ThemedView type="backgroundElement" style={styles.itemText}>
-                          <RecipeHeading name={recipe ? recipe.name : t('recipeGone')} />
-                          {recipe ? <WarningChips warnings={recipeWarnings(recipe.ingredients, profile)} /> : null}
-                        </ThemedView>
-                        <Pressable style={styles.smallButton} onPress={() => removeRecipe(day, index)}>
-                          <ThemedText type="smallBold">✕</ThemedText>
-                        </Pressable>
+                {week[day].map((recipeId, index) => {
+                  const recipe = recipes.find((r) => r.id === recipeId);
+                  return (
+                    <ThemedView key={`${recipeId}-${index}`} type="backgroundElement" style={styles.itemRow}>
+                      <ThemedView type="backgroundElement" style={styles.itemText}>
+                        <RecipeHeading name={recipe ? recipe.name : t('recipeGone')} />
+                        {recipe ? <WarningChips warnings={recipeWarnings(recipe.ingredients, profile)} /> : null}
                       </ThemedView>
-                    );
-                  })}
-
-                  {pickingDay === day ? (
-                    <ThemedView type="backgroundElement" style={styles.picker}>
-                      <ThemedText type="small" themeColor="textSecondary">
-                        {t('tapToAdd')}
-                      </ThemedText>
-                      {recipes.map((recipe) => (
-                        <Pressable key={recipe.id} style={styles.pickRow} onPress={() => addRecipe(day, recipe.id)}>
-                          <RecipeHeading name={recipe.name} />
-                          <WarningChips warnings={recipeWarnings(recipe.ingredients, profile)} />
-                        </Pressable>
-                      ))}
-                      <Pressable style={styles.smallButton} onPress={() => setPickingDay(null)}>
-                        <ThemedText type="smallBold">{t('cancel')}</ThemedText>
+                      <Pressable style={Layout.smallButton} onPress={() => removeRecipe(day, index)}>
+                        <ThemedText type="smallBold">✕</ThemedText>
                       </Pressable>
                     </ThemedView>
-                  ) : (
-                    <Pressable
-                      style={styles.smallButton}
-                      disabled={recipes.length === 0 || !loaded}
-                      onPress={() => setPickingDay(day)}>
-                      <ThemedText type="smallBold">{t('addRecipe')}</ThemedText>
+                  );
+                })}
+
+                {pickingDay === day ? (
+                  <ThemedView type="backgroundElement" style={styles.picker}>
+                    <ThemedText type="small" themeColor="textSecondary">
+                      {t('tapToAdd')}
+                    </ThemedText>
+                    {recipes.map((recipe) => (
+                      <Pressable key={recipe.id} style={styles.pickRow} onPress={() => addRecipe(day, recipe.id)}>
+                        <RecipeHeading name={recipe.name} />
+                        <WarningChips warnings={recipeWarnings(recipe.ingredients, profile)} />
+                      </Pressable>
+                    ))}
+                    <Pressable style={Layout.smallButton} onPress={() => setPickingDay(null)}>
+                      <ThemedText type="smallBold">{t('cancel')}</ThemedText>
                     </Pressable>
-                  )}
-                </ThemedView>
-              ))}
-            </>
-          )}
-        </ScrollView>
-      </SafeAreaView>
-    </ThemedView>
+                  </ThemedView>
+                ) : (
+                  <Pressable
+                    style={Layout.smallButton}
+                    disabled={recipes.length === 0 || !loaded}
+                    onPress={() => setPickingDay(day)}>
+                    <ThemedText type="smallBold">{t('addRecipe')}</ThemedText>
+                  </Pressable>
+                )}
+              </ThemedView>
+            ))}
+          </ThemedView>
+        </>
+      )}
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, flexDirection: 'row', justifyContent: 'center' },
-  safeArea: {
-    flex: 1,
-    maxWidth: MaxContentWidth,
-    paddingHorizontal: Spacing.four,
-    paddingTop: Platform.OS === 'web' ? 96 : Spacing.five,
-  },
-  content: { gap: Spacing.three, paddingBottom: BottomTabInset + Spacing.five },
-  card: { padding: Spacing.three, borderRadius: Spacing.three, gap: Spacing.two, maxWidth: 520 },
   itemRow: { flexDirection: 'row', gap: Spacing.two, alignItems: 'center' },
   itemText: { flex: 1, gap: Spacing.one },
   picker: { gap: Spacing.two },
   pickRow: { gap: Spacing.one, paddingVertical: 4 },
-  smallButton: {
-    alignSelf: 'flex-start',
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderRadius: 10,
-    borderWidth: 1,
-  },
 });

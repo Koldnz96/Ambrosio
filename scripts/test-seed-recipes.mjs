@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { SEED_RECIPES } from '../src/data/seed-recipes.ts';
+import { SEED_STEPS } from '../src/data/seed-steps.ts';
 
 // Read the English product names straight from products.ts (the rows look like "Name|unit|...").
 const text = readFileSync(new URL('../src/data/products.ts', import.meta.url), 'utf8');
@@ -34,5 +35,11 @@ for (const r of SEED_RECIPES) {
     seen.add(i.product);
   }
 }
+for (const r of SEED_RECIPES) {
+  const steps = SEED_STEPS[r.name] ?? [];
+  check(`${r.name}: has 4 to 8 steps`, steps.length >= 4 && steps.length <= 8);
+  check(`${r.name}: steps are not empty`, steps.every((x) => x.trim().length > 10));
+}
+check('no steps for unknown recipes', Object.keys(SEED_STEPS).every((k) => SEED_RECIPES.some((r) => r.name === k)));
 console.log(fails ? `FAIL (${fails})` : 'PASS: all 20 recipes valid');
 process.exit(fails ? 1 : 0);

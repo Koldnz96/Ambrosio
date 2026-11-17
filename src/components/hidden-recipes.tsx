@@ -3,7 +3,7 @@ import { Pressable, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
+import { Layout } from '@/constants/layout';
 import { showRecipe, splitByHidden } from '@/data/hidden';
 import { usePublicRecipes } from '@/hooks/use-public-recipes';
 import { useUserData } from '@/hooks/use-user-data';
@@ -21,7 +21,7 @@ export function HiddenRecipes({ uid }: { uid: string }) {
   const { hiddenRecipes } = splitByHidden(recipes, hidden);
 
   return (
-    <ThemedView type="backgroundElement" style={styles.card}>
+    <ThemedView type="backgroundElement" style={Layout.card}>
       <Pressable onPress={() => setOpen((value) => !value)}>
         <ThemedText type="smallBold">
           {open ? '▾ ' : '▸ '}
@@ -40,11 +40,11 @@ export function HiddenRecipes({ uid }: { uid: string }) {
             </ThemedText>
           ) : (
             hiddenRecipes.map((recipe) => (
-              <ThemedView key={recipe.id} style={styles.row}>
+              <ThemedView key={recipe.id} style={Layout.row}>
                 <ThemedText type="small" style={styles.name}>
                   {recipe.name}
                 </ThemedText>
-                <Pressable style={styles.smallButton} onPress={() => saveHidden(showRecipe(hidden, recipe.id))}>
+                <Pressable style={Layout.smallButton} onPress={() => saveHidden(showRecipe(hidden, recipe.id))}>
                   <ThemedText type="smallBold">{t('showAgain')}</ThemedText>
                 </Pressable>
               </ThemedView>
@@ -57,8 +57,5 @@ export function HiddenRecipes({ uid }: { uid: string }) {
 }
 
 const styles = StyleSheet.create({
-  card: { padding: Spacing.three, borderRadius: Spacing.three, gap: Spacing.two, maxWidth: 520 },
-  row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: Spacing.two },
   name: { flex: 1 },
-  smallButton: { paddingVertical: 4, paddingHorizontal: 12, borderRadius: 10, borderWidth: 1 },
 });

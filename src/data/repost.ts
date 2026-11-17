@@ -2,16 +2,32 @@
 //
 // When you save a copy of someone's recipe, the copy remembers who made the original
 // and what the original looked like (its "signature"). While the copy is unchanged,
-// making it public shows it as a REPOST of the original cook. Once you change the name
-// or the ingredients, it is your own version and shows under your nickname.
+// making it public shows it as a REPOST of the original cook. Once you change the name,
+// the ingredients or the steps, it is your own version and shows under your nickname.
 
 type Ingredient = { name: string; amount: number | null; unit: string; productId: string | null };
-type Content = { name: string; ingredients: Ingredient[] };
+type Content = { name: string; ingredients: Ingredient[]; steps?: string[] };
 
-// A short text that is the same for two recipes with the same name and ingredients.
-// Capitals and extra spaces do not count as a change.
+const tidy = (text: string) => text.trim().toLowerCase().replace(/\s+/g, ' ');
+
+// A short text that is the same for two recipes with the same name, ingredients AND steps.
+// Capitals and extra spaces do not count as a change. (The photo does not count either:
+// a new photo alone does not make a different recipe.)
+// It starts with "v2:" so it can be told apart from the older signatures, which had no steps.
 export function recipeSignature(recipe: Content): string {
-  const tidy = (text: string) => text.trim().toLowerCase().replace(/\s+/g, ' ');
+  return (
+    'v2:' +
+    JSON.stringify([
+      tidy(recipe.name),
+      recipe.ingredients.map((ing) => [ing.productId ?? tidy(ing.name), ing.amount, tidy(ing.unit)]),
+      (recipe.steps ?? []).map(tidy).filter((step) => step !== ''),
+    ])
+  );
+}
+
+// The older signature (name and ingredients only). Copies made before steps counted as a
+// change saved this kind, so they are still compared the old way and nothing flips by itself.
+function legacySignature(recipe: Content): string {
   return JSON.stringify([
     tidy(recipe.name),
     recipe.ingredients.map((ing) => [ing.productId ?? tidy(ing.name), ing.amount, tidy(ing.unit)]),
@@ -27,7 +43,8 @@ export type CopyInfo = {
 // The nickname of the original cook when this recipe is still an unchanged copy, else ''.
 export function repostOf(recipe: Content & CopyInfo): string {
   if (!recipe.originalAuthor || !recipe.originalSignature) return '';
-  return recipeSignature(recipe) === recipe.originalSignature ? recipe.originalAuthor : '';
+  const now = recipe.originalSignature.startsWith('v2:') ? recipeSignature(recipe) : legacySignature(recipe);
+  return now === recipe.originalSignature ? recipe.originalAuthor : '';
 }
 
 type Listed = Content & { id: string; ownerId: string };

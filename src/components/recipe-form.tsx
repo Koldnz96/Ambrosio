@@ -24,6 +24,7 @@ export type IngredientInput = {
 export type RecipeInput = {
   name: string;
   ingredients: IngredientInput[];
+  steps: string[]; // how to cook it, one step per item
 };
 
 type Item = IngredientInput & { key: number }; // an ingredient already added to the list
@@ -61,6 +62,8 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
   const [items, setItems] = useState<Item[]>(() =>
     (initial?.ingredients ?? []).map((ing) => ({ ...ing, productId: ing.productId ?? null, key: nextKey() })),
   );
+  // The steps are typed in one big box, one step per line.
+  const [stepsText, setStepsText] = useState((initial?.steps ?? []).join('\n'));
   const [draft, setDraft] = useState<Draft>(EMPTY_DRAFT);
   const [suggesting, setSuggesting] = useState(false); // are suggestions open?
   const [saving, setSaving] = useState(false);
@@ -152,10 +155,12 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
     }
     setSaving(true);
     try {
-      await onSubmit({ name: name.trim(), ingredients });
+      const steps = stepsText.split('\n').map((line) => line.trim()).filter((line) => line !== '');
+      await onSubmit({ name: name.trim(), ingredients, steps });
       if (clearOnSave) {
         setName('');
         setItems([]);
+        setStepsText('');
         setDraft(EMPTY_DRAFT);
         setSuggesting(false);
       }
@@ -271,6 +276,21 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
         </ThemedView>
       ))}
 
+      {/* How to cook it: one step per line. */}
+      <ThemedText type="smallBold">{t('stepsTitle')}</ThemedText>
+      <ThemedText type="small" themeColor="textSecondary">
+        {t('stepsHelp')}
+      </ThemedText>
+      <TextInput
+        style={[inputStyle, styles.stepsBox]}
+        placeholder={t('stepsPlaceholder')}
+        placeholderTextColor={theme.textSecondary}
+        multiline
+        value={stepsText}
+        onChangeText={setStepsText}
+        onFocus={() => setSuggesting(false)}
+      />
+
       {/* Save sits far from "+ Add ingredient": below a divider, on the right. */}
       <ThemedView style={[styles.divider, { backgroundColor: theme.backgroundSelected }]} />
       <ThemedView type="backgroundElement" style={styles.footer}>
@@ -310,6 +330,7 @@ const styles = StyleSheet.create({
   footer: { flexDirection: 'row', justifyContent: 'flex-end', gap: Spacing.two, marginTop: Spacing.two },
   itemRow: { flexDirection: 'row', gap: Spacing.two, alignItems: 'center' },
   itemText: { flex: 1, gap: Spacing.one },
+  stepsBox: { minHeight: 120, textAlignVertical: 'top' },
   amount: { flex: 1 },
   unit: { flex: 2 },
   button: {

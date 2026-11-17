@@ -3,11 +3,14 @@
 import { ScrollViewStyleReset } from 'expo-router/html';
 import { type PropsWithChildren } from 'react';
 
+// Keep this color the same as Colors.light.background in src/constants/theme.ts.
 const backgroundCss = `
-html, body, #root { background-color: #ffffff; }
-@media (prefers-color-scheme: dark) {
-  html, body, #root { background-color: #000000; }
-}
+html, body, #root { background-color: #F0D5BC; }
+
+/* Hide the scroll bar everywhere; scrolling still works (wheel, trackpad, touch, keys). */
+* { scrollbar-width: none; -ms-overflow-style: none; }
+html, body { scrollbar-width: none; -ms-overflow-style: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar { display: none; width: 0; height: 0; }
 `;
 
 export default function Root({ children }: PropsWithChildren) {
@@ -17,7 +20,7 @@ export default function Root({ children }: PropsWithChildren) {
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="color-scheme" content="light dark" />
+        <meta name="color-scheme" content="light" />
         <ScrollViewStyleReset />
         <style dangerouslySetInnerHTML={{ __html: backgroundCss }} />
       </head>

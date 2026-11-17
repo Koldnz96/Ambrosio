@@ -11,6 +11,7 @@ export type Recipe = {
   visibility: 'private' | 'public';
   authorName: string; // shown when the recipe is public (empty = anonymous)
   ingredients: IngredientInput[];
+  steps: string[]; // how to cook it, one step per item
   photo: string; // a small picture saved as text ('' = no photo)
   createdAtMs: number;
 } & CopyInfo;
@@ -43,6 +44,7 @@ export function useRecipes(uid: string | null) {
               productId: ing.productId ?? null,
             })),
             createdAtMs: data.createdAt?.toMillis?.() ?? Date.now(),
+            steps: Array.isArray(data.steps) ? data.steps.filter((s: unknown) => typeof s === 'string') : [],
             photo: typeof data.photo === 'string' ? data.photo : '',
             copiedFrom: data.copiedFrom ?? '',
             originalAuthor: data.originalAuthor ?? '',

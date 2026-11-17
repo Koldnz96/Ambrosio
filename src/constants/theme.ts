@@ -7,22 +7,34 @@ import '@/global.css';
 
 import { Platform } from 'react-native';
 
+// The warm kitchen palette: cream paper, white cards and one orange accent.
+// "light" is cream, "dark" is a warm dark brown (never pure black).
 export const Colors = {
   light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
+    text: '#2A1B12',
+    background: '#F0D5BC',
+    backgroundElement: '#FBF0E4',
+    backgroundSelected: '#E4BC9C',
+    textSecondary: '#6E4F3C',
   },
   dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
+    text: '#F6EBDD',
+    background: '#1C1511',
+    backgroundElement: '#2B211B',
+    backgroundSelected: '#3C2E25',
+    textSecondary: '#C2AB95',
   },
 } as const;
+
+// The app always uses this look, whatever the computer is set to.
+// Use null to follow the computer's light or dark setting instead.
+export const FORCED_SCHEME: 'light' | 'dark' | null = 'light';
+
+// The orange used for nicknames and highlights.
+export const Accent = '#C15F3C';
+
+// A soft warm line for borders (cards and buttons), which works on light and dark.
+export const BorderColor = 'rgba(140, 70, 30, 0.35)';
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 
