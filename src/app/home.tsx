@@ -9,6 +9,7 @@ import { ThemedView } from '@/components/themed-view';
 import { WelcomeCard } from '@/components/welcome-card';
 import { Layout } from '@/constants/layout';
 import { Accent, BorderColor } from '@/constants/theme';
+import { useIsPhone } from '@/hooks/use-is-phone';
 import { recipeSignature } from '@/data/repost';
 import { newest } from '@/data/top-rated';
 import { useAuthUser } from '@/hooks/use-auth-user';
@@ -20,6 +21,7 @@ import { useLanguage } from '@/i18n/language';
 export default function HomeScreen() {
   const { t } = useLanguage();
   const router = useRouter();
+  const isPhone = useIsPhone();
   const { user, ready } = useAuthUser();
   const { recipes, loaded } = usePublicRecipes(ready);
   const { top, loading } = useTopRated(recipes, user !== null);
@@ -48,10 +50,10 @@ export default function HomeScreen() {
 
   return (
     <Screen title={t('homeTitle')}>
-      <ThemedView type="backgroundElement" style={styles.hero}>
+      <ThemedView type="backgroundElement" style={[styles.hero, isPhone && styles.heroPhone]}>
         <ThemedView type="backgroundElement" style={styles.accentBar} />
-        <ThemedText style={styles.heroTitle}>{t('homeIntroTitle')}</ThemedText>
-        <ThemedText style={styles.heroLead}>{t('homeIntroLead')}</ThemedText>
+        <ThemedText style={[styles.heroTitle, isPhone && styles.heroTitlePhone]}>{t('homeIntroTitle')}</ThemedText>
+        <ThemedText style={[styles.heroLead, isPhone && styles.heroLeadPhone]}>{t('homeIntroLead')}</ThemedText>
       </ThemedView>
 
       <ThemedView style={Layout.grid}>
@@ -124,6 +126,9 @@ const styles = StyleSheet.create({
     borderColor: BorderColor,
     gap: 16,
   },
+  heroPhone: { padding: 20, borderRadius: 20 },
+  heroTitlePhone: { fontSize: 26, lineHeight: 34 },
+  heroLeadPhone: { fontSize: 17, lineHeight: 26 },
   accentBar: { width: 56, height: 6, borderRadius: 3, backgroundColor: Accent },
   heroTitle: { fontSize: 36, lineHeight: 44, fontWeight: '800', maxWidth: 780 },
   heroLead: { fontSize: 19, lineHeight: 30, maxWidth: 780 },

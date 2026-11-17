@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   comment: { gap: Spacing.one, padding: Spacing.two, borderRadius: 12, borderWidth: 1 },
   commentTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: Spacing.two, backgroundColor: 'transparent' },
   nickname: { color: NICKNAME_COLOR },
-  input: { borderWidth: 1, borderRadius: 12, paddingVertical: 8, paddingHorizontal: 12, fontSize: 15, minHeight: 44 },
+  input: { minWidth: 0, borderWidth: 1, borderRadius: 12, paddingVertical: 8, paddingHorizontal: 12, fontSize: 15, minHeight: 44 },
   row: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two, alignItems: 'center' },
   smallButton: { alignSelf: 'flex-start', paddingVertical: 4, paddingHorizontal: 12, borderRadius: 10, borderWidth: 1 },
 });

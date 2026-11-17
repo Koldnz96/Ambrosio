@@ -8,6 +8,7 @@ import type { Lang } from '@/i18n/lang';
 const en = {
   // tabs
   tabRecipes: 'My recipes',
+  tabRecipesShort: "Recipes",
   tabWeek: 'Week',
   tabShopping: 'Shopping',
   tabDiscover: 'Discover',
@@ -245,6 +246,7 @@ export type StringKey = keyof typeof en;
 
 const pt: Record<StringKey, string> = {
   tabRecipes: 'As minhas receitas',
+  tabRecipesShort: "Receitas",
   tabWeek: 'Semana',
   tabShopping: 'Compras',
   tabDiscover: 'Descobrir',
@@ -471,6 +473,7 @@ const pt: Record<StringKey, string> = {
 
 const fr: Record<StringKey, string> = {
   tabRecipes: 'Mes recettes',
+  tabRecipesShort: "Recettes",
   tabWeek: 'Semaine',
   tabShopping: 'Courses',
   tabDiscover: 'Découvrir',

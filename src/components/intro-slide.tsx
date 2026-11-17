@@ -1,7 +1,7 @@
 // A quick welcome slide, shown once per browser: the app name big, one sentence, one button.
 // It is remembered in localStorage, so people who already saw it go straight to the app.
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Animated, Platform, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { Accent, Colors } from '@/constants/theme';
@@ -19,6 +19,7 @@ function alreadySeen(): boolean {
 
 export function IntroSlide() {
   const { t } = useLanguage();
+  const small = useWindowDimensions().width < 480;
   const [visible, setVisible] = useState(false);
   const fade = useRef(new Animated.Value(0)).current;
 
@@ -45,9 +46,9 @@ export function IntroSlide() {
   return (
     <Animated.View style={[styles.overlay, { opacity: fade }]}>
       <View style={styles.content}>
-        <ThemedText style={styles.name}>Ambrósio</ThemedText>
+        <ThemedText style={[styles.name, small && styles.nameSmall]}>Ambrósio</ThemedText>
         <View style={styles.line} />
-        <ThemedText style={styles.tagline}>{t('introTagline')}</ThemedText>
+        <ThemedText style={[styles.tagline, small && styles.taglineSmall]}>{t('introTagline')}</ThemedText>
         <Pressable style={styles.button} onPress={close} accessibilityRole="button">
           <ThemedText style={styles.buttonText}>{t('introButton')}</ThemedText>
         </Pressable>
@@ -78,6 +79,8 @@ const styles = StyleSheet.create({
     color: Accent,
     textAlign: 'center',
   },
+  nameSmall: { fontSize: 52, lineHeight: 62 },
+  taglineSmall: { fontSize: 19, lineHeight: 28 },
   line: { width: 72, height: 4, borderRadius: 2, backgroundColor: Accent, opacity: 0.6 },
   tagline: {
     fontSize: 24,

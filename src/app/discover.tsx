@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, TextInput } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 
 import { Comments } from '@/components/comments';
@@ -15,6 +15,7 @@ import { ThemedView } from '@/components/themed-view';
 import { WarningChips } from '@/components/warning-chips';
 
 import { Accent, BorderColor } from '@/constants/theme';
+import { useIsPhone } from '@/hooks/use-is-phone';
 import { useTheme } from '@/hooks/use-theme';
 import { Layout } from '@/constants/layout';
 import { hideRecipe, showRecipe, splitByHidden } from '@/data/hidden';
@@ -42,6 +43,7 @@ export default function DiscoverScreen() {
   const [showHidden, setShowHidden] = useState(false); // the "Not interested" list, next to the search box
   const [originalIds, setOriginalIds] = useState<Set<string>>(new Set()); // cards showing "the original"
   const theme = useTheme();
+  const isPhone = useIsPhone();
 
   // Who wrote the original, and what it looked like. Copies made before this was saved
   // on the recipe are worked out from the original, when it is still public.
@@ -241,7 +243,9 @@ export default function DiscoverScreen() {
             </ThemedView>
           ) : null}
           {recipes.length > 0 ? (
-            <ThemedView style={Layout.row}>
+            isPhone ? (
+              // On a phone the chips sit in one line that scrolls sideways (they would take 4 rows).
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipScroll}>
               {(
                 [
                   ['all', 'catAll'],
@@ -269,7 +273,38 @@ export default function DiscoverScreen() {
                   </Pressable>
                 );
               })}
-            </ThemedView>
+              </ScrollView>
+            ) : (
+              <ThemedView style={Layout.row}>
+              {(
+                [
+                  ['all', 'catAll'],
+                  ['chicken', 'catChicken'],
+                  ['beef', 'catBeef'],
+                  ['pork', 'catPork'],
+                  ['lamb', 'catLamb'],
+                  ['fish', 'catFish'],
+                  ['shellfish', 'catShellfish'],
+                  ['vegetarian', 'catVegetarian'],
+                  ['vegan', 'catVegan'],
+                ] as const
+              ).map(([key, label]) => {
+                const selected = category === key;
+                return (
+                  <Pressable
+                    key={key}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected }}
+                    style={[styles.chip, selected && styles.chipSelected]}
+                    onPress={() => setCategory(key)}>
+                    <ThemedText type="smallBold" style={selected ? styles.chipTextSelected : undefined}>
+                      {t(label)}
+                    </ThemedText>
+                  </Pressable>
+                );
+              })}
+              </ThemedView>
+            )
           ) : null}
           {loaded && recipes.length === 0 ? (
             <ThemedText themeColor="textSecondary">{t('discoverEmpty')}</ThemedText>
@@ -417,7 +452,10 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexBasis: 260,
   },
+  chipScroll: { gap: 8, paddingRight: 16 },
   chip: {
+    minHeight: 40,
+    justifyContent: 'center',
     paddingVertical: 6,
     paddingHorizontal: 14,
     borderRadius: 999,

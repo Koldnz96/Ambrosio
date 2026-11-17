@@ -1,0 +1,14 @@
+{
+  "name": "Ambrósio",
+  "short_name": "Ambrósio",
+  "description": "Plan your week, get your shopping list, and share your home recipes.",
+  "start_url": "/home",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F0D5BC",
+  "theme_color": "#F0D5BC",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

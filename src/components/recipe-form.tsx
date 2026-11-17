@@ -311,6 +311,7 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
 const styles = StyleSheet.create({
   form: { padding: Spacing.three, borderRadius: Spacing.three, gap: Spacing.two, maxWidth: 520 },
   input: {
+    minWidth: 0, // an input must be able to shrink, or it makes the page wider than a phone
     borderWidth: 1,
     borderRadius: 12,
     paddingVertical: 10,

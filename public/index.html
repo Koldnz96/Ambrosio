@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="%LANG_ISO_CODE%">
+  <head>
+    <!--
+      THE PAGE SHELL OF THE APP (read this before changing it).
+      The app is built as a single-page app (app.json: web.output = "single"), so Expo uses THIS
+      file as the HTML page, not src/app/+html.tsx. Head tags and page-wide CSS go here.
+      This file is only read when the dev server starts: restart start-ambrosio.bat after a change.
+    -->
+    <meta charset="utf-8" />
+    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+    <!-- minimum-scale=1: a phone must never zoom out to show a page that is too wide -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, shrink-to-fit=no, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <title>%WEB_TITLE%</title>
+
+    <!-- So the site can be added to the phone's home screen and opens like an app. -->
+    <meta name="theme-color" content="#F0D5BC" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Ambrósio" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <style id="expo-reset">
+      /* The react-native-web style reset (from Expo's template) */
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        overflow: hidden;
+      }
+      #root {
+        display: flex;
+        height: 100%;
+        flex: 1;
+      }
+    </style>
+
+    <style id="ambrosio">
+      /* The background colour, written into the page so a refresh never flashes white.
+         Keep it the same as Colors.light.background in src/constants/theme.ts. */
+      html, body, #root { background-color: #F0D5BC; }
+
+      /* The page must never be wider than the screen, or a phone shows only part of it and the
+         page can be dragged sideways. Inputs have a built-in minimum width: let them shrink. */
+      html, body { max-width: 100%; overflow-x: hidden; }
+      #root { min-width: 0; max-width: 100%; }
+      input, textarea, select { min-width: 0; max-width: 100%; box-sizing: border-box; }
+      img { max-width: 100%; }
+
+      /* Hide the scroll bars everywhere; scrolling still works (wheel, trackpad, touch, keys). */
+      * { scrollbar-width: none; -ms-overflow-style: none; }
+      *::-webkit-scrollbar { display: none; width: 0; height: 0; }
+    </style>
+  </head>
+
+  <body>
+    <noscript> You need to enable JavaScript to run this app. </noscript>
+    <!-- The root element for your Expo app. -->
+    <div id="root"></div>
+  </body>
+</html>

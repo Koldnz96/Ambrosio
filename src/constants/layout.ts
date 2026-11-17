@@ -8,7 +8,7 @@ import { BorderColor, Spacing } from '@/constants/theme';
 // (The grid properties are not in React Native's types, so the style is cast.)
 const webGrid = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(min(320px, 100%), 1fr))',
   gap: Spacing.three,
 } as unknown as ViewStyle;
 
@@ -42,14 +42,18 @@ export const Layout = StyleSheet.create({
   // Buttons: "smallButton" for actions inside cards, "button" for main actions.
   smallButton: {
     alignSelf: 'flex-start',
-    paddingVertical: 4,
-    paddingHorizontal: 12,
+    justifyContent: 'center',
+    minHeight: 40, // big enough for a finger
+    paddingVertical: 6,
+    paddingHorizontal: 14,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: BorderColor,
   },
   button: {
     alignSelf: 'flex-start',
+    justifyContent: 'center',
+    minHeight: 44,
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 12,
