@@ -2,7 +2,7 @@
   "name": "Ambrósio",
   "short_name": "Ambrósio",
   "description": "Plan your week, get your shopping list, and share your home recipes.",
-  "start_url": "/home",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#F0D5BC",

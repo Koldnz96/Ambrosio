@@ -29,10 +29,10 @@ export default function AppTabs() {
       <TabList asChild>
         <CustomTabList>
           {/* The brand is a button too: it opens the Home page. */}
-          <TabTrigger name="home" href="/home" asChild>
+          <TabTrigger name="home" href="/" asChild>
             <BrandButton />
           </TabTrigger>
-          <TabTrigger name="recipes" href="/" asChild>
+          <TabTrigger name="recipes" href="/recipes" asChild>
             <TabButton icon="📖" short={t('tabRecipesShort')}>{t('tabRecipes')}</TabButton>
           </TabTrigger>
           <TabTrigger name="week" href="/week" asChild>

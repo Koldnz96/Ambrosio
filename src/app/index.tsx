@@ -1,260 +1,169 @@
-import { useState } from 'react';
+import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet } from 'react-native';
-import { addDoc, collection, deleteDoc, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 
-import { NicknameForm } from '@/components/nickname-form';
-import { Photo } from '@/components/photo';
-import { RecipeSteps } from '@/components/recipe-steps';
+import { Photo, PhotoPlaceholder } from '@/components/photo';
 import { RecipeHeading } from '@/components/recipe-heading';
-import { RecipeForm, type IngredientInput, type RecipeInput } from '@/components/recipe-form';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
-import { WelcomeCard } from '@/components/welcome-card';
-import { WarningChips } from '@/components/warning-chips';
 import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
-import { Layout, fullRow } from '@/constants/layout';
-import { repostOf } from '@/data/repost';
-import { sameAsOriginalPhoto } from '@/data/same-photo';
-import { recipeWarnings } from '@/data/warnings';
-import { pickPhoto } from '@/lib/pick-photo';
-import { db } from '@/firebase';
+import { WelcomeCard } from '@/components/welcome-card';
+import { Layout } from '@/constants/layout';
+import { Accent, BorderColor } from '@/constants/theme';
+import { useIsPhone } from '@/hooks/use-is-phone';
+import { recipeSignature } from '@/data/repost';
+import { newest } from '@/data/top-rated';
 import { useAuthUser } from '@/hooks/use-auth-user';
-import { useRecipes } from '@/hooks/use-recipes';
-import { useSyncAuthorName } from '@/hooks/use-sync-author-name';
-import { useUserData } from '@/hooks/use-user-data';
+import { usePublicRecipes, type PublicRecipe } from '@/hooks/use-public-recipes';
+import { useTopRated } from '@/hooks/use-top-rated';
 import { useLanguage } from '@/i18n/language';
 
-export default function MyRecipesScreen() {
-  const { t, ingredient: ingredientLabel } = useLanguage();
+// The front page: what the app is, how it works, and a few recipes to get you hungry.
+export default function HomeScreen() {
+  const { t } = useLanguage();
+  const router = useRouter();
+  const isPhone = useIsPhone();
   const { user, ready } = useAuthUser();
-  const { recipes, error: recipesError } = useRecipes(user?.uid ?? null);
-  const { profile, displayName, needsNickname, saveDisplayName } = useUserData(user?.uid ?? null);
-  useSyncAuthorName(recipes, displayName);
-  const [actionError, setActionError] = useState('');
-  const error = actionError || (recipesError ? t('errLoadRecipes', { message: recipesError }) : '');
+  const { recipes, loaded } = usePublicRecipes(ready);
+  const { top, loading } = useTopRated(recipes, user !== null);
 
-  const [editingId, setEditingId] = useState<string | null>(null); // recipe being edited
-  const [confirmingId, setConfirmingId] = useState<string | null>(null); // recipe waiting for "Yes, delete"
-  const [photoAskId, setPhotoAskId] = useState<string | null>(null); // copy whose photo is the original's
+  const steps = [
+    { icon: '✍️', title: t('homeStep1Title'), text: t('homeStep1Text') },
+    { icon: '📅', title: t('homeStep2Title'), text: t('homeStep2Text') },
+    { icon: '🛒', title: t('homeStep3Title'), text: t('homeStep3Text') },
+    { icon: '🌍', title: t('homeStep4Title'), text: t('homeStep4Text') },
+  ];
 
-  async function createRecipe(input: RecipeInput) {
-    if (!user) return;
-    await addDoc(collection(db, 'recipes'), {
-      ownerId: user.uid,
-      name: input.name,
-      visibility: 'private',
-      ingredients: input.ingredients,
-      steps: input.steps,
-      createdAt: serverTimestamp(),
-    });
-  }
-
-  async function updateRecipe(id: string, input: RecipeInput) {
-    await updateDoc(doc(db, 'recipes', id), {
-      name: input.name,
-      ingredients: input.ingredients,
-      steps: input.steps,
-      updatedAt: serverTimestamp(),
-    });
-    setEditingId(null);
-  }
-
-  // Public recipes show up on the Discover tab for everyone. The display name is copied
-  // onto the recipe at that moment, because other people cannot read your profile.
-  async function setVisibility(id: string, visibility: 'private' | 'public') {
-    setActionError('');
-    try {
-      await updateDoc(doc(db, 'recipes', id), { visibility, authorName: displayName, updatedAt: serverTimestamp() });
-    } catch (err) {
-      setActionError(t('errPublish', { message: (err as Error).message }));
-    }
-  }
-
-  // Making a recipe public. A copy must not reuse the photo of the recipe it was copied from:
-  // then the person is asked to add their own photo, or to publish without one.
-  async function publish(recipe: { id: string; copiedFrom: string; photo: string }, photo = recipe.photo) {
-    setActionError('');
-    if (recipe.copiedFrom && photo && (await sameAsOriginalPhoto(recipe.copiedFrom, photo))) {
-      setPhotoAskId(recipe.id);
-      return;
-    }
-    setPhotoAskId(null);
-    await setVisibility(recipe.id, 'public');
-  }
-
-  async function addOwnPhotoAndPublish(recipe: { id: string; copiedFrom: string; photo: string }) {
-    const photo = await changePhoto(recipe.id, false);
-    if (photo !== null) await publish(recipe, photo);
-  }
-
-  async function publishWithoutPhoto(recipe: { id: string; copiedFrom: string; photo: string }) {
-    await changePhoto(recipe.id, true);
-    setPhotoAskId(null);
-    await setVisibility(recipe.id, 'public');
-  }
-
-  // Choose a picture, shrink it, and save it on the recipe. An empty photo removes it.
-  // Returns the new photo text ('' when removed), or null when nothing was saved.
-  async function changePhoto(id: string, remove: boolean): Promise<string | null> {
-    setActionError('');
-    let photo = '';
-    if (!remove) {
-      const result = await pickPhoto();
-      if (!result.ok) {
-        if (result.reason !== 'cancelled') setActionError(t(result.reason === 'too-big' ? 'errPhotoBig' : 'errPhoto'));
-        return null;
-      }
-      photo = result.photo;
-    }
-    try {
-      await updateDoc(doc(db, 'recipes', id), { photo, updatedAt: serverTimestamp() });
-      return photo;
-    } catch (err) {
-      setActionError(t('errSavePhoto', { message: (err as Error).message }));
-      return null;
-    }
-  }
-
-  async function deleteRecipe(id: string) {
-    setActionError('');
-    try {
-      await deleteDoc(doc(db, 'recipes', id));
-    } catch (err) {
-      setActionError(t('errDelete', { message: (err as Error).message }));
-    } finally {
-      setConfirmingId(null);
-    }
-  }
+  // Signed-in people see the best rated recipes. Visitors (who cannot read ratings), or when
+  // nothing is rated yet, see the newest recipes instead.
+  const showTop = top.length > 0;
+  const shown: { recipe: PublicRecipe; stars?: string }[] = showTop
+    ? top.map((item) => ({
+        recipe: item.recipe,
+        stars: `★ ${
+          item.count === 1
+            ? t('ratingsOne', { average: (item.average as number).toFixed(1) })
+            : t('ratingsMany', { average: (item.average as number).toFixed(1), count: item.count })
+        }`,
+      }))
+    : newest(recipes, 3, recipeSignature).map((recipe) => ({ recipe }));
+  const waiting = !ready || !loaded || (user !== null && loading);
 
   return (
-    <Screen title={t('recipesTitle')}>
-      {!ready ? (
-        <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
-      ) : !user ? (
-        <>
-          <ThemedText themeColor="textSecondary">{t('recipesSignIn')}</ThemedText>
-          <WelcomeCard />
-        </>
-      ) : needsNickname ? (
-        <NicknameForm onSave={saveDisplayName} />
-      ) : (
-        <>
-          <RecipeForm title={t('newRecipe')} submitLabel={t('saveRecipe')} clearOnSave profile={profile} onSubmit={createRecipe} />
+    <Screen title={t('homeTitle')}>
+      <ThemedView type="backgroundElement" style={[styles.hero, isPhone && styles.heroPhone]}>
+        <ThemedView type="backgroundElement" style={styles.accentBar} />
+        <ThemedText style={[styles.heroTitle, isPhone && styles.heroTitlePhone]}>{t('homeIntroTitle')}</ThemedText>
+        <ThemedText style={[styles.heroLead, isPhone && styles.heroLeadPhone]}>{t('homeIntroLead')}</ThemedText>
+        <ThemedView type="backgroundElement" style={styles.ctaRow}>
+          <Pressable style={styles.ctaMain} onPress={() => router.push('/recipes')}>
+            <ThemedText style={styles.ctaMainText}>✍️ {t('homeCtaWrite')}</ThemedText>
+          </Pressable>
+          <Pressable style={styles.ctaSecond} onPress={() => router.push('/discover')}>
+            <ThemedText type="smallBold">🌍 {t('homeCtaBrowse')}</ThemedText>
+          </Pressable>
+        </ThemedView>
+      </ThemedView>
 
-          {error ? <ThemedText type="small">{error}</ThemedText> : null}
+      <ThemedView style={Layout.grid}>
+        <ThemedView type="backgroundElement" style={Layout.card}>
+          <ThemedText style={styles.icon}>🏠</ThemedText>
+          <ThemedText type="smallBold">{t('homeRealTitle')}</ThemedText>
+          <ThemedText type="small" themeColor="textSecondary">{t('homeRealText')}</ThemedText>
+        </ThemedView>
+        <ThemedView type="backgroundElement" style={Layout.card}>
+          <ThemedText style={styles.icon}>😅</ThemedText>
+          <ThemedText type="smallBold">{t('homeHonestTitle')}</ThemedText>
+          <ThemedText type="small" themeColor="textSecondary">{t('homeHonestText')}</ThemedText>
+        </ThemedView>
+        <ThemedView type="backgroundElement" style={Layout.card}>
+          <ThemedText style={styles.icon}>💰</ThemedText>
+          <ThemedView type="backgroundElement" style={Layout.row}>
+            <ThemedText type="smallBold">{t('homeMoneyTitle')}</ThemedText>
+            <ThemedText type="small" style={styles.soon}>{t('homeSoon')}</ThemedText>
+          </ThemedView>
+          <ThemedText type="small" themeColor="textSecondary">{t('homeMoneyText')}</ThemedText>
+        </ThemedView>
+      </ThemedView>
 
-          {recipes.length === 0 ? (
-            <ThemedText themeColor="textSecondary">
-              {t('noRecipes')}
+      <ThemedText type="smallBold">{t('homeHowTitle')}</ThemedText>
+      <ThemedView style={Layout.grid}>
+        {steps.map((step) => (
+          <ThemedView key={step.title} type="backgroundElement" style={Layout.card}>
+            <ThemedText style={{ fontSize: 32, lineHeight: 40 }}>{step.icon}</ThemedText>
+            <ThemedText type="smallBold">{step.title}</ThemedText>
+            <ThemedText type="small" themeColor="textSecondary">
+              {step.text}
             </ThemedText>
-          ) : (
-            <ThemedView style={Layout.grid}>
-            {recipes.map((recipe) =>
-              editingId === recipe.id ? (
-                <ThemedView key={recipe.id} style={fullRow}>
-                  <RecipeForm
-                    title={t('editRecipe')}
-                    submitLabel={t('saveChanges')}
-                    initial={{ name: recipe.name, ingredients: recipe.ingredients, steps: recipe.steps }}
-                    profile={profile}
-                    onSubmit={(input) => updateRecipe(recipe.id, input)}
-                    onCancel={() => setEditingId(null)}
-                  />
-                </ThemedView>
-              ) : (
-                <ThemedView key={recipe.id} type="backgroundElement" style={Layout.card}>
-                  {recipe.photo ? <Photo photo={recipe.photo} /> : null}
-                  <RecipeHeading
-                    name={recipe.name}
-                    author={recipe.visibility === 'public' ? displayName : undefined}
-                    original={repostOf(recipe) || undefined}
-                    note={recipe.visibility === 'public' ? `🌍 ${t('public')}` : undefined}
-                  />
-                  <WarningChips warnings={recipeWarnings(recipe.ingredients, profile)} />
-                  {recipe.ingredients.map((ing, index) => (
-                    <ThemedText key={index} type="small" themeColor="textSecondary">
-                      {[ing.amount ?? '', ing.unit, ingredientLabel(ing)].filter((part) => part !== '').join(' ')}
-                    </ThemedText>
-                  ))}
-                  <RecipeSteps steps={recipe.steps} />
-                  {recipe.originalAuthor ? (
-                    <ThemedText type="small" themeColor="textSecondary">
-                      {t(repostOf(recipe) ? 'copyUnchanged' : 'copyChanged', { original: recipe.originalAuthor })}
-                    </ThemedText>
-                  ) : null}
-                  {recipe.visibility === 'public' ? null : (
-                    <ThemedText type="small" themeColor="textSecondary">
-                      🔒 {t('private')}
-                    </ThemedText>
-                  )}
-                  {photoAskId === recipe.id ? (
-                    <ThemedView type="backgroundElement" style={styles.row}>
-                      <ThemedText type="small">{t('photoSameAsk')}</ThemedText>
-                      <Pressable style={Layout.smallButton} onPress={() => addOwnPhotoAndPublish(recipe)}>
-                        <ThemedText type="smallBold">📷 {t('photoAddOwn')}</ThemedText>
-                      </Pressable>
-                      <Pressable style={Layout.smallButton} onPress={() => publishWithoutPhoto(recipe)}>
-                        <ThemedText type="smallBold">{t('photoPublishWithout')}</ThemedText>
-                      </Pressable>
-                      <Pressable style={Layout.smallButton} onPress={() => setPhotoAskId(null)}>
-                        <ThemedText type="smallBold">{t('cancel')}</ThemedText>
-                      </Pressable>
-                    </ThemedView>
-                  ) : null}
-                  {confirmingId === recipe.id ? (
-                    <ThemedView type="backgroundElement" style={styles.row}>
-                      <ThemedText type="small">{t('deleteAsk')}</ThemedText>
-                      <Pressable style={Layout.smallButton} onPress={() => deleteRecipe(recipe.id)}>
-                        <ThemedText type="smallBold">{t('deleteYes')}</ThemedText>
-                      </Pressable>
-                      <Pressable style={Layout.smallButton} onPress={() => setConfirmingId(null)}>
-                        <ThemedText type="smallBold">{t('cancel')}</ThemedText>
-                      </Pressable>
-                    </ThemedView>
-                  ) : (
-                    <ThemedView type="backgroundElement" style={styles.row}>
-                      <Pressable
-                        style={Layout.smallButton}
-                        onPress={() => {
-                          setEditingId(recipe.id);
-                          setConfirmingId(null);
-                        }}>
-                        <ThemedText type="smallBold">{t('edit')}</ThemedText>
-                      </Pressable>
-                      <Pressable style={Layout.smallButton} onPress={() => changePhoto(recipe.id, false)}>
-                        <ThemedText type="smallBold">📷 {recipe.photo ? t('changePhoto') : t('addPhoto')}</ThemedText>
-                      </Pressable>
-                      {recipe.photo ? (
-                        <Pressable style={Layout.smallButton} onPress={() => changePhoto(recipe.id, true)}>
-                          <ThemedText type="smallBold">{t('removePhoto')}</ThemedText>
-                        </Pressable>
-                      ) : null}
-                      <Pressable
-                        style={Layout.smallButton}
-                        onPress={() =>
-                          recipe.visibility === 'public' ? setVisibility(recipe.id, 'private') : publish(recipe)
-                        }>
-                        <ThemedText type="smallBold">
-                          {recipe.visibility === 'public' ? t('makePrivate') : t('makePublic')}
-                        </ThemedText>
-                      </Pressable>
-                      <Pressable style={Layout.smallButton} onPress={() => setConfirmingId(recipe.id)}>
-                        <ThemedText type="smallBold">{t('delete')}</ThemedText>
-                      </Pressable>
-                    </ThemedView>
-                  )}
-                </ThemedView>
-              ),
-            )}
-            </ThemedView>
-          )}
-        </>
-      )}
+          </ThemedView>
+        ))}
+      </ThemedView>
+
+      {ready && !user ? <WelcomeCard /> : null}
+
+      <ThemedText type="smallBold">{showTop ? t('homeTopTitle') : t('homeNewTitle')}</ThemedText>
+      {waiting ? <ThemedText type="small" themeColor="textSecondary">{t('homeLoading')}</ThemedText> : null}
+      {user && !waiting && !showTop && recipes.length > 0 ? (
+        <ThemedText type="small" themeColor="textSecondary">
+          {t('homeTopEmpty')}
+        </ThemedText>
+      ) : null}
+      <ThemedView style={Layout.grid}>
+        {shown.map(({ recipe, stars }) => (
+          <ThemedView key={recipe.id} type="backgroundElement" style={Layout.card}>
+            {recipe.photo ? <Photo photo={recipe.photo} /> : <PhotoPlaceholder />}
+            <RecipeHeading reserveTwoLines name={recipe.name} author={recipe.authorName || t('anonymousCook')} />
+            {stars ? <ThemedText type="small">{stars}</ThemedText> : null}
+          </ThemedView>
+        ))}
+      </ThemedView>
+
+      {recipes.length > 0 ? (
+        <Pressable style={Layout.button} onPress={() => router.push('/discover')}>
+          <ThemedText type="smallBold">{t('homeSeeAll')}</ThemedText>
+        </Pressable>
+      ) : null}
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two, alignItems: 'center' },
+  hero: {
+    padding: 32,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: BorderColor,
+    gap: 16,
+  },
+  ctaRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginTop: 4 },
+  ctaMain: {
+    minHeight: 48,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    borderRadius: 14,
+    backgroundColor: Accent,
+  },
+  ctaMainText: { color: '#FFFFFF', fontSize: 16, fontWeight: '700' },
+  ctaSecond: {
+    minHeight: 48,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: BorderColor,
+  },
+  heroPhone: { padding: 20, borderRadius: 20 },
+  heroTitlePhone: { fontSize: 26, lineHeight: 34 },
+  heroLeadPhone: { fontSize: 17, lineHeight: 26 },
+  accentBar: { width: 56, height: 6, borderRadius: 3, backgroundColor: Accent },
+  heroTitle: { fontSize: 36, lineHeight: 44, fontWeight: '800', maxWidth: 780 },
+  heroLead: { fontSize: 19, lineHeight: 30, maxWidth: 780 },
+  icon: { fontSize: 32, lineHeight: 40 },
+  soon: {
+    color: '#FFFFFF',
+    backgroundColor: Accent,
+    borderRadius: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 1,
+    overflow: 'hidden',
+  },
 });

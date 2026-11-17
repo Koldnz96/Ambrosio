@@ -34,7 +34,7 @@ export function IntroSlide() {
 
   function close() {
     // Everyone lands on the Home page first, so they read what the app is about.
-    router.replace('/home');
+    router.replace('/');
     try {
       globalThis.localStorage?.setItem(STORAGE_KEY, '1');
     } catch {
