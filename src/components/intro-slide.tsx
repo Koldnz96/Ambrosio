@@ -1,5 +1,6 @@
 // A quick welcome slide, shown once per browser: the app name big, one sentence, one button.
 // It is remembered in localStorage, so people who already saw it go straight to the app.
+import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Animated, Platform, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 
@@ -19,6 +20,7 @@ function alreadySeen(): boolean {
 
 export function IntroSlide() {
   const { t } = useLanguage();
+  const router = useRouter();
   const small = useWindowDimensions().width < 480;
   const [visible, setVisible] = useState(false);
   const fade = useRef(new Animated.Value(0)).current;
@@ -31,6 +33,8 @@ export function IntroSlide() {
   }, [fade]);
 
   function close() {
+    // Everyone lands on the Home page first, so they read what the app is about.
+    router.replace('/home');
     try {
       globalThis.localStorage?.setItem(STORAGE_KEY, '1');
     } catch {

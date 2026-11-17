@@ -54,6 +54,14 @@ export default function HomeScreen() {
         <ThemedView type="backgroundElement" style={styles.accentBar} />
         <ThemedText style={[styles.heroTitle, isPhone && styles.heroTitlePhone]}>{t('homeIntroTitle')}</ThemedText>
         <ThemedText style={[styles.heroLead, isPhone && styles.heroLeadPhone]}>{t('homeIntroLead')}</ThemedText>
+        <ThemedView type="backgroundElement" style={styles.ctaRow}>
+          <Pressable style={styles.ctaMain} onPress={() => router.push('/')}>
+            <ThemedText style={styles.ctaMainText}>✍️ {t('homeCtaWrite')}</ThemedText>
+          </Pressable>
+          <Pressable style={styles.ctaSecond} onPress={() => router.push('/discover')}>
+            <ThemedText type="smallBold">🌍 {t('homeCtaBrowse')}</ThemedText>
+          </Pressable>
+        </ThemedView>
       </ThemedView>
 
       <ThemedView style={Layout.grid}>
@@ -125,6 +133,23 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: BorderColor,
     gap: 16,
+  },
+  ctaRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginTop: 4 },
+  ctaMain: {
+    minHeight: 48,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    borderRadius: 14,
+    backgroundColor: Accent,
+  },
+  ctaMainText: { color: '#FFFFFF', fontSize: 16, fontWeight: '700' },
+  ctaSecond: {
+    minHeight: 48,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: BorderColor,
   },
   heroPhone: { padding: 20, borderRadius: 20 },
   heroTitlePhone: { fontSize: 26, lineHeight: 34 },
