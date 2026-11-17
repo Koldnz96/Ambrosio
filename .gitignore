@@ -44,3 +44,5 @@ example
 
 # Firebase Hosting cache
 .firebase/
+
+src-backup-before-footer/

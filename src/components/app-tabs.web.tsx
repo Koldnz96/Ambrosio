@@ -6,6 +6,7 @@ import {
   TabTriggerSlotProps,
   TabListProps,
 } from 'expo-router/ui';
+import { Image } from 'expo-image';
 import { Children, type ReactNode } from 'react';
 import { Pressable, View, StyleSheet, type PressableProps } from 'react-native';
 
@@ -92,6 +93,7 @@ export function TabButton({ children, isFocused, icon, short, ...props }: TabBut
 export function BrandButton({ isFocused, ...props }: TabTriggerSlotProps) {
   return (
     <Pressable {...(props as unknown as PressableProps)} style={({ pressed }) => [styles.brandText, pressed && styles.pressed]}>
+      <Image source={require('@/assets/images/ambrosio-logo.png')} style={styles.brandLogo} />
       <ThemedText type="smallBold" style={isFocused ? styles.brandActive : undefined}>
         Ambrósio
       </ThemedText>
@@ -154,7 +156,11 @@ const styles = StyleSheet.create({
   },
   brandText: {
     marginRight: 'auto',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.two,
   },
+  brandLogo: { width: 28, height: 28, borderRadius: 8 },
   brandActive: {
     color: NICKNAME_COLOR,
   },

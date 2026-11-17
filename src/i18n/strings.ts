@@ -242,6 +242,12 @@ const en = {
   nicknameContinue: 'Continue',
   errNickname: 'Choose a nickname with 2 to 24 characters (not an email address).',
   errNicknameTaken: 'That nickname is already taken. Try another one.',
+  footerContact: 'Contact',
+  footerEmail: 'Email',
+  footerInstagram: 'Instagram',
+  footerPhone: 'Phone',
+  footerAddress: 'Address',
+  footerExample: '(example phone number and address, not real)',
 };
 
 export type StringKey = keyof typeof en;
@@ -473,6 +479,12 @@ const pt: Record<StringKey, string> = {
   nicknameContinue: 'Continuar',
   errNickname: 'Escolha uma alcunha com 2 a 24 caracteres (não um endereço de email).',
   errNicknameTaken: 'Essa alcunha já está a ser usada. Experimente outra.',
+  footerContact: 'Contacto',
+  footerEmail: 'Email',
+  footerInstagram: 'Instagram',
+  footerPhone: 'Telefone',
+  footerAddress: 'Morada',
+  footerExample: '(número de telefone e morada de exemplo, não são reais)',
 };
 
 const fr: Record<StringKey, string> = {
@@ -702,6 +714,12 @@ const fr: Record<StringKey, string> = {
   nicknameContinue: 'Continuer',
   errNickname: 'Choisissez un pseudo de 2 à 24 caractères (pas une adresse e-mail).',
   errNicknameTaken: 'Ce pseudo est déjà pris. Essayez-en un autre.',
+  footerContact: 'Contact',
+  footerEmail: 'E-mail',
+  footerInstagram: 'Instagram',
+  footerPhone: 'Téléphone',
+  footerAddress: 'Adresse',
+  footerExample: "(numéro de téléphone et adresse d'exemple, pas réels)",
 };
 
 export const STRINGS: Record<Lang, Record<StringKey, string>> = { en, pt, fr };

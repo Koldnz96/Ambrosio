@@ -152,7 +152,7 @@ export default function ProfileScreen() {
   const inputStyle = [styles.input, { color: theme.text, borderColor: theme.backgroundSelected }];
 
   return (
-    <Screen title={t('profileTitle')}>
+    <Screen title={t('profileTitle')} showFooterOnPhone>
       {!ready ? (
         <ThemedText themeColor="textSecondary">{t('checkingSignIn')}</ThemedText>
       ) : user ? (

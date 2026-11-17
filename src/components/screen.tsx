@@ -2,13 +2,15 @@ import type { ReactNode } from 'react';
 import { Platform, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Footer } from '@/components/footer';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useIsPhone } from '@/hooks/use-is-phone';
 
 // The page every tab sits in: the same width, spacing and title on all of them.
-export function Screen({ title, children }: { title: string; children: ReactNode }) {
+// The contact footer shows on every page on a wide screen; on a phone only where showFooterOnPhone is set.
+export function Screen({ title, children, showFooterOnPhone = false }: { title: string; children: ReactNode; showFooterOnPhone?: boolean }) {
   const isPhone = useIsPhone();
   return (
     <ThemedView style={styles.container}>
@@ -21,6 +23,7 @@ export function Screen({ title, children }: { title: string; children: ReactNode
             {title}
           </ThemedText>
           {children}
+          {(!isPhone || showFooterOnPhone) && <Footer />}
         </ScrollView>
       </SafeAreaView>
     </ThemedView>
