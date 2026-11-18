@@ -46,3 +46,17 @@ example
 .firebase/
 
 src-backup-before-footer/
+
+# price test files
+scripts/prices/sample.html
+scripts/prices/samples/
+scripts/prices/test-output.json
+scripts/prices/continente-products.json
+scripts/prices/continente-candidates.json
+scripts/prices/continente-candidates.md
+scripts/prices/continente-matches.json
+scripts/prices/auchan-products.json
+scripts/prices/pingodoce-products.json
+scripts/prices/pingodoce-matches.json
+scripts/prices/auchan-matches.json
+prices/prices-test.json
