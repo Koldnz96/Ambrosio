@@ -34,4 +34,5 @@ jobs:
           git add prices/prices.json
           git diff --cached --quiet && echo "No changes" && exit 0
           git commit -m "Daily prices $(date -u +%F)"
+          git pull --rebase origin main
           git push

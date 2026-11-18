@@ -287,6 +287,7 @@ const en = {
   guestHelp: 'Your allergies and your week are saved in this browser. Create a free account to write recipes, save copies and comment, and to keep your plan on every device. Nothing you did is lost.',
   haveAccount: 'I already have an account',
   haveAccountNote: 'Signing in to another account leaves this guest plan behind.',
+  close: 'Close',
 };
 
 export type StringKey = keyof typeof en;
@@ -563,6 +564,7 @@ const pt: Record<StringKey, string> = {
   guestHelp: 'As suas alergias e a sua semana ficam guardadas neste navegador. Crie uma conta grátis para escrever receitas, guardar cópias e comentar, e para ter o seu plano em qualquer dispositivo. Nada do que fez se perde.',
   haveAccount: 'Já tenho conta',
   haveAccountNote: 'Entrar noutra conta deixa para trás este plano de convidado.',
+  close: 'Fechar',
 };
 
 const fr: Record<StringKey, string> = {
@@ -837,6 +839,7 @@ const fr: Record<StringKey, string> = {
   guestHelp: "Vos allergies et votre semaine sont gardées dans ce navigateur. Créez un compte gratuit pour écrire des recettes, enregistrer des copies et commenter, et pour garder votre plan sur tous vos appareils. Rien n'est perdu.",
   haveAccount: "J'ai déjà un compte",
   haveAccountNote: "Se connecter à un autre compte laisse ce plan d'invité derrière.",
+  close: 'Fermer',
 };
 
 export const STRINGS: Record<Lang, Record<StringKey, string>> = { en, pt, fr };

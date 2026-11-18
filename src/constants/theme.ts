@@ -77,4 +77,4 @@ export const Spacing = {
 } as const;
 
 export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
-export const MaxContentWidth = 1200;
+export const MaxContentWidth = 1600; // wide enough for 3 recipe cards plus the allergy filter column

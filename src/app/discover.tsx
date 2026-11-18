@@ -340,335 +340,442 @@ export default function DiscoverScreen() {
           <ThemedText themeColor="textSecondary">{t('discoverHelp')}</ThemedText>
           {loadError ? <ThemedText type="small">{t('errLoadPublic', { message: loadError })}</ThemedText> : null}
           {error ? <ThemedText type="small">{error}</ThemedText> : null}
-          {recipes.length > 0 ? (
-            <ThemedView style={styles.searchRow}>
-              <TextInput
-                style={[styles.search, { color: theme.text, borderColor: theme.backgroundSelected }]}
-                placeholder={t('searchPlaceholder')}
-                placeholderTextColor={theme.textSecondary}
-                value={search}
-                onChangeText={setSearch}
-              />
-              <Pressable
-                accessibilityRole="button"
-                accessibilityState={{ expanded: showFilter }}
-                style={[styles.chip, filterOn && styles.chipSelected]}
-                onPress={() => setShowFilter((value) => !value)}>
-                <ThemedText type="smallBold" style={filterOn ? styles.chipTextSelected : undefined}>
-                  {filterOn ? t('allergyFilterOn', { count: filterAllergies.length }) : t('allergyFilter')}
+          {/* On a computer the allergy filter is a column on the right: the cards make room for it
+              (fewer per row) instead of being covered or pushed down. On a phone it opens in the page. */}
+          <ThemedView style={showFilter && !isPhone ? styles.withSide : styles.plain}>
+            <ThemedView style={styles.mainCol}>
+              {recipes.length > 0 ? (
+                <ThemedView style={styles.searchRow}>
+                  <TextInput
+                    style={[styles.search, { color: theme.text, borderColor: theme.backgroundSelected }]}
+                    placeholder={t('searchPlaceholder')}
+                    placeholderTextColor={theme.textSecondary}
+                    value={search}
+                    onChangeText={setSearch}
+                  />
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityState={{ expanded: showFilter }}
+                    style={[styles.chip, filterOn && styles.chipSelected]}
+                    onPress={() => setShowFilter((value) => !value)}>
+                    <ThemedText type="smallBold" style={filterOn ? styles.chipTextSelected : undefined}>
+                      {filterOn ? t('allergyFilterOn', { count: filterAllergies.length }) : t('allergyFilter')}
+                    </ThemedText>
+                  </Pressable>
+                </ThemedView>
+              ) : null}
+              {isPhone ? <>
+                {showFilter ? (
+                  <ThemedView type="backgroundElement" style={[Layout.card, isPhone ? styles.filterBox : styles.filterSide]}>
+                    <ThemedView style={styles.filterHead}>
+                      <ThemedText type="smallBold">{t('allergyFilter')}</ThemedText>
+                      <Pressable accessibilityRole="button" accessibilityLabel={t('close')} style={styles.closeX} onPress={() => setShowFilter(false)}>
+                        <ThemedText type="smallBold">✕</ThemedText>
+                      </Pressable>
+                    </ThemedView>
+                    <ThemedText type="small" themeColor="textSecondary">
+                      {t('filterHelp')}
+                    </ThemedText>
+                    <ThemedText type="smallBold">{t('filterMineTitle')}</ThemedText>
+                    {profile.allergies.length === 0 ? (
+                      <ThemedText type="small" themeColor="textSecondary">
+                        {t('filterNoMine')}
+                      </ThemedText>
+                    ) : (
+                      <ThemedView style={Layout.row}>
+                        {ALLERGEN_ORDER.filter((a) => profile.allergies.includes(a)).map((a) => {
+                          const selected = filterAllergies.includes(a);
+                          return (
+                            <Pressable
+                              key={a}
+                              accessibilityRole="button"
+                              accessibilityState={{ selected }}
+                              style={[styles.chip, selected && styles.chipMine]}
+                              onPress={() => toggleAllergen(a)}>
+                              <ThemedText type="smallBold">
+                                {selected ? '✓ ' : ''}
+                                {ALLERGEN_ICONS[a]} {allergenShortName(a)}
+                              </ThemedText>
+                            </Pressable>
+                          );
+                        })}
+                      </ThemedView>
+                    )}
+                    <ThemedText type="smallBold">{t('filterGuestTitle')}</ThemedText>
+                    <ThemedView style={Layout.row}>
+                      {ALLERGEN_ORDER.filter((a) => !profile.allergies.includes(a)).map((a) => {
+                        const selected = filterAllergies.includes(a);
+                        return (
+                          <Pressable
+                            key={a}
+                            accessibilityRole="button"
+                            accessibilityState={{ selected }}
+                            style={[styles.chip, selected && styles.chipSelected]}
+                            onPress={() => toggleAllergen(a)}>
+                            <ThemedText type="smallBold" style={selected ? styles.chipTextSelected : undefined}>
+                              {ALLERGEN_ICONS[a]} {allergenShortName(a)}
+                            </ThemedText>
+                          </Pressable>
+                        );
+                      })}
+                    </ThemedView>
+                    <ThemedView style={Layout.row}>
+                      <Pressable
+                        accessibilityRole="button"
+                        accessibilityState={{ selected: filterOn }}
+                        style={[styles.chip, filterOn && styles.chipSelected]}
+                        onPress={() => setFilterOn((value) => !value)}>
+                        <ThemedText type="smallBold" style={filterOn ? styles.chipTextSelected : undefined}>
+                          {filterOn ? '✓ ' : ''}
+                          {t('filterApply')}
+                        </ThemedText>
+                      </Pressable>
+                      {picked !== null ? (
+                        <Pressable style={Layout.smallButton} onPress={() => setPicked(null)}>
+                          <ThemedText type="smallBold">{t('filterClear')}</ThemedText>
+                        </Pressable>
+                      ) : null}
+                    </ThemedView>
+                    {filterOn ? (
+                      <Pressable
+                        accessibilityRole="button"
+                        accessibilityState={{ selected: showUnchecked }}
+                        style={[styles.chip, showUnchecked && styles.chipSelected, styles.chipWide]}
+                        onPress={() => setShowUnchecked((value) => !value)}>
+                        <ThemedText type="smallBold" style={showUnchecked ? styles.chipTextSelected : undefined}>
+                          {showUnchecked ? '✓ ' : ''}
+                          {t('filterUnchecked')}
+                        </ThemedText>
+                      </Pressable>
+                    ) : null}
+                    <ThemedText type="small" themeColor="textSecondary">
+                      {t('filterDisclaimer')}
+                    </ThemedText>
+                  </ThemedView>
+                ) : null}
+              </> : null}
+              {filterOn ? (
+                <ThemedText type="smallBold">{t('filterHiddenCount', { count: hiddenByFilter })}</ThemedText>
+              ) : null}
+              {filterOn && skippedOwn.length > 0 ? (
+                <ThemedText type="small" style={styles.skipNote}>
+                  {t('filterSkipping', { names: skippedOwn.map((a) => allergenShortName(a).toLowerCase()).join(', ') })}
                 </ThemedText>
-              </Pressable>
-            </ThemedView>
-          ) : null}
-          {showFilter ? (
-            <ThemedView type="backgroundElement" style={[Layout.card, styles.filterBox]}>
-              <ThemedText type="small" themeColor="textSecondary">
-                {t('filterHelp')}
-              </ThemedText>
-              <ThemedText type="smallBold">{t('filterMineTitle')}</ThemedText>
-              {profile.allergies.length === 0 ? (
-                <ThemedText type="small" themeColor="textSecondary">
-                  {t('filterNoMine')}
-                </ThemedText>
-              ) : (
-                <ThemedView style={Layout.row}>
-                  {ALLERGEN_ORDER.filter((a) => profile.allergies.includes(a)).map((a) => {
-                    const selected = filterAllergies.includes(a);
+              ) : null}
+              {recipes.length > 0 ? (
+                isPhone ? (
+                  // On a phone the chips sit in one line that scrolls sideways (they would take 4 rows).
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipScroll}>
+                  {(
+                    [
+                      ['all', 'catAll'],
+                      ['chicken', 'catChicken'],
+                      ['beef', 'catBeef'],
+                      ['pork', 'catPork'],
+                      ['lamb', 'catLamb'],
+                      ['fish', 'catFish'],
+                      ['shellfish', 'catShellfish'],
+                      ['vegetarian', 'catVegetarian'],
+                      ['vegan', 'catVegan'],
+                    ] as const
+                  ).map(([key, label]) => {
+                    const selected = category === key;
                     return (
                       <Pressable
-                        key={a}
+                        key={key}
                         accessibilityRole="button"
                         accessibilityState={{ selected }}
-                        style={[styles.chip, selected && styles.chipMine]}
-                        onPress={() => toggleAllergen(a)}>
-                        <ThemedText type="smallBold">
-                          {selected ? '✓ ' : ''}
-                          {ALLERGEN_ICONS[a]} {allergenShortName(a)}
+                        style={[styles.chip, selected && styles.chipSelected]}
+                        onPress={() => setCategory(key)}>
+                        <ThemedText type="smallBold" style={selected ? styles.chipTextSelected : undefined}>
+                          {t(label)}
                         </ThemedText>
                       </Pressable>
                     );
                   })}
-                </ThemedView>
-              )}
-              <ThemedText type="smallBold">{t('filterGuestTitle')}</ThemedText>
-              <ThemedView style={Layout.row}>
-                {ALLERGEN_ORDER.filter((a) => !profile.allergies.includes(a)).map((a) => {
-                  const selected = filterAllergies.includes(a);
-                  return (
-                    <Pressable
-                      key={a}
-                      accessibilityRole="button"
-                      accessibilityState={{ selected }}
-                      style={[styles.chip, selected && styles.chipSelected]}
-                      onPress={() => toggleAllergen(a)}>
-                      <ThemedText type="smallBold" style={selected ? styles.chipTextSelected : undefined}>
-                        {ALLERGEN_ICONS[a]} {allergenShortName(a)}
-                      </ThemedText>
-                    </Pressable>
-                  );
-                })}
-              </ThemedView>
-              <ThemedView style={Layout.row}>
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: filterOn }}
-                  style={[styles.chip, filterOn && styles.chipSelected]}
-                  onPress={() => setFilterOn((value) => !value)}>
-                  <ThemedText type="smallBold" style={filterOn ? styles.chipTextSelected : undefined}>
-                    {filterOn ? '✓ ' : ''}
-                    {t('filterApply')}
-                  </ThemedText>
-                </Pressable>
-                {picked !== null ? (
-                  <Pressable style={Layout.smallButton} onPress={() => setPicked(null)}>
-                    <ThemedText type="smallBold">{t('filterClear')}</ThemedText>
-                  </Pressable>
-                ) : null}
-              </ThemedView>
-              {filterOn ? (
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: showUnchecked }}
-                  style={[styles.chip, showUnchecked && styles.chipSelected, styles.chipWide]}
-                  onPress={() => setShowUnchecked((value) => !value)}>
-                  <ThemedText type="smallBold" style={showUnchecked ? styles.chipTextSelected : undefined}>
-                    {showUnchecked ? '✓ ' : ''}
-                    {t('filterUnchecked')}
-                  </ThemedText>
-                </Pressable>
-              ) : null}
-              <ThemedText type="small" themeColor="textSecondary">
-                {t('filterDisclaimer')}
-              </ThemedText>
-            </ThemedView>
-          ) : null}
-          {filterOn ? (
-            <ThemedText type="smallBold">{t('filterHiddenCount', { count: hiddenByFilter })}</ThemedText>
-          ) : null}
-          {filterOn && skippedOwn.length > 0 ? (
-            <ThemedText type="small" style={styles.skipNote}>
-              {t('filterSkipping', { names: skippedOwn.map((a) => allergenShortName(a).toLowerCase()).join(', ') })}
-            </ThemedText>
-          ) : null}
-          {recipes.length > 0 ? (
-            isPhone ? (
-              // On a phone the chips sit in one line that scrolls sideways (they would take 4 rows).
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipScroll}>
-              {(
-                [
-                  ['all', 'catAll'],
-                  ['chicken', 'catChicken'],
-                  ['beef', 'catBeef'],
-                  ['pork', 'catPork'],
-                  ['lamb', 'catLamb'],
-                  ['fish', 'catFish'],
-                  ['shellfish', 'catShellfish'],
-                  ['vegetarian', 'catVegetarian'],
-                  ['vegan', 'catVegan'],
-                ] as const
-              ).map(([key, label]) => {
-                const selected = category === key;
-                return (
-                  <Pressable
-                    key={key}
-                    accessibilityRole="button"
-                    accessibilityState={{ selected }}
-                    style={[styles.chip, selected && styles.chipSelected]}
-                    onPress={() => setCategory(key)}>
-                    <ThemedText type="smallBold" style={selected ? styles.chipTextSelected : undefined}>
-                      {t(label)}
-                    </ThemedText>
-                  </Pressable>
-                );
-              })}
-              </ScrollView>
-            ) : (
-              <ThemedView style={Layout.row}>
-              {(
-                [
-                  ['all', 'catAll'],
-                  ['chicken', 'catChicken'],
-                  ['beef', 'catBeef'],
-                  ['pork', 'catPork'],
-                  ['lamb', 'catLamb'],
-                  ['fish', 'catFish'],
-                  ['shellfish', 'catShellfish'],
-                  ['vegetarian', 'catVegetarian'],
-                  ['vegan', 'catVegan'],
-                ] as const
-              ).map(([key, label]) => {
-                const selected = category === key;
-                return (
-                  <Pressable
-                    key={key}
-                    accessibilityRole="button"
-                    accessibilityState={{ selected }}
-                    style={[styles.chip, selected && styles.chipSelected]}
-                    onPress={() => setCategory(key)}>
-                    <ThemedText type="smallBold" style={selected ? styles.chipTextSelected : undefined}>
-                      {t(label)}
-                    </ThemedText>
-                  </Pressable>
-                );
-              })}
-              </ThemedView>
-            )
-          ) : null}
-          {loaded && recipes.length === 0 ? (
-            <ThemedText themeColor="textSecondary">{t('discoverEmpty')}</ThemedText>
-          ) : null}
-          {recipes.length > 0 && visible.length === 0 ? (
-            <ThemedText themeColor="textSecondary">{t('noResults')}</ThemedText>
-          ) : null}
-
-          <ThemedView style={Layout.grid}>
-          {visible.map((recipe) => {
-            const mine = recipe.ownerId === user.uid;
-            const original = repostOf({ ...recipe, ...copyInfo(recipe) });
-            const isOpen = openIds.has(recipe.id);
-            const version = versionInfo(recipe);
-            const showOriginal = originalIds.has(recipe.id) && version?.parent;
-            const count = recipe.ingredients.length;
-            return (
-              <ThemedView key={recipe.id} type="backgroundElement" style={Layout.card}>
-                {recipe.photo ? <Photo photo={recipe.photo} /> : <PhotoPlaceholder />}
-                <RecipeHeading
-                  reserveTwoLines
-                  name={recipe.name}
-                  author={recipe.authorName || t('anonymousCook')}
-                  original={original || undefined}
-                  note={mine ? t('yourRecipe') : undefined}
-                />
-                <WarningChips
-                  warnings={recipeWarnings(recipe.ingredients, warningProfile)}
-                  ingredients={recipe.ingredients}
-                  profile={warningProfile}
-                />
-                {version && !version.isRepost ? (
-                  <ThemedText type="small" themeColor="textSecondary">
-                    {t('versionLine', { original: version.author })}
-                  </ThemedText>
-                ) : null}
-                {version?.diff && !version.isRepost && hasChanges(version.diff) ? (
-                  <ThemedText type="smallBold">{summaryLine(version.diff)}</ThemedText>
-                ) : null}
-                <ThemedText type="small" themeColor="textSecondary">
-                  {t(count === 1 ? 'ingredientsCountOne' : 'ingredientsCountMany', { count })}
-                </ThemedText>
-                {servingsRow(recipe)}
-                <StarRating recipeId={recipe.id} uid={user.uid} canRate={!mine} compact={!isOpen} />
-
-                <ThemedView style={Layout.row}>
-                  <Pressable style={Layout.smallButton} onPress={() => setCookingId(recipe.id)}>
-                    <ThemedText type="smallBold">{t('cookNow')}</ThemedText>
-                  </Pressable>
-                  <Pressable style={Layout.smallButton} onPress={() => setWeekPickId(weekPickId === recipe.id ? null : recipe.id)}>
-                    <ThemedText type="smallBold">📅 {t('addToWeek')}</ThemedText>
-                  </Pressable>
-                  <Pressable style={Layout.smallButton} onPress={() => toggleOpen(recipe.id)}>
-                    <SteadyLabel labels={[t('showDetails'), t('hideDetails')]} active={isOpen ? 1 : 0} />
-                  </Pressable>
-                  {version?.parent ? (
-                    <Pressable style={Layout.smallButton} onPress={() => toggleOriginal(recipe.id)}>
-                      <SteadyLabel
-                        labels={[t('seeOriginal'), t('hideOriginal')]}
-                        active={originalIds.has(recipe.id) ? 1 : 0}
-                      />
-                    </Pressable>
-                  ) : null}
-                  {mine ? null : (
-                    // One button: "Save" puts a copy in My recipes; green "✓ Saved" takes it out again.
-                    // It keeps the same size in both states, so nothing next to it moves.
-                    <Pressable
-                      accessibilityRole="button"
-                      accessibilityState={{ selected: savedIds.has(recipe.id) }}
-                      onPress={() =>
-                        isGuest ? setGuestNoteId(recipe.id) : savedIds.has(recipe.id) ? removeCopy(recipe) : saveCopy(recipe)
-                      }
-                      style={[Layout.smallButton, savedIds.has(recipe.id) && styles.savedButton]}>
-                      <SteadyLabel
-                        labels={[t('saveCopy'), `✓ ${t('savedButton')}`]}
-                        active={savedIds.has(recipe.id) ? 1 : 0}
-                        style={savedIds.has(recipe.id) ? styles.chipTextSelected : undefined}
-                      />
-                    </Pressable>
-                  )}
-                </ThemedView>
-
-                {guestNoteId === recipe.id ? (
-                  <ThemedText type="small" themeColor="textSecondary">
-                    {t('guestSave')}
-                  </ThemedText>
-                ) : null}
-                {weekPickId === recipe.id ? (
+                  </ScrollView>
+                ) : (
                   <ThemedView style={Layout.row}>
-                    {DAYS.map((day) => (
-                      <Pressable key={day} style={Layout.smallButton} onPress={() => addToWeek(recipe, day)}>
-                        <ThemedText type="smallBold">{t(day)}</ThemedText>
+                  {(
+                    [
+                      ['all', 'catAll'],
+                      ['chicken', 'catChicken'],
+                      ['beef', 'catBeef'],
+                      ['pork', 'catPork'],
+                      ['lamb', 'catLamb'],
+                      ['fish', 'catFish'],
+                      ['shellfish', 'catShellfish'],
+                      ['vegetarian', 'catVegetarian'],
+                      ['vegan', 'catVegan'],
+                    ] as const
+                  ).map(([key, label]) => {
+                    const selected = category === key;
+                    return (
+                      <Pressable
+                        key={key}
+                        accessibilityRole="button"
+                        accessibilityState={{ selected }}
+                        style={[styles.chip, selected && styles.chipSelected]}
+                        onPress={() => setCategory(key)}>
+                        <ThemedText type="smallBold" style={selected ? styles.chipTextSelected : undefined}>
+                          {t(label)}
+                        </ThemedText>
                       </Pressable>
-                    ))}
+                    );
+                  })}
                   </ThemedView>
-                ) : addedTo[recipe.id] ? (
-                  <ThemedText type="small" style={styles.addedNote}>
-                    ✓ {t('addedToDay', { day: t(addedTo[recipe.id]) })}
-                  </ThemedText>
-                ) : null}
+                )
+              ) : null}
+              {loaded && recipes.length === 0 ? (
+                <ThemedText themeColor="textSecondary">{t('discoverEmpty')}</ThemedText>
+              ) : null}
+              {recipes.length > 0 && visible.length === 0 ? (
+                <ThemedText themeColor="textSecondary">{t('noResults')}</ThemedText>
+              ) : null}
 
-                {showOriginal && version?.parent && version.diff ? (
-                  <ThemedView type="backgroundSelected" style={styles.originalBox}>
-                    <ThemedText type="smallBold">
-                      {t('originalIs', {
-                        name: version.parent.name,
-                        author: version.parent.authorName || t('anonymousCook'),
-                      })}
-                    </ThemedText>
+              <ThemedView style={Layout.grid}>
+              {visible.map((recipe) => {
+                const mine = recipe.ownerId === user.uid;
+                const original = repostOf({ ...recipe, ...copyInfo(recipe) });
+                const isOpen = openIds.has(recipe.id);
+                const version = versionInfo(recipe);
+                const showOriginal = originalIds.has(recipe.id) && version?.parent;
+                const count = recipe.ingredients.length;
+                return (
+                  <ThemedView key={recipe.id} type="backgroundElement" style={Layout.card}>
+                    {recipe.photo ? <Photo photo={recipe.photo} /> : <PhotoPlaceholder />}
+                    <RecipeHeading
+                      reserveTwoLines
+                      name={recipe.name}
+                      author={recipe.authorName || t('anonymousCook')}
+                      original={original || undefined}
+                      note={mine ? t('yourRecipe') : undefined}
+                    />
+                    <WarningChips
+                      warnings={recipeWarnings(recipe.ingredients, warningProfile)}
+                      ingredients={recipe.ingredients}
+                      profile={warningProfile}
+                    />
+                    {version && !version.isRepost ? (
+                      <ThemedText type="small" themeColor="textSecondary">
+                        {t('versionLine', { original: version.author })}
+                      </ThemedText>
+                    ) : null}
+                    {version?.diff && !version.isRepost && hasChanges(version.diff) ? (
+                      <ThemedText type="smallBold">{summaryLine(version.diff)}</ThemedText>
+                    ) : null}
                     <ThemedText type="small" themeColor="textSecondary">
-                      {t(
-                        version.parent.ingredients.length === 1 ? 'ingredientsCountOne' : 'ingredientsCountMany',
-                        { count: version.parent.ingredients.length },
-                      )}
+                      {t(count === 1 ? 'ingredientsCountOne' : 'ingredientsCountMany', { count })}
                     </ThemedText>
-                    <ThemedText type="smallBold">{t('changesTitle')}</ThemedText>
-                    {hasChanges(version.diff) ? (
+                    {servingsRow(recipe)}
+                    <StarRating recipeId={recipe.id} uid={user.uid} canRate={!mine} compact={!isOpen} />
+
+                    <ThemedView style={Layout.row}>
+                      {/* Cook now is for people with an account (guests see fewer buttons). */}
+                      {isGuest ? null : (
+                        <Pressable style={Layout.smallButton} onPress={() => setCookingId(recipe.id)}>
+                          <ThemedText type="smallBold">{t('cookNow')}</ThemedText>
+                        </Pressable>
+                      )}
+                      <Pressable style={Layout.smallButton} onPress={() => setWeekPickId(weekPickId === recipe.id ? null : recipe.id)}>
+                        <ThemedText type="smallBold">📅 {t('addToWeek')}</ThemedText>
+                      </Pressable>
+                      <Pressable style={Layout.smallButton} onPress={() => toggleOpen(recipe.id)}>
+                        <SteadyLabel labels={[t('showDetails'), t('hideDetails')]} active={isOpen ? 1 : 0} />
+                      </Pressable>
+                      {version?.parent ? (
+                        <Pressable style={Layout.smallButton} onPress={() => toggleOriginal(recipe.id)}>
+                          <SteadyLabel
+                            labels={[t('seeOriginal'), t('hideOriginal')]}
+                            active={originalIds.has(recipe.id) ? 1 : 0}
+                          />
+                        </Pressable>
+                      ) : null}
+                      {mine ? null : (
+                        // One button: "Save" puts a copy in My recipes; green "✓ Saved" takes it out again.
+                        // It keeps the same size in both states, so nothing next to it moves.
+                        <Pressable
+                          accessibilityRole="button"
+                          accessibilityState={{ selected: savedIds.has(recipe.id) }}
+                          onPress={() =>
+                            isGuest ? setGuestNoteId(recipe.id) : savedIds.has(recipe.id) ? removeCopy(recipe) : saveCopy(recipe)
+                          }
+                          style={[Layout.smallButton, savedIds.has(recipe.id) && styles.savedButton]}>
+                          <SteadyLabel
+                            labels={[t('saveCopy'), `✓ ${t('savedButton')}`]}
+                            active={savedIds.has(recipe.id) ? 1 : 0}
+                            style={savedIds.has(recipe.id) ? styles.chipTextSelected : undefined}
+                          />
+                        </Pressable>
+                      )}
+                    </ThemedView>
+
+                    {guestNoteId === recipe.id ? (
+                      <ThemedText type="small" themeColor="textSecondary">
+                        {t('guestSave')}
+                      </ThemedText>
+                    ) : null}
+                    {weekPickId === recipe.id ? (
+                      <ThemedView style={Layout.row}>
+                        {DAYS.map((day) => (
+                          <Pressable key={day} style={Layout.smallButton} onPress={() => addToWeek(recipe, day)}>
+                            <ThemedText type="smallBold">{t(day)}</ThemedText>
+                          </Pressable>
+                        ))}
+                      </ThemedView>
+                    ) : addedTo[recipe.id] ? (
+                      <ThemedText type="small" style={styles.addedNote}>
+                        ✓ {t('addedToDay', { day: t(addedTo[recipe.id]) })}
+                      </ThemedText>
+                    ) : null}
+
+                    {showOriginal && version?.parent && version.diff ? (
+                      <ThemedView type="backgroundSelected" style={styles.originalBox}>
+                        <ThemedText type="smallBold">
+                          {t('originalIs', {
+                            name: version.parent.name,
+                            author: version.parent.authorName || t('anonymousCook'),
+                          })}
+                        </ThemedText>
+                        <ThemedText type="small" themeColor="textSecondary">
+                          {t(
+                            version.parent.ingredients.length === 1 ? 'ingredientsCountOne' : 'ingredientsCountMany',
+                            { count: version.parent.ingredients.length },
+                          )}
+                        </ThemedText>
+                        <ThemedText type="smallBold">{t('changesTitle')}</ThemedText>
+                        {hasChanges(version.diff) ? (
+                          <>
+                            {version.diff.added.map((ing, i) => (
+                              <ThemedText key={`a${i}`} type="small">+ {ingredientLine(ing)}</ThemedText>
+                            ))}
+                            {version.diff.removed.map((ing, i) => (
+                              <ThemedText key={`r${i}`} type="small">− {ingredientLine(ing)}</ThemedText>
+                            ))}
+                            {version.diff.amounts.map((c, i) => (
+                              <ThemedText key={`c${i}`} type="small">
+                                ~ {ingredientLabel(c.after)}: {ingredientLine({ ...c.before, name: '', productId: null })} →{' '}
+                                {ingredientLine({ ...c.after, name: '', productId: null })}
+                              </ThemedText>
+                            ))}
+                            {version.diff.steps !== 'same' || version.diff.renamed ? (
+                              <ThemedText type="small">{summaryLine({ ...version.diff, added: [], removed: [], amounts: [] })}</ThemedText>
+                            ) : null}
+                            <ThemedText type="small" themeColor="textSecondary">{t('diffLegend')}</ThemedText>
+                          </>
+                        ) : (
+                          <ThemedText type="small" themeColor="textSecondary">{t('diffNothing')}</ThemedText>
+                        )}
+                      </ThemedView>
+                    ) : null}
+
+                    {/* The ingredients and comments only appear (and only load) when the card is open. */}
+                    {isOpen ? (
                       <>
-                        {version.diff.added.map((ing, i) => (
-                          <ThemedText key={`a${i}`} type="small">+ {ingredientLine(ing)}</ThemedText>
-                        ))}
-                        {version.diff.removed.map((ing, i) => (
-                          <ThemedText key={`r${i}`} type="small">− {ingredientLine(ing)}</ThemedText>
-                        ))}
-                        {version.diff.amounts.map((c, i) => (
-                          <ThemedText key={`c${i}`} type="small">
-                            ~ {ingredientLabel(c.after)}: {ingredientLine({ ...c.before, name: '', productId: null })} →{' '}
-                            {ingredientLine({ ...c.after, name: '', productId: null })}
+                        {forServings(recipe).ingredients.map((ing, index) => (
+                          <ThemedText key={index} type="small" themeColor="textSecondary">
+                            {[ing.amount ?? '', ing.unit, ingredientLabel(ing)].filter((part) => part !== '').join(' ')}
                           </ThemedText>
                         ))}
-                        {version.diff.steps !== 'same' || version.diff.renamed ? (
-                          <ThemedText type="small">{summaryLine({ ...version.diff, added: [], removed: [], amounts: [] })}</ThemedText>
-                        ) : null}
-                        <ThemedText type="small" themeColor="textSecondary">{t('diffLegend')}</ThemedText>
+                        <RecipeSteps steps={recipe.steps} />
+                        <Comments recipeId={recipe.id} recipeOwnerId={recipe.ownerId} uid={user.uid} nickname={displayName} canWrite={!isGuest} />
                       </>
+                    ) : null}
+                  </ThemedView>
+                );
+              })}
+              </ThemedView>
+            </ThemedView>
+            {!isPhone ? <>
+                {showFilter ? (
+                  <ThemedView type="backgroundElement" style={[Layout.card, isPhone ? styles.filterBox : styles.filterSide]}>
+                    <ThemedView style={styles.filterHead}>
+                      <ThemedText type="smallBold">{t('allergyFilter')}</ThemedText>
+                      <Pressable accessibilityRole="button" accessibilityLabel={t('close')} style={styles.closeX} onPress={() => setShowFilter(false)}>
+                        <ThemedText type="smallBold">✕</ThemedText>
+                      </Pressable>
+                    </ThemedView>
+                    <ThemedText type="small" themeColor="textSecondary">
+                      {t('filterHelp')}
+                    </ThemedText>
+                    <ThemedText type="smallBold">{t('filterMineTitle')}</ThemedText>
+                    {profile.allergies.length === 0 ? (
+                      <ThemedText type="small" themeColor="textSecondary">
+                        {t('filterNoMine')}
+                      </ThemedText>
                     ) : (
-                      <ThemedText type="small" themeColor="textSecondary">{t('diffNothing')}</ThemedText>
+                      <ThemedView style={Layout.row}>
+                        {ALLERGEN_ORDER.filter((a) => profile.allergies.includes(a)).map((a) => {
+                          const selected = filterAllergies.includes(a);
+                          return (
+                            <Pressable
+                              key={a}
+                              accessibilityRole="button"
+                              accessibilityState={{ selected }}
+                              style={[styles.chip, selected && styles.chipMine]}
+                              onPress={() => toggleAllergen(a)}>
+                              <ThemedText type="smallBold">
+                                {selected ? '✓ ' : ''}
+                                {ALLERGEN_ICONS[a]} {allergenShortName(a)}
+                              </ThemedText>
+                            </Pressable>
+                          );
+                        })}
+                      </ThemedView>
                     )}
+                    <ThemedText type="smallBold">{t('filterGuestTitle')}</ThemedText>
+                    <ThemedView style={Layout.row}>
+                      {ALLERGEN_ORDER.filter((a) => !profile.allergies.includes(a)).map((a) => {
+                        const selected = filterAllergies.includes(a);
+                        return (
+                          <Pressable
+                            key={a}
+                            accessibilityRole="button"
+                            accessibilityState={{ selected }}
+                            style={[styles.chip, selected && styles.chipSelected]}
+                            onPress={() => toggleAllergen(a)}>
+                            <ThemedText type="smallBold" style={selected ? styles.chipTextSelected : undefined}>
+                              {ALLERGEN_ICONS[a]} {allergenShortName(a)}
+                            </ThemedText>
+                          </Pressable>
+                        );
+                      })}
+                    </ThemedView>
+                    <ThemedView style={Layout.row}>
+                      <Pressable
+                        accessibilityRole="button"
+                        accessibilityState={{ selected: filterOn }}
+                        style={[styles.chip, filterOn && styles.chipSelected]}
+                        onPress={() => setFilterOn((value) => !value)}>
+                        <ThemedText type="smallBold" style={filterOn ? styles.chipTextSelected : undefined}>
+                          {filterOn ? '✓ ' : ''}
+                          {t('filterApply')}
+                        </ThemedText>
+                      </Pressable>
+                      {picked !== null ? (
+                        <Pressable style={Layout.smallButton} onPress={() => setPicked(null)}>
+                          <ThemedText type="smallBold">{t('filterClear')}</ThemedText>
+                        </Pressable>
+                      ) : null}
+                    </ThemedView>
+                    {filterOn ? (
+                      <Pressable
+                        accessibilityRole="button"
+                        accessibilityState={{ selected: showUnchecked }}
+                        style={[styles.chip, showUnchecked && styles.chipSelected, styles.chipWide]}
+                        onPress={() => setShowUnchecked((value) => !value)}>
+                        <ThemedText type="smallBold" style={showUnchecked ? styles.chipTextSelected : undefined}>
+                          {showUnchecked ? '✓ ' : ''}
+                          {t('filterUnchecked')}
+                        </ThemedText>
+                      </Pressable>
+                    ) : null}
+                    <ThemedText type="small" themeColor="textSecondary">
+                      {t('filterDisclaimer')}
+                    </ThemedText>
                   </ThemedView>
                 ) : null}
-
-                {/* The ingredients and comments only appear (and only load) when the card is open. */}
-                {isOpen ? (
-                  <>
-                    {forServings(recipe).ingredients.map((ing, index) => (
-                      <ThemedText key={index} type="small" themeColor="textSecondary">
-                        {[ing.amount ?? '', ing.unit, ingredientLabel(ing)].filter((part) => part !== '').join(' ')}
-                      </ThemedText>
-                    ))}
-                    <RecipeSteps steps={recipe.steps} />
-                    <Comments recipeId={recipe.id} recipeOwnerId={recipe.ownerId} uid={user.uid} nickname={displayName} canWrite={!isGuest} />
-                  </>
-                ) : null}
-              </ThemedView>
-            );
-          })}
+            </> : null}
           </ThemedView>
         </>
       )}
@@ -685,6 +792,21 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   filterBox: { maxWidth: 520 },
+  // The side column (computer only): sticks to the top while you scroll the cards; scrolls inside if tall.
+  filterSide: {
+    width: 320,
+    flexShrink: 0,
+    alignSelf: 'flex-start',
+    position: 'sticky' as unknown as 'relative',
+    top: 16,
+    maxHeight: 'calc(100vh - 32px)' as unknown as number,
+    overflowY: 'auto' as unknown as 'scroll',
+  },
+  withSide: { flexDirection: 'row', alignItems: 'flex-start', gap: 16, backgroundColor: 'transparent' },
+  plain: { backgroundColor: 'transparent' },
+  mainCol: { flex: 1, minWidth: 0, gap: 16, backgroundColor: 'transparent' },
+  filterHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'transparent' },
+  closeX: { minWidth: 36, minHeight: 36, alignItems: 'center', justifyContent: 'center' },
   search: {
     borderWidth: 1,
     borderRadius: 10,
