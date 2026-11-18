@@ -40,7 +40,8 @@ export type Warning =
 
 const RANK: Record<Level, number> = { contains: 0, may: 1, unchecked: 2 };
 
-function key(w: Warning): string {
+// One id per kind of warning, for example "a:milk" or "vegan".
+export function warningKey(w: Warning): string {
   return w.kind === 'allergen' ? `a:${w.allergen}` : w.kind;
 }
 
@@ -70,11 +71,33 @@ export function recipeWarnings(ingredients: { productId: string | null }[], prof
   const best = new Map<string, Warning>();
   for (const ing of ingredients) {
     for (const w of ingredientWarnings(ing.productId, profile)) {
-      const old = best.get(key(w));
-      if (!old || RANK[w.level] < RANK[old.level]) best.set(key(w), w);
+      const old = best.get(warningKey(w));
+      if (!old || RANK[w.level] < RANK[old.level]) best.set(warningKey(w), w);
     }
   }
   return sortWarnings([...best.values()]);
+}
+
+// Is a recipe free of ALL these allergens? Used by the Discover allergy filter.
+// "Contains" and "may contain" both count as NOT safe. An ingredient we cannot check
+// (typed by hand, not in the catalog) also counts as not safe, unless allowUnchecked is true.
+export function isSafeFor(
+  ingredients: { productId: string | null }[],
+  allergies: Allergen[],
+  allowUnchecked: boolean,
+): boolean {
+  if (allergies.length === 0) return true;
+  for (const ing of ingredients) {
+    const product = ing.productId ? getProduct(ing.productId) : undefined;
+    if (!product) {
+      if (!allowUnchecked) return false;
+      continue;
+    }
+    for (const allergen of allergies) {
+      if (product.allergens.includes(allergen) || product.mayContain.includes(allergen)) return false;
+    }
+  }
+  return true;
 }
 
 function sortWarnings(list: Warning[]): Warning[] {

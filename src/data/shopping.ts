@@ -25,7 +25,7 @@ export type ShoppingGroup = {
 type Base = { unit: string; factor: number };
 
 // Turn the unit people type into a base unit (g, ml or unit) when we can.
-function baseUnit(raw: string): Base {
+export function baseUnit(raw: string): Base {
   const u = normalize(raw).replace(/\.$/, '');
   if (u === 'g' || u === 'gr' || u === 'gramas' || u === 'grama') return { unit: 'g', factor: 1 };
   if (u === 'kg' || u === 'kilo' || u === 'kilos') return { unit: 'g', factor: 1000 };

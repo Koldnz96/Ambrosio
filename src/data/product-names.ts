@@ -114,6 +114,7 @@ Dried mango|Mangue séchée
 Dried banana|Banane séchée
 Minced beef|Bœuf haché
 Minced pork|Porc haché
+Minced lamb|Agneau haché
 Mixed minced meat|Viande hachée mixte
 Beef steak|Steak de bœuf
 Beef sirloin|Faux-filet de bœuf
@@ -130,6 +131,7 @@ Veal|Veau
 Pork loin|Longe de porc
 Pork tenderloin|Filet mignon de porc
 Pork belly|Poitrine de porc
+Pork fat|Gras de porc
 Pork ribs|Travers de porc
 Pork shoulder|Épaule de porc
 Pork chop|Côte de porc

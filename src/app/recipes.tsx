@@ -46,6 +46,7 @@ export default function MyRecipesScreen() {
       visibility: 'private',
       ingredients: input.ingredients,
       steps: input.steps,
+      servings: input.servings,
       createdAt: serverTimestamp(),
     });
   }
@@ -55,6 +56,7 @@ export default function MyRecipesScreen() {
       name: input.name,
       ingredients: input.ingredients,
       steps: input.steps,
+      servings: input.servings,
       updatedAt: serverTimestamp(),
     });
     setEditingId(null);
@@ -156,7 +158,7 @@ export default function MyRecipesScreen() {
                   <RecipeForm
                     title={t('editRecipe')}
                     submitLabel={t('saveChanges')}
-                    initial={{ name: recipe.name, ingredients: recipe.ingredients, steps: recipe.steps }}
+                    initial={{ name: recipe.name, ingredients: recipe.ingredients, steps: recipe.steps, servings: recipe.servings }}
                     profile={profile}
                     onSubmit={(input) => updateRecipe(recipe.id, input)}
                     onCancel={() => setEditingId(null)}

@@ -8,8 +8,10 @@ import { WelcomeCard } from '@/components/welcome-card';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { Layout } from '@/constants/layout';
+import { compareShops, formatEuros } from '@/data/prices';
 import { buildShoppingList, type Needed } from '@/data/shopping';
 import { useAuthUser } from '@/hooks/use-auth-user';
+import { usePrices } from '@/hooks/use-prices';
 import { useRecipes } from '@/hooks/use-recipes';
 import { DAYS, useUserData } from '@/hooks/use-user-data';
 import { getProduct } from '@/data/products';
@@ -21,9 +23,10 @@ export default function ShoppingScreen() {
   const { recipes } = useRecipes(user?.uid ?? null);
   const { week, loaded, needsNickname, saveDisplayName } = useUserData(user?.uid ?? null);
   const [ticked, setTicked] = useState<Set<string>>(new Set()); // ticks live in memory only
+  const prices = usePrices();
 
   // Every ingredient of every planned recipe. A recipe planned twice counts twice.
-  const { groups, recipeCount } = useMemo(() => {
+  const { groups, recipeCount, needed } = useMemo(() => {
     const needed: Needed[] = [];
     let count = 0;
     for (const day of DAYS) {
@@ -34,8 +37,12 @@ export default function ShoppingScreen() {
         needed.push(...recipe.ingredients);
       }
     }
-    return { groups: buildShoppingList(needed), recipeCount: count };
+    return { groups: buildShoppingList(needed), recipeCount: count, needed };
   }, [week, recipes]);
+
+  // Which supermarket is cheapest overall for this list (approximate: online prices).
+  const comparison = useMemo(() => compareShops(needed, prices), [needed, prices]);
+  const best = comparison.ranking[0];
 
   function toggle(key: string) {
     setTicked((old) => {
@@ -68,6 +75,28 @@ export default function ShoppingScreen() {
           <ThemedText themeColor="textSecondary">
             {recipeCount === 1 ? t('fromRecipesOne') : t('fromRecipesMany', { count: recipeCount })}
           </ThemedText>
+          {best && prices ? (
+            <ThemedView type="backgroundElement" style={[Layout.card, styles.priceBox]}>
+              <ThemedText type="smallBold">
+                🛒 {t('priceBest', { shop: best.name, total: formatEuros(best.total) })}
+              </ThemedText>
+              {comparison.ranking.length > 1 ? (
+                <ThemedText type="small">
+                  {comparison.ranking
+                    .slice(1)
+                    .map((s) => `${s.name} ${formatEuros(s.total)}`)
+                    .join(' · ')}
+                </ThemedText>
+              ) : null}
+              <ThemedText type="small" themeColor="textSecondary">
+                {t('priceNote', {
+                  priced: comparison.priced,
+                  total: comparison.total,
+                  date: new Date(prices.updatedAt).toLocaleDateString(),
+                })}
+              </ThemedText>
+            </ThemedView>
+          ) : null}
           {ticked.size > 0 ? (
             <Pressable style={Layout.smallButton} onPress={() => setTicked(new Set())}>
               <ThemedText type="smallBold">{t('clearTicks')}</ThemedText>
@@ -103,5 +132,6 @@ export default function ShoppingScreen() {
 }
 
 const styles = StyleSheet.create({
+  priceBox: { maxWidth: 520 },
   itemRow: { flexDirection: 'row', justifyContent: 'space-between', gap: Spacing.two, paddingVertical: 2 },
 });

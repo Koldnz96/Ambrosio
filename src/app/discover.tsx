@@ -1,49 +1,130 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { useFocusEffect } from 'expo-router';
+import { addDoc, collection, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 
 import { Comments } from '@/components/comments';
+import { CookView } from '@/components/cook-view';
+import { ServingsStepper } from '@/components/servings-stepper';
 import { NicknameForm } from '@/components/nickname-form';
 import { Photo, PhotoPlaceholder } from '@/components/photo';
 import { RecipeSteps } from '@/components/recipe-steps';
 import { RecipeHeading } from '@/components/recipe-heading';
 import { StarRating } from '@/components/star-rating';
+import { SteadyLabel } from '@/components/steady-label';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { WelcomeCard } from '@/components/welcome-card';
 import { ThemedView } from '@/components/themed-view';
 import { WarningChips } from '@/components/warning-chips';
 
-import { Accent, BorderColor } from '@/constants/theme';
+import { Accent, BorderColor, SavedGreen } from '@/constants/theme';
 import { useIsPhone } from '@/hooks/use-is-phone';
 import { useTheme } from '@/hooks/use-theme';
 import { Layout } from '@/constants/layout';
-import { hideRecipe, showRecipe, splitByHidden } from '@/data/hidden';
-import { getProduct, normalize } from '@/data/products';
+import { getProduct, normalize, type Allergen } from '@/data/products';
 import { diffRecipes, hasChanges, type RecipeDiff } from '@/data/recipe-diff';
 import { recipeCategories, type RecipeCategory } from '@/data/recipe-category';
 import { hideDuplicateReposts, recipeSignature, repostOf, type CopyInfo } from '@/data/repost';
-import { recipeWarnings } from '@/data/warnings';
+import { compareShops, formatEuros, scaleLines } from '@/data/prices';
+import { ALLERGEN_ICONS, ALLERGEN_ORDER, isSafeFor, recipeWarnings } from '@/data/warnings';
 import { db } from '@/firebase';
 import { useAuthUser } from '@/hooks/use-auth-user';
 import { usePublicRecipes, type PublicRecipe } from '@/hooks/use-public-recipes';
+import { useRecipes } from '@/hooks/use-recipes';
+import { usePrices } from '@/hooks/use-prices';
 import { useUserData } from '@/hooks/use-user-data';
 import { useLanguage } from '@/i18n/language';
 
 export default function DiscoverScreen() {
-  const { t, ingredient: ingredientLabel } = useLanguage();
+  const { t, ingredient: ingredientLabel, allergenShortName } = useLanguage();
   const { user, ready } = useAuthUser();
   const { recipes, loaded, error: loadError } = usePublicRecipes(ready);
-  const { profile, displayName, needsNickname, hidden, saveHidden, saveDisplayName } = useUserData(user?.uid ?? null);
+  const { profile, displayName, needsNickname, saveDisplayName } = useUserData(user?.uid ?? null);
   const [copied, setCopied] = useState<Set<string>>(new Set()); // recipes copied in this visit
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<RecipeCategory | 'all'>('all');
   const [openIds, setOpenIds] = useState<Set<string>>(new Set()); // cards opened to show their details
-  const [showHidden, setShowHidden] = useState(false); // the "Not interested" list, next to the search box
   const [originalIds, setOriginalIds] = useState<Set<string>>(new Set()); // cards showing "the original"
+  // The allergy filter. It starts with your Profile allergies ticked; you can untick them or tick
+  // extra ones for the people you cook for. "picked" = null means "just my Profile allergies".
+  // Leaving this tab resets everything, and the Profile itself is never changed.
+  const [showFilter, setShowFilter] = useState(false);
+  const [filterOn, setFilterOn] = useState(false);
+  const [picked, setPicked] = useState<Allergen[] | null>(null);
+  const [showUnchecked, setShowUnchecked] = useState(false); // also list recipes we cannot fully check
+  const [cookingId, setCookingId] = useState<string | null>(null); // the recipe open in "Cook now"
+  // How many people you cook for, per recipe. Discover starts at 2 for every recipe.
+  const [servingsById, setServingsById] = useState<Record<string, number>>({});
+  const servingsFor = (id: string) => servingsById[id] ?? 2;
+  const setServingsFor = (id: string, value: number) => setServingsById((old) => ({ ...old, [id]: value }));
+  const prices = usePrices();
+
+  // The recipe's ingredients for the chosen number of people, and its approximate price.
+  function forServings(recipe: PublicRecipe) {
+    const ingredients = scaleLines(recipe.ingredients, servingsFor(recipe.id) / recipe.servings);
+    const best = compareShops(ingredients, prices).ranking[0];
+    return { ingredients, priceText: best ? `${formatEuros(best.total)} · ${best.name}` : '' };
+  }
+
+  // The servings buttons plus the price, used on the cards and in Cook now.
+  function servingsRow(recipe: PublicRecipe) {
+    const { priceText } = forServings(recipe);
+    return (
+      <ThemedView style={Layout.row}>
+        <ServingsStepper value={servingsFor(recipe.id)} onChange={(v) => setServingsFor(recipe.id, v)} />
+        {priceText ? <ThemedText type="smallBold">{priceText}</ThemedText> : null}
+      </ThemedView>
+    );
+  }
   const theme = useTheme();
   const isPhone = useIsPhone();
+  const { recipes: myRecipes } = useRecipes(user?.uid ?? null);
+
+  // Recipes you already saved a copy of (kept in your own recipes), plus the ones copied just now.
+  // Only UNCHANGED copies count as "saved". Once you change a copy it is your own recipe:
+  // the button goes back to "Save to My Recipes", and pressing "Saved" can never delete it.
+  function unchangedCopies(recipeId: string) {
+    return myRecipes.filter((r) => r.copiedFrom === recipeId && repostOf(r) !== '');
+  }
+  const savedIds = useMemo(() => {
+    const ids = new Set<string>();
+    for (const id of copied) if (!myRecipes.some((r) => r.copiedFrom === id) || unchangedCopies(id).length > 0) ids.add(id);
+    for (const mine of myRecipes) if (mine.copiedFrom && repostOf(mine) !== '') ids.add(mine.copiedFrom);
+    return ids;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [copied, myRecipes]);
+
+  // Everything the filter looks for: your allergies plus the extra ones, always in the same order.
+  const filterAllergies = useMemo(
+    () => ALLERGEN_ORDER.filter((a) => (picked ?? profile.allergies).includes(a)),
+    [profile.allergies, picked],
+  );
+  // Your own allergies that you unticked for this search (we say so, so it is never a surprise).
+  const skippedOwn = profile.allergies.filter((a) => !filterAllergies.includes(a));
+  // While the filter is on, the filter's list decides the warning chips on the cards too.
+  const warningProfile = useMemo(
+    () => (filterOn ? { ...profile, allergies: filterAllergies } : profile),
+    [filterOn, filterAllergies, profile],
+  );
+
+  function toggleAllergen(allergen: Allergen) {
+    setPicked((old) => {
+      const current = old ?? profile.allergies;
+      return current.includes(allergen) ? current.filter((a) => a !== allergen) : [...current, allergen];
+    });
+    setFilterOn(true); // changing an allergen turns the filter on
+  }
+
+  // Back to the start: your Profile allergies, filter off. Also done when you leave this tab.
+  const resetFilter = useCallback(() => {
+    setPicked(null);
+    setFilterOn(false);
+    setShowUnchecked(false);
+    setShowFilter(false);
+  }, []);
+  useFocusEffect(useCallback(() => resetFilter, [resetFilter]));
 
   // Who wrote the original, and what it looked like. Copies made before this was saved
   // on the recipe are worked out from the original, when it is still public.
@@ -59,26 +140,27 @@ export default function DiscoverScreen() {
     };
   }
 
-  // The recipes you marked "Not interested" (still public), for the list next to the search box.
-  const hiddenRecipes = splitByHidden(recipes, hidden).hiddenRecipes;
 
   // No double listings, then the recipes you are not interested in, then the search filter
   // (name, cook, ingredients; accents and capitals ignored).
-  const visible = useMemo(() => {
+  const { visible, hiddenByFilter } = useMemo(() => {
     const myId = user?.uid ?? '';
     const noDuplicates = hideDuplicateReposts(
       recipes,
       (recipe) => repostOf({ ...recipe, ...copyInfo(recipe) }) !== '',
       myId,
     );
-    const notHidden = splitByHidden(noDuplicates, hidden).visible;
+    const notHidden = noDuplicates;
     const single =
       category === 'all'
         ? notHidden
         : notHidden.filter((recipe) => recipeCategories(recipe.ingredients, getProduct).has(category));
+    // The allergy filter: hide recipes that contain, may contain, or cannot be checked for these allergens.
+    const safe = filterOn ? single.filter((recipe) => isSafeFor(recipe.ingredients, filterAllergies, showUnchecked)) : single;
+    const hiddenByFilter = single.length - safe.length;
     const words = normalize(search).split(/\s+/).filter(Boolean);
-    if (words.length === 0) return single;
-    return single.filter((recipe) => {
+    if (words.length === 0) return { visible: safe, hiddenByFilter };
+    const found = safe.filter((recipe) => {
       const text = normalize(
         [
           recipe.name,
@@ -89,8 +171,9 @@ export default function DiscoverScreen() {
       );
       return words.every((word) => text.includes(word));
     });
+    return { visible: found, hiddenByFilter };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [recipes, search, category, user?.uid, ingredientLabel, hidden]);
+  }, [recipes, search, category, user?.uid, ingredientLabel, filterOn, filterAllergies, showUnchecked]);
 
   function toggleOpen(id: string) {
     setOpenIds((old) => {
@@ -142,6 +225,23 @@ export default function DiscoverScreen() {
 
   // A copy is a new private recipe of your own. Changing it never changes the original.
   // It remembers the original cook: copying a repost still credits the first cook.
+  // Pressing "Saved" again removes your copy right away. It deletes only YOUR copy of the recipe;
+  // the original and everybody else's recipes stay as they are.
+  async function removeCopy(recipe: PublicRecipe) {
+    setError('');
+    try {
+      const mine = unchangedCopies(recipe.id); // copies you changed are yours: never deleted here
+      await Promise.all(mine.map((r) => deleteDoc(doc(db, 'recipes', r.id))));
+      setCopied((old) => {
+        const next = new Set(old);
+        next.delete(recipe.id);
+        return next;
+      });
+    } catch (err) {
+      setError(t('errRemoveCopy', { message: (err as Error).message }));
+    }
+  }
+
   async function saveCopy(recipe: PublicRecipe) {
     if (!user) return;
     setError('');
@@ -152,6 +252,7 @@ export default function DiscoverScreen() {
         visibility: 'private',
         ingredients: recipe.ingredients,
         steps: recipe.steps,
+        servings: recipe.servings,
         photo: recipe.photo,
         copiedFrom: recipe.id,
         originalAuthor: repostOf({ ...recipe, ...copyInfo(recipe) }) || recipe.authorName,
@@ -194,6 +295,21 @@ export default function DiscoverScreen() {
         </>
       ) : needsNickname ? (
         <NicknameForm onSave={saveDisplayName} />
+      ) : cookingId && recipes.some((r) => r.id === cookingId) ? (
+        // "Cook now": just the recipe, nothing to save first.
+        (() => {
+          const cooking = recipes.find((r) => r.id === cookingId)!;
+          return (
+            <CookView
+              recipe={{ ...cooking, ingredients: forServings(cooking).ingredients }}
+              extra={servingsRow(cooking)}
+              author={cooking.authorName || t('anonymousCook')}
+              original={repostOf({ ...cooking, ...copyInfo(cooking) }) || undefined}
+              warnings={recipeWarnings(cooking.ingredients, warningProfile)}
+              onClose={() => setCookingId(null)}
+            />
+          );
+        })()
       ) : (
         <>
           <ThemedText themeColor="textSecondary">{t('discoverHelp')}</ThemedText>
@@ -210,37 +326,104 @@ export default function DiscoverScreen() {
               />
               <Pressable
                 accessibilityRole="button"
-                accessibilityState={{ expanded: showHidden }}
-                style={[styles.chip, showHidden && styles.chipSelected]}
-                onPress={() => setShowHidden((value) => !value)}>
-                <ThemedText type="smallBold" style={showHidden ? styles.chipTextSelected : undefined}>
-                  {t('hiddenTitle', { count: hiddenRecipes.length })}
+                accessibilityState={{ expanded: showFilter }}
+                style={[styles.chip, filterOn && styles.chipSelected]}
+                onPress={() => setShowFilter((value) => !value)}>
+                <ThemedText type="smallBold" style={filterOn ? styles.chipTextSelected : undefined}>
+                  {filterOn ? t('allergyFilterOn', { count: filterAllergies.length }) : t('allergyFilter')}
                 </ThemedText>
               </Pressable>
             </ThemedView>
           ) : null}
-          {showHidden ? (
-            <ThemedView type="backgroundElement" style={[Layout.card, styles.hiddenBox]}>
+          {showFilter ? (
+            <ThemedView type="backgroundElement" style={[Layout.card, styles.filterBox]}>
               <ThemedText type="small" themeColor="textSecondary">
-                {t('hiddenHelp')}
+                {t('filterHelp')}
               </ThemedText>
-              {hiddenRecipes.length === 0 ? (
+              <ThemedText type="smallBold">{t('filterMineTitle')}</ThemedText>
+              {profile.allergies.length === 0 ? (
                 <ThemedText type="small" themeColor="textSecondary">
-                  {t('hiddenEmpty')}
+                  {t('filterNoMine')}
                 </ThemedText>
               ) : (
-                hiddenRecipes.map((recipe) => (
-                  <ThemedView key={recipe.id} style={Layout.row}>
-                    <ThemedText type="small" style={styles.hiddenName}>
-                      {recipe.name}
-                    </ThemedText>
-                    <Pressable style={Layout.smallButton} onPress={() => saveHidden(showRecipe(hidden, recipe.id))}>
-                      <ThemedText type="smallBold">{t('showAgain')}</ThemedText>
-                    </Pressable>
-                  </ThemedView>
-                ))
+                <ThemedView style={Layout.row}>
+                  {ALLERGEN_ORDER.filter((a) => profile.allergies.includes(a)).map((a) => {
+                    const selected = filterAllergies.includes(a);
+                    return (
+                      <Pressable
+                        key={a}
+                        accessibilityRole="button"
+                        accessibilityState={{ selected }}
+                        style={[styles.chip, selected && styles.chipMine]}
+                        onPress={() => toggleAllergen(a)}>
+                        <ThemedText type="smallBold">
+                          {selected ? '✓ ' : ''}
+                          {ALLERGEN_ICONS[a]} {allergenShortName(a)}
+                        </ThemedText>
+                      </Pressable>
+                    );
+                  })}
+                </ThemedView>
               )}
+              <ThemedText type="smallBold">{t('filterGuestTitle')}</ThemedText>
+              <ThemedView style={Layout.row}>
+                {ALLERGEN_ORDER.filter((a) => !profile.allergies.includes(a)).map((a) => {
+                  const selected = filterAllergies.includes(a);
+                  return (
+                    <Pressable
+                      key={a}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected }}
+                      style={[styles.chip, selected && styles.chipSelected]}
+                      onPress={() => toggleAllergen(a)}>
+                      <ThemedText type="smallBold" style={selected ? styles.chipTextSelected : undefined}>
+                        {ALLERGEN_ICONS[a]} {allergenShortName(a)}
+                      </ThemedText>
+                    </Pressable>
+                  );
+                })}
+              </ThemedView>
+              <ThemedView style={Layout.row}>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: filterOn }}
+                  style={[styles.chip, filterOn && styles.chipSelected]}
+                  onPress={() => setFilterOn((value) => !value)}>
+                  <ThemedText type="smallBold" style={filterOn ? styles.chipTextSelected : undefined}>
+                    {filterOn ? '✓ ' : ''}
+                    {t('filterApply')}
+                  </ThemedText>
+                </Pressable>
+                {picked !== null ? (
+                  <Pressable style={Layout.smallButton} onPress={() => setPicked(null)}>
+                    <ThemedText type="smallBold">{t('filterClear')}</ThemedText>
+                  </Pressable>
+                ) : null}
+              </ThemedView>
+              {filterOn ? (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: showUnchecked }}
+                  style={[styles.chip, showUnchecked && styles.chipSelected, styles.chipWide]}
+                  onPress={() => setShowUnchecked((value) => !value)}>
+                  <ThemedText type="smallBold" style={showUnchecked ? styles.chipTextSelected : undefined}>
+                    {showUnchecked ? '✓ ' : ''}
+                    {t('filterUnchecked')}
+                  </ThemedText>
+                </Pressable>
+              ) : null}
+              <ThemedText type="small" themeColor="textSecondary">
+                {t('filterDisclaimer')}
+              </ThemedText>
             </ThemedView>
+          ) : null}
+          {filterOn ? (
+            <ThemedText type="smallBold">{t('filterHiddenCount', { count: hiddenByFilter })}</ThemedText>
+          ) : null}
+          {filterOn && skippedOwn.length > 0 ? (
+            <ThemedText type="small" style={styles.skipNote}>
+              {t('filterSkipping', { names: skippedOwn.map((a) => allergenShortName(a).toLowerCase()).join(', ') })}
+            </ThemedText>
           ) : null}
           {recipes.length > 0 ? (
             isPhone ? (
@@ -331,6 +514,11 @@ export default function DiscoverScreen() {
                   original={original || undefined}
                   note={mine ? t('yourRecipe') : undefined}
                 />
+                <WarningChips
+                  warnings={recipeWarnings(recipe.ingredients, warningProfile)}
+                  ingredients={recipe.ingredients}
+                  profile={warningProfile}
+                />
                 {version && !version.isRepost ? (
                   <ThemedText type="small" themeColor="textSecondary">
                     {t('versionLine', { original: version.author })}
@@ -342,30 +530,37 @@ export default function DiscoverScreen() {
                 <ThemedText type="small" themeColor="textSecondary">
                   {t(count === 1 ? 'ingredientsCountOne' : 'ingredientsCountMany', { count })}
                 </ThemedText>
+                {servingsRow(recipe)}
                 <StarRating recipeId={recipe.id} uid={user.uid} canRate={!mine} compact={!isOpen} />
-                <WarningChips warnings={recipeWarnings(recipe.ingredients, profile)} />
 
                 <ThemedView style={Layout.row}>
+                  <Pressable style={Layout.smallButton} onPress={() => setCookingId(recipe.id)}>
+                    <ThemedText type="smallBold">{t('cookNow')}</ThemedText>
+                  </Pressable>
                   <Pressable style={Layout.smallButton} onPress={() => toggleOpen(recipe.id)}>
-                    <ThemedText type="smallBold">{isOpen ? t('hideDetails') : t('showDetails')}</ThemedText>
+                    <SteadyLabel labels={[t('showDetails'), t('hideDetails')]} active={isOpen ? 1 : 0} />
                   </Pressable>
                   {version?.parent ? (
                     <Pressable style={Layout.smallButton} onPress={() => toggleOriginal(recipe.id)}>
-                      <ThemedText type="smallBold">
-                        {originalIds.has(recipe.id) ? t('hideOriginal') : t('seeOriginal')}
-                      </ThemedText>
+                      <SteadyLabel
+                        labels={[t('seeOriginal'), t('hideOriginal')]}
+                        active={originalIds.has(recipe.id) ? 1 : 0}
+                      />
                     </Pressable>
                   ) : null}
-                  {mine ? null : copied.has(recipe.id) ? (
-                    <ThemedText type="small">{t('copySaved')}</ThemedText>
-                  ) : (
-                    <Pressable style={Layout.smallButton} onPress={() => saveCopy(recipe)}>
-                      <ThemedText type="smallBold">{t('saveCopy')}</ThemedText>
-                    </Pressable>
-                  )}
                   {mine ? null : (
-                    <Pressable style={Layout.smallButton} onPress={() => saveHidden(hideRecipe(hidden, recipe.id))}>
-                      <ThemedText type="smallBold">{t('notInterested')}</ThemedText>
+                    // One button: "Save" puts a copy in My recipes; green "✓ Saved" takes it out again.
+                    // It keeps the same size in both states, so nothing next to it moves.
+                    <Pressable
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: savedIds.has(recipe.id) }}
+                      onPress={() => (savedIds.has(recipe.id) ? removeCopy(recipe) : saveCopy(recipe))}
+                      style={[Layout.smallButton, savedIds.has(recipe.id) && styles.savedButton]}>
+                      <SteadyLabel
+                        labels={[t('saveCopy'), `✓ ${t('savedButton')}`]}
+                        active={savedIds.has(recipe.id) ? 1 : 0}
+                        style={savedIds.has(recipe.id) ? styles.chipTextSelected : undefined}
+                      />
                     </Pressable>
                   )}
                 </ThemedView>
@@ -413,7 +608,7 @@ export default function DiscoverScreen() {
                 {/* The ingredients and comments only appear (and only load) when the card is open. */}
                 {isOpen ? (
                   <>
-                    {recipe.ingredients.map((ing, index) => (
+                    {forServings(recipe).ingredients.map((ing, index) => (
                       <ThemedText key={index} type="small" themeColor="textSecondary">
                         {[ing.amount ?? '', ing.unit, ingredientLabel(ing)].filter((part) => part !== '').join(' ')}
                       </ThemedText>
@@ -440,8 +635,7 @@ const styles = StyleSheet.create({
     gap: 12,
     backgroundColor: 'transparent',
   },
-  hiddenBox: { maxWidth: 520 },
-  hiddenName: { flex: 1 },
+  filterBox: { maxWidth: 520 },
   search: {
     borderWidth: 1,
     borderRadius: 10,
@@ -463,6 +657,10 @@ const styles = StyleSheet.create({
     borderColor: BorderColor,
   },
   chipSelected: { backgroundColor: Accent, borderColor: Accent },
+  chipMine: { borderColor: Accent, backgroundColor: 'rgba(193, 95, 60, 0.22)' }, // your own allergies, ticked: soft orange
+  skipNote: { color: '#D93025' },
+  chipWide: { alignSelf: 'flex-start' },
+  savedButton: { backgroundColor: SavedGreen, borderColor: SavedGreen },
   chipTextSelected: { color: '#FFFFFF' },
   originalBox: { padding: 12, borderRadius: 12, gap: 4 },
 });

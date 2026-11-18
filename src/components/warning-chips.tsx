@@ -1,9 +1,10 @@
-import { StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { Pressable, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
-import { ALLERGEN_ICONS, type Level, type Warning } from '@/data/warnings';
+import { ALLERGEN_ICONS, ingredientWarnings, warningKey, type Level, type Profile, type Warning } from '@/data/warnings';
 import { useLanguage } from '@/i18n/language';
 
 // red = contains, orange = may contain, yellow = cannot check
@@ -19,10 +20,20 @@ function warningIcon(w: Warning): string {
   return ALLERGEN_ICONS[w.allergen];
 }
 
-// Small coloured tags. Warnings only inform, they never block anything.
-export function WarningChips({ warnings }: { warnings: Warning[] }) {
-  const { t, allergenShortName } = useLanguage();
+type Props = {
+  warnings: Warning[];
+  // Optional: the recipe's ingredients and the profile used. When given, hovering a tag (or tapping it
+  // on a phone) shows WHICH ingredients cause that warning.
+  ingredients?: { name: string; productId: string | null }[];
+  profile?: Profile;
+};
+
+// Small coloured tags (labels, not buttons). Warnings only inform, they never block anything.
+export function WarningChips({ warnings, ingredients, profile }: Props) {
+  const { t, allergenShortName, ingredient: ingredientLabel } = useLanguage();
+  const [openKey, setOpenKey] = useState<string | null>(null); // the tag whose ingredients are shown
   if (warnings.length === 0) return null;
+  const explain = Boolean(ingredients && profile);
 
   function label(w: Warning): string {
     if (w.kind === 'vegan') return w.level === 'contains' ? t('warnNotVegan') : t('warnMayNotVegan');
@@ -31,30 +42,63 @@ export function WarningChips({ warnings }: { warnings: Warning[] }) {
     return w.level === 'contains' ? t('warnContains', { name }) : t('warnMayContain', { name });
   }
 
+  // The ingredients that give this warning (no repeats).
+  function causes(key: string): string[] {
+    if (!ingredients || !profile) return [];
+    const names = ingredients
+      .filter((ing) => ingredientWarnings(ing.productId, profile).some((w) => warningKey(w) === key))
+      .map((ing) => ingredientLabel(ing));
+    return [...new Set(names)];
+  }
+
+  const open = openKey ? warnings.find((w) => warningKey(w) === openKey) : undefined;
+
   return (
-    <ThemedView style={styles.wrap}>
-      {warnings.map((w) => {
-        const colors = LEVEL_COLORS[w.level];
-        return (
-          <ThemedView
-            key={w.kind === 'allergen' ? w.allergen : w.kind}
-            style={[styles.chip, { borderColor: colors.border, backgroundColor: colors.tint }]}>
+    <ThemedView style={styles.box}>
+      <ThemedView style={styles.wrap}>
+        {warnings.map((w) => {
+          const colors = LEVEL_COLORS[w.level];
+          const key = warningKey(w);
+          const tagStyle = [styles.tag, { borderLeftColor: colors.border, backgroundColor: colors.tint }];
+          const text = (
             <ThemedText type="small">
               {warningIcon(w)} {label(w)}
             </ThemedText>
-          </ThemedView>
-        );
-      })}
+          );
+          return explain ? (
+            <Pressable
+              key={key}
+              accessibilityLabel={`${label(w)}: ${causes(key).join(', ')}`}
+              onHoverIn={() => setOpenKey(key)}
+              onHoverOut={() => setOpenKey((old) => (old === key ? null : old))}
+              onPress={() => setOpenKey((old) => (old === key ? null : key))}
+              style={tagStyle}>
+              {text}
+            </Pressable>
+          ) : (
+            <ThemedView key={key} style={tagStyle}>
+              {text}
+            </ThemedView>
+          );
+        })}
+      </ThemedView>
+      {open ? (
+        <ThemedText type="small" themeColor="textSecondary">
+          {warningIcon(open)} {t('warnCausedBy', { names: causes(warningKey(open)).join(', ') })}
+        </ThemedText>
+      ) : null}
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
+  box: { gap: Spacing.one, backgroundColor: 'transparent' },
   wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.one, backgroundColor: 'transparent' },
-  chip: {
+  // A flat label: a coloured bar on the left and a soft tint, no outline, so it does not look like a button.
+  tag: {
     paddingVertical: 2,
     paddingHorizontal: Spacing.two,
-    borderRadius: 999,
-    borderWidth: 1,
+    borderRadius: 4,
+    borderLeftWidth: 3,
   },
 });

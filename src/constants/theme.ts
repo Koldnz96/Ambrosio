@@ -33,6 +33,9 @@ export const FORCED_SCHEME: 'light' | 'dark' | null = 'light';
 // The orange used for nicknames and highlights.
 export const Accent = '#C15F3C';
 
+// The green of the "Saved" button (white text on it is easy to read).
+export const SavedGreen = '#2E7D32';
+
 // A soft warm line for borders (cards and buttons), which works on light and dark.
 export const BorderColor = 'rgba(140, 70, 30, 0.35)';
 

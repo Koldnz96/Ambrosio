@@ -7,9 +7,10 @@ import { Pressable, StyleSheet, TextInput, type TextInputInstance } from 'react-
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { ServingsStepper } from '@/components/servings-stepper';
 import { WarningChips } from '@/components/warning-chips';
 import { Spacing } from '@/constants/theme';
-import { getProduct, searchProducts, type Product } from '@/data/products';
+import { getProduct, searchProducts, suggestSimilar, type Product } from '@/data/products';
 import { ALLERGEN_ICONS, EMPTY_PROFILE, ingredientWarnings, type Profile } from '@/data/warnings';
 import { useTheme } from '@/hooks/use-theme';
 import { useLanguage } from '@/i18n/language';
@@ -25,6 +26,7 @@ export type RecipeInput = {
   name: string;
   ingredients: IngredientInput[];
   steps: string[]; // how to cook it, one step per item
+  servings: number; // how many people the amounts are for
 };
 
 type Item = IngredientInput & { key: number }; // an ingredient already added to the list
@@ -48,7 +50,7 @@ function suggestionIcons(productId: string, profile: Profile): string {
 type Props = {
   title: string;
   submitLabel: string;
-  initial?: RecipeInput;
+  initial?: Omit<RecipeInput, 'servings'> & { servings?: number }; // older recipes may have no servings
   clearOnSave?: boolean; // true for "new recipe": empty the form after saving
   profile?: Profile; // allergies and vegan: used to show warnings
   onSubmit: (input: RecipeInput) => Promise<void>;
@@ -64,6 +66,7 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
   );
   // The steps are typed in one big box, one step per line.
   const [stepsText, setStepsText] = useState((initial?.steps ?? []).join('\n'));
+  const [servings, setServings] = useState(initial?.servings ?? 4);
   const [draft, setDraft] = useState<Draft>(EMPTY_DRAFT);
   const [suggesting, setSuggesting] = useState(false); // are suggestions open?
   const [saving, setSaving] = useState(false);
@@ -75,6 +78,12 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
 
   const suggestions =
     suggesting && draft.name.trim() !== '' && !draft.productId ? searchProducts(draft.name, lang) : [];
+  // When nothing matches, offer close names ("pork lard" -> Lard, "bannha" -> Lard). The cook must tap one:
+  // Enter never picks these, because a wrong guess could hide an allergen.
+  const similar =
+    suggesting && suggestions.length === 0 && !draft.productId && draft.name.trim().length >= 3
+      ? suggestSimilar(draft.name, lang)
+      : [];
   const draftProduct = getProduct(draft.productId);
 
   function changeDraft(patch: Partial<Draft>) {
@@ -156,11 +165,12 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
     setSaving(true);
     try {
       const steps = stepsText.split('\n').map((line) => line.trim()).filter((line) => line !== '');
-      await onSubmit({ name: name.trim(), ingredients, steps });
+      await onSubmit({ name: name.trim(), ingredients, steps, servings });
       if (clearOnSave) {
         setName('');
         setItems([]);
         setStepsText('');
+        setServings(4);
         setDraft(EMPTY_DRAFT);
         setSuggesting(false);
       }
@@ -184,6 +194,12 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
         onChangeText={setName}
         onFocus={() => setSuggesting(false)}
       />
+
+      {/* How many people the amounts below are for. */}
+      <ThemedText type="small" themeColor="textSecondary">
+        {t('servingsTitle')}
+      </ThemedText>
+      <ServingsStepper value={servings} onChange={setServings} />
 
       <ThemedText type="small" themeColor="textSecondary">
         {t('ingredientsHelp')}
@@ -217,7 +233,22 @@ export function RecipeForm({ title, submitLabel, initial, clearOnSave, profile =
           </ThemedText>
         </Pressable>
       ))}
-      {suggesting && suggestions.length === 0 && !draft.productId && draft.name.trim().length >= 2 ? (
+      {similar.length > 0 ? (
+        <ThemedText type="small" themeColor="textSecondary">
+          {t('didYouMean')}
+        </ThemedText>
+      ) : null}
+      {similar.map((p) => (
+        <Pressable key={p.id} style={styles.suggestion} onPress={() => pickProduct(p)}>
+          <ThemedText type="small">
+            {productLabel(p)} {suggestionIcons(p.id, profile)}
+          </ThemedText>
+          <ThemedText type="small" themeColor="textSecondary">
+            {categoryName(p.category)}
+          </ThemedText>
+        </Pressable>
+      ))}
+      {suggesting && suggestions.length === 0 && similar.length === 0 && !draft.productId && draft.name.trim().length >= 2 ? (
         <ThemedText type="small" themeColor="textSecondary">
           {t('notInCatalog')}
         </ThemedText>

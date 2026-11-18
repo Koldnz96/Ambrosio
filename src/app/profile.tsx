@@ -8,7 +8,6 @@ import {
   type User,
 } from 'firebase/auth';
 
-import { HiddenRecipes } from '@/components/hidden-recipes';
 import { NicknameForm } from '@/components/nickname-form';
 import { PublishStarterRecipes } from '@/components/publish-starter-recipes';
 import { LEVEL_COLORS } from '@/components/warning-chips';
@@ -241,7 +240,6 @@ export default function ProfileScreen() {
               </ThemedText>
 
             </ThemedView>
-            {user ? <HiddenRecipes uid={user.uid} /> : null}
 
             {/* TEMPORARY: only the Ambrosio account sees this. Remove after publishing. */}
             {user && displayName && nicknameKey(displayName) === 'ambrosio' ? (

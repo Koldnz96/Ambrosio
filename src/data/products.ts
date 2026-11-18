@@ -190,7 +190,7 @@ Tomato|g||tomate
 Cherry tomato|g||tomate cherry
 Onion|g||cebola
 Red onion|g||cebola roxa
-Spring onion|g||cebolinho;cebola nova;cebolinha
+Spring onion|g||cebolinho;cebola nova;cebolinha;scallion;green onion
 Shallot|g||chalota
 Garlic|unit||alho;dente de alho
 Leek|g||alho-francês;alho francês
@@ -207,9 +207,9 @@ Radish|g||rabanete
 Cucumber|g||pepino
 Courgette|g||curgete;abobrinha
 Aubergine|g||beringela
-Red pepper|g||pimento vermelho
-Green pepper|g||pimento verde
-Yellow pepper|g||pimento amarelo
+Red pepper|g||pimento vermelho;bell pepper;capsicum
+Green pepper|g||pimento verde;bell pepper;capsicum
+Yellow pepper|g||pimento amarelo;bell pepper;capsicum
 Chilli pepper|g||piri-piri;pimenta;malagueta
 Jalapeño|g||jalapeno
 Broccoli|g||brócolos;brócolis
@@ -279,7 +279,7 @@ Coconut|unit||coco
 Avocado|unit||abacate
 Persimmon|unit||dióspiro;diospiro
 Quince|unit||marmelo
-Raisins|g|dried|passas;passas de uva
+Raisins|g|dried|passas;passas de uva;sultanas
 Dried apricots|g|dried|alperces secos;damascos secos||sulphites
 Prunes|g|dried|ameixas secas
 Dried figs|g|dried|figos secos
@@ -290,8 +290,8 @@ Dried banana|g|dried|banana seca;banana desidratada
 `);
 
 const meat = parse('meat', 'g', `
-Minced beef|g||carne picada;carne de vaca picada;carne moída
-Minced pork|g||carne de porco picada
+Minced beef|g||carne picada;carne de vaca picada;carne moída;ground beef;beef mince;mince beef
+Minced pork|g||carne de porco picada;pork mince;ground pork
 Mixed minced meat|g||carne picada mista
 Beef steak|g||bife;bife de vaca
 Beef sirloin|g||lombo de vaca;vazia
@@ -308,6 +308,7 @@ Veal|g||vitela
 Pork loin|g||lombo de porco
 Pork tenderloin|g||febras;filete de porco
 Pork belly|g||entremeada;barriga de porco
+Pork fat|g||toucinho;toucinho fresco;gordura de porco;fatback
 Pork ribs|g||entrecosto;costelas de porco
 Pork shoulder|g||pá de porco
 Pork chop|g||costeleta de porco
@@ -321,9 +322,10 @@ Chicken wings|g||asas de frango
 Whole chicken|g||frango inteiro;frango;galinha
 Chicken liver|g||fígado de frango
 Chicken gizzards|g||moelas
-Minced chicken|g||frango picado
+Minced chicken|g||frango picado;chicken mince;ground chicken
 Turkey breast|g||peito de peru
-Minced turkey|g||peru picado
+Minced turkey|g||peru picado;turkey mince;ground turkey
+Minced lamb|g||borrego picado;carne de borrego picada;cordeiro picado;lamb mince;ground lamb
 Duck breast|g||peito de pato
 Duck leg|g||perna de pato
 Whole duck|g||pato
@@ -332,7 +334,7 @@ Lamb leg|g||perna de borrego;perna de cordeiro
 Lamb chops|g||costeletas de borrego;costeletas de cordeiro
 Lamb shoulder|g||pá de borrego;pá de cordeiro
 Kid goat|g||cabrito
-Chouriço|g|cured|chouriço;chourico;chouriço de carne
+Chouriço|g|cured|chouriço;chourico;chouriço de carne;chorizo
 Farinheira|g|cured|farinheira|gluten
 Morcela|g|cured|morcela;chouriço de sangue
 Linguiça|g|cured|linguiça;linguica
@@ -397,11 +399,11 @@ Lactose-free milk|ml||leite sem lactose|milk
 Butter|g||manteiga|milk
 Margarine|g||margarina||milk,soybeans
 Single cream|ml||natas;natas para cozinhar|milk
-Whipping cream|ml||natas para bater;nata|milk
+Whipping cream|ml||natas para bater;nata;heavy cream;double cream|milk
 Sour cream|g||natas azedas;creme azedo|milk
 Crème fraîche|g||creme fraiche|milk
-Plain yoghurt|g||iogurte natural;iogurte|milk
-Greek yoghurt|g||iogurte grego|milk
+Plain yoghurt|g||iogurte natural;iogurte;plain yogurt;yogurt|milk
+Greek yoghurt|g||iogurte grego;greek yogurt|milk
 Skyr|g||skyr|milk
 Kefir|ml||quefir;kefir|milk
 Buttermilk|ml||leitelho|milk
@@ -468,7 +470,7 @@ Buckwheat|g||trigo-sarraceno;trigo sarraceno
 Semolina|g||sêmola;semola|gluten
 Tapioca|g||tapioca
 Breadcrumbs|g|processed|pão ralado;pão-ralado|gluten
-Bread|g|processed|pão;pao|gluten
+Bread|g|processed|pão;pao;sourdough;sour dough|gluten
 Sliced white bread|g|processed|pão de forma|gluten||milk,soybeans
 Wholemeal bread|g|processed|pão integral|gluten
 Rye bread|g|processed|pão de centeio|gluten
@@ -513,7 +515,7 @@ Adzuki beans|g|dried|feijão azuki
 
 const herbs = parse('herbs', 'g', `
 Parsley|g||salsa
-Coriander|g||coentros;coentro
+Coriander|g||coentros;coentro;cilantro;coriander leaves
 Basil|g||manjericão;manjericao
 Mint|g||hortelã;hortela
 Rosemary|g||alecrim
@@ -533,7 +535,7 @@ Curry leaves|unit||folhas de caril
 `);
 
 const spices = parse('spices', 'g', `
-Salt|g||sal
+Salt|g||sal;table salt;kosher salt
 Coarse sea salt|g||sal grosso;sal marinho
 Black pepper|g|ground|pimenta preta;pimenta;pimenta moída
 Black peppercorns|g|dried|pimenta em grão
@@ -642,13 +644,13 @@ Olive oil|ml||azeite
 Extra virgin olive oil|ml||azeite virgem extra
 Sunflower oil|ml||óleo de girassol;óleo
 Vegetable oil|ml||óleo vegetal;óleo alimentar
-Rapeseed oil|ml||óleo de colza
+Rapeseed oil|ml||óleo de colza;canola oil
 Corn oil|ml||óleo de milho
 Coconut oil|g||óleo de coco
 Sesame oil|ml||óleo de sésamo|sesame
 Peanut oil|ml||óleo de amendoim|peanuts
 Walnut oil|ml||óleo de noz|nuts
-Lard|g||banha;banha de porco
+Lard|g||banha;banha de porco;pork lard;pig fat
 Duck fat|g||gordura de pato
 Ghee|g||ghee|milk
 Cooking spray|ml||spray de cozinha
@@ -657,7 +659,7 @@ Cooking spray|ml||spray de cozinha
 const baking = parse('baking', 'g', `
 Plain flour|g||farinha;farinha de trigo|gluten
 Self-raising flour|g||farinha com fermento|gluten
-Wholemeal flour|g||farinha integral|gluten
+Wholemeal flour|g||farinha integral;whole wheat flour;whole-wheat flour;wholewheat flour|gluten
 Strong bread flour|g||farinha de força;farinha para pão|gluten
 Rye flour|g||farinha de centeio|gluten
 Spelt flour|g||farinha de espelta|gluten
@@ -833,6 +835,98 @@ export function searchProducts(text: string, lang: Lang = 'en', limit = 8): Prod
     else if (q.length >= 2 && entry.names.some((n) => n.includes(q))) score = 3;
     else if (q.length >= 2 && entry.aliases.some((a) => a.includes(q))) score = 4;
     if (score >= 0) scored.push({ product: entry.product, score });
+  }
+  scored.sort(
+    (a, b) =>
+      a.score - b.score ||
+      productName(a.product, lang).length - productName(b.product, lang).length ||
+      productName(a.product, lang).localeCompare(productName(b.product, lang)),
+  );
+  return scored.slice(0, limit).map((s) => s.product);
+}
+
+// ---------------------------------------------------------------------------
+// "Did you mean...?" suggestions for typed names that match nothing above.
+//
+// These are ONLY suggestions: the cook must tap one. A wrong guess here could hide an allergen
+// (for example "peanut butter" -> "Butter"), so a suggestion is never picked automatically.
+// Two kinds of loose match, in every language and alias:
+//   a) every typed word matches a word of the product, allowing small typos ("bannha" -> Lard)
+//   b) every word of the product is inside what was typed ("pork lard" -> Lard)
+
+// How many wrong letters we forgive in a word: none in short words, one up to 6 letters, two beyond.
+function allowedTypos(word: string): number {
+  return word.length >= 7 ? 2 : word.length >= 4 ? 1 : 0;
+}
+
+// Number of letter changes between two words; stops early and returns max + 1 when it is more than max.
+function editDistance(a: string, b: string, max: number): number {
+  if (Math.abs(a.length - b.length) > max) return max + 1;
+  let previous = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    const current = [i];
+    let rowBest = i;
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      current[j] = Math.min(previous[j] + 1, current[j - 1] + 1, previous[j - 1] + cost);
+      if (current[j] < rowBest) rowBest = current[j];
+    }
+    if (rowBest > max) return max + 1;
+    previous = current;
+  }
+  return previous[b.length];
+}
+
+function wordsOf(text: string): string[] {
+  return normalize(text).split(/[^a-z0-9]+/).filter(Boolean);
+}
+
+const WORD_INDEX = PRODUCTS.map((product) => ({
+  product,
+  labels: [...new Set([product.name, product.pt, product.fr, ...product.aliases].map(normalize))]
+    .map(wordsOf)
+    .filter((words) => words.length > 0),
+}));
+
+export function suggestSimilar(text: string, lang: Lang = 'en', limit = 4): Product[] {
+  const typed = wordsOf(text);
+  if (normalize(text).length < 3 || typed.length === 0) return [];
+  const alreadyListed = new Set(searchProducts(text, lang, 100).map((p) => p.id));
+  const scored: { product: Product; score: number }[] = [];
+  for (const entry of WORD_INDEX) {
+    if (alreadyListed.has(entry.product.id)) continue;
+    let best = Infinity;
+    for (const words of entry.labels) {
+      // a) every typed word is (nearly) a word of this name
+      let typos = 0;
+      let allTypedMatch = true;
+      for (const q of typed) {
+        const max = allowedTypos(q);
+        const d = Math.min(...words.map((w) => editDistance(q, w, max)));
+        if (d > max) {
+          allTypedMatch = false;
+          break;
+        }
+        typos += d;
+      }
+      if (allTypedMatch) best = Math.min(best, typos * 3 + Math.abs(words.length - typed.length));
+      // b) every word of this name is (nearly) one of the typed words; extra typed words are ignored
+      let namedTypos = 0;
+      let allNameMatch = true;
+      for (const w of words) {
+        // Extra typed words are only ignored when the rest matches exactly (no typo forgiveness),
+        // so "canola oil" cannot be mistaken for "canela" (cinnamon).
+        const max = typed.length > words.length ? 0 : allowedTypos(w);
+        const d = Math.min(...typed.map((q) => editDistance(q, w, max)));
+        if (d > max) {
+          allNameMatch = false;
+          break;
+        }
+        namedTypos += d;
+      }
+      if (allNameMatch) best = Math.min(best, namedTypos * 3 + (typed.length - words.length));
+    }
+    if (best < Infinity) scored.push({ product: entry.product, score: best });
   }
   scored.sort(
     (a, b) =>
