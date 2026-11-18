@@ -4,7 +4,10 @@
 // Amounts are for about 4 people. Units are g, ml or unit.
 
 export type SeedIngredient = { product: string; amount: number; unit: 'g' | 'ml' | 'unit' };
-export type SeedRecipe = { name: string; ingredients: SeedIngredient[] };
+// course: what kind of meal it is (the ready-made week for new guests only uses dinners).
+// servings: how many people the amounts are for (dinners: 4).
+export type Course = 'dinner' | 'dessert' | 'cake' | 'breakfast';
+export type SeedRecipe = { name: string; ingredients: SeedIngredient[]; course?: Course; servings?: number };
 
 const g = (product: string, amount: number): SeedIngredient => ({ product, amount, unit: 'g' });
 const ml = (product: string, amount: number): SeedIngredient => ({ product, amount, unit: 'ml' });
@@ -93,5 +96,53 @@ export const SEED_RECIPES: SeedRecipe[] = [
   {
     name: 'Salmão no Forno com Batatas e Brócolos',
     ingredients: [g('Salmon', 600), g('Potato', 600), g('Broccoli', 400), ml('Olive oil', 40), n('Lemon', 1), n('Garlic', 2), g('Salt', 5), g('Black pepper', 2)],
+  },
+
+  // Portuguese desserts (for 6)
+  {
+    name: 'Arroz Doce',
+    course: 'dessert',
+    servings: 6,
+    ingredients: [g('Carolino rice', 200), ml('Whole milk', 1000), g('Sugar', 200), n('Lemon', 1), n('Cinnamon stick', 1), n('Egg', 4), g('Ground cinnamon', 5), g('Salt', 2)],
+  },
+  {
+    name: 'Leite-Creme',
+    course: 'dessert',
+    servings: 6,
+    ingredients: [ml('Whole milk', 750), n('Egg', 6), g('Sugar', 200), g('Cornflour', 30), n('Lemon', 1), n('Cinnamon stick', 1)],
+  },
+  {
+    name: 'Mousse de Chocolate',
+    course: 'dessert',
+    servings: 6,
+    ingredients: [g('Dark chocolate', 200), n('Egg', 6), g('Butter', 50), g('Sugar', 50), g('Salt', 1)],
+  },
+  {
+    name: 'Baba de Camelo',
+    course: 'dessert',
+    servings: 6,
+    ingredients: [g('Condensed milk', 794), n('Egg', 6), g('Almonds', 40)],
+  },
+
+  // Portuguese cakes (for 10)
+  {
+    name: 'Bolo de Bolacha',
+    course: 'cake',
+    servings: 10,
+    ingredients: [g('Maria biscuits', 400), g('Butter', 250), g('Sugar', 200), n('Egg', 2), ml('Coffee', 300)],
+  },
+  {
+    name: 'Bolo de Laranja',
+    course: 'cake',
+    servings: 10,
+    ingredients: [n('Orange', 2), n('Egg', 4), g('Sugar', 250), g('Plain flour', 250), g('Baking powder', 10), ml('Vegetable oil', 100), g('Butter', 10)],
+  },
+
+  // Breakfast (for 2)
+  {
+    name: 'Ovos com Bacon',
+    course: 'breakfast',
+    servings: 2,
+    ingredients: [n('Egg', 4), g('Bacon', 150), g('Butter', 10), g('Bread', 120), g('Salt', 1), g('Black pepper', 1)],
   },
 ];

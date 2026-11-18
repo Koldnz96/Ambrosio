@@ -47,6 +47,17 @@ export default function DiscoverScreen() {
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<RecipeCategory | 'all'>('all');
+  // What kind of meal: dinners, desserts, cakes, breakfasts (the meat/fish chips are about dinners).
+  type Course = 'all' | 'dinner' | 'dessert' | 'cake' | 'breakfast';
+  const [course, setCourse] = useState<Course>('all');
+  const COURSES = [
+    ['all', 'courseAll', ''],
+    ['dinner', 'courseDinner', '🍽️ '],
+    ['dessert', 'courseDessert', '🍮 '],
+    ['cake', 'courseCake', '🎂 '],
+    ['breakfast', 'courseBreakfast', '🍳 '],
+  ] as const;
+  const showMeatChips = course === 'all' || course === 'dinner';
   const [openIds, setOpenIds] = useState<Set<string>>(new Set()); // cards opened to show their details
   const [originalIds, setOriginalIds] = useState<Set<string>>(new Set()); // cards showing "the original"
   // The allergy filter. It starts with your Profile allergies ticked; you can untick them or tick
@@ -175,9 +186,9 @@ export default function DiscoverScreen() {
       (recipe) => repostOf({ ...recipe, ...copyInfo(recipe) }) !== '',
       myId,
     );
-    const notHidden = noDuplicates;
+    const notHidden = course === 'all' ? noDuplicates : noDuplicates.filter((r) => r.course === course);
     const single =
-      category === 'all'
+      category === 'all' || !showMeatChips
         ? notHidden
         : notHidden.filter((recipe) => recipeCategories(recipe.ingredients, getProduct).has(category));
     // The allergy filter: hide recipes that contain, may contain, or cannot be checked for these allergens.
@@ -198,7 +209,7 @@ export default function DiscoverScreen() {
     });
     return { visible: found, hiddenByFilter };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [recipes, search, category, user?.uid, ingredientLabel, filterOn, filterAllergies, showUnchecked]);
+  }, [recipes, search, category, course, user?.uid, ingredientLabel, filterOn, filterAllergies, showUnchecked]);
 
   function toggleOpen(id: string) {
     setOpenIds((old) => {
@@ -245,7 +256,7 @@ export default function DiscoverScreen() {
   }
 
   function ingredientLine(ing: PublicRecipe['ingredients'][number]): string {
-    return [ing.amount ?? '', ing.unit, ingredientLabel(ing)].filter((part) => part !== '').join(' ');
+    return [ing.amount ?? '', ing.unit === 'unit' ? '' : ing.unit, ingredientLabel(ing)].filter((part) => part !== '').join(' ');
   }
 
   // A copy is a new private recipe of your own. Changing it never changes the original.
@@ -462,7 +473,31 @@ export default function DiscoverScreen() {
                   {t('filterSkipping', { names: skippedOwn.map((a) => allergenShortName(a).toLowerCase()).join(', ') })}
                 </ThemedText>
               ) : null}
+              {/* Kind of meal: one row of chips (scrolls sideways on a phone). */}
               {recipes.length > 0 ? (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipScroll}>
+                  {COURSES.map(([key, label, icon]) => {
+                    const selected = course === key;
+                    return (
+                      <Pressable
+                        key={key}
+                        accessibilityRole="button"
+                        accessibilityState={{ selected }}
+                        style={[styles.chip, styles.courseChip, selected && styles.chipSelected]}
+                        onPress={() => {
+                          setCourse(key);
+                          if (key !== 'all' && key !== 'dinner') setCategory('all');
+                        }}>
+                        <ThemedText type="smallBold" style={selected ? styles.chipTextSelected : undefined}>
+                          {icon}
+                          {t(label)}
+                        </ThemedText>
+                      </Pressable>
+                    );
+                  })}
+                </ScrollView>
+              ) : null}
+              {recipes.length > 0 && showMeatChips ? (
                 isPhone ? (
                   // On a phone the chips sit in one line that scrolls sideways (they would take 4 rows).
                   <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipScroll}>
@@ -592,20 +627,18 @@ export default function DiscoverScreen() {
                         </Pressable>
                       ) : null}
                       {mine ? null : (
-                        // One button: "Save" puts a copy in My recipes; green "✓ Saved" takes it out again.
-                        // It keeps the same size in both states, so nothing next to it moves.
+                        // The heart: empty = not saved; full = saved in My recipes (press again to take it out).
                         <Pressable
                           accessibilityRole="button"
+                          accessibilityLabel={savedIds.has(recipe.id) ? t('unlikeRecipe') : t('likeRecipe')}
                           accessibilityState={{ selected: savedIds.has(recipe.id) }}
                           onPress={() =>
                             isGuest ? setGuestNoteId(recipe.id) : savedIds.has(recipe.id) ? removeCopy(recipe) : saveCopy(recipe)
                           }
-                          style={[Layout.smallButton, savedIds.has(recipe.id) && styles.savedButton]}>
-                          <SteadyLabel
-                            labels={[t('saveCopy'), `✓ ${t('savedButton')}`]}
-                            active={savedIds.has(recipe.id) ? 1 : 0}
-                            style={savedIds.has(recipe.id) ? styles.chipTextSelected : undefined}
-                          />
+                          style={[Layout.smallButton, styles.heartButton]}>
+                          <ThemedText style={[styles.heart, savedIds.has(recipe.id) && styles.heartOn]}>
+                            {savedIds.has(recipe.id) ? '♥' : '♡'}
+                          </ThemedText>
                         </Pressable>
                       )}
                     </ThemedView>
@@ -674,7 +707,7 @@ export default function DiscoverScreen() {
                       <>
                         {forServings(recipe).ingredients.map((ing, index) => (
                           <ThemedText key={index} type="small" themeColor="textSecondary">
-                            {[ing.amount ?? '', ing.unit, ingredientLabel(ing)].filter((part) => part !== '').join(' ')}
+                            {[ing.amount ?? '', ing.unit === 'unit' ? '' : ing.unit, ingredientLabel(ing)].filter((part) => part !== '').join(' ')}
                           </ThemedText>
                         ))}
                         <RecipeSteps steps={recipe.steps} />
@@ -828,10 +861,14 @@ const styles = StyleSheet.create({
     borderColor: BorderColor,
   },
   chipSelected: { backgroundColor: Accent, borderColor: Accent },
+  courseChip: { paddingHorizontal: 18 },
   chipMine: { borderColor: Accent, backgroundColor: 'rgba(193, 95, 60, 0.22)' }, // your own allergies, ticked: soft orange
   skipNote: { color: '#D93025' },
   chipWide: { alignSelf: 'flex-start' },
   savedButton: { backgroundColor: SavedGreen, borderColor: SavedGreen },
+  heartButton: { minWidth: 48, alignItems: 'center' },
+  heart: { fontSize: 22, lineHeight: 26, color: Accent },
+  heartOn: { color: '#D93025' },
   priceCol: { backgroundColor: 'transparent' },
   addedNote: { color: SavedGreen },
   chipTextSelected: { color: '#FFFFFF' },

@@ -6,6 +6,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import AppTabs from '@/components/app-tabs';
+import { GuestTour } from '@/components/guest-tour';
 import { IntroSlide } from '@/components/intro-slide';
 import { LanguageProvider } from '@/i18n/language';
 import { auth } from '@/firebase';
@@ -29,6 +30,7 @@ export default function TabLayout() {
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <AnimatedSplashOverlay />
         <AppTabs />
+        <GuestTour />
         <IntroSlide />
       </ThemeProvider>
     </LanguageProvider>

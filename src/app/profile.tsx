@@ -11,6 +11,7 @@ import {
 } from 'firebase/auth';
 
 import { NicknameForm } from '@/components/nickname-form';
+import { replayTour } from '@/components/guest-tour';
 import { PublishStarterRecipes } from '@/components/publish-starter-recipes';
 import { LEVEL_COLORS } from '@/components/warning-chips';
 import { Screen } from '@/components/screen';
@@ -292,6 +293,9 @@ export default function ProfileScreen() {
               <ThemedText themeColor="textSecondary" type="small">
                 {t('guideNote')}
               </ThemedText>
+              <Pressable style={Layout.smallButton} onPress={replayTour}>
+                <ThemedText type="smallBold">{t('tourReplay')}</ThemedText>
+              </Pressable>
 
             </ThemedView>
 

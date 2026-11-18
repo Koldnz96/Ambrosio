@@ -11,6 +11,8 @@ export const NEVER = [
   'detergente', 'brinquedo', 'conjunto', 'coffret', 'caneca', 'prato', 'garrafa', 'moinho', 'galheteiro', 'livro',
   'aroma', 'sabor', 'chips', 'bolachas', 'tablete', 'bombons', 'gomas', 'rebucados', 'pastilhas',
   'sumo', 'nectar', 'refrigerante', 'gelado', 'pizza', 'sandes', 'tosta', 'refeicao', 'bebe', 'infantil', 'dentaria', 'tigela',
+  // ready-made dishes (we price ingredients, not meals)
+  'cozinha', 'espiritual', 'guisadas', 'guisado', 'panado', 'panados', 'panada', 'panadas',
 ];
 
 export const RULES = [

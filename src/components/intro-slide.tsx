@@ -3,7 +3,6 @@
 // answers, and then the app appears: logo, name, one sentence, one button.
 // "Saltar" (skip) in the corner works at any moment. It is remembered in localStorage, so people who
 // already saw it go straight to the app.
-import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Animated, Easing, Image, Platform, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 
@@ -62,7 +61,6 @@ type Step = 'typing' | 'thinking' | 'answer' | 'reveal';
 
 export function IntroSlide() {
   const { t } = useLanguage();
-  const router = useRouter();
   const small = useWindowDimensions().width < 480;
   const [visible, setVisible] = useState(false);
   const [step, setStep] = useState<Step>('typing');
@@ -117,13 +115,14 @@ export function IntroSlide() {
 
   function close() {
     removeCurtain();
-    // Everyone lands on the Home page first, so they read what the app is about.
-    router.replace('/');
     try {
       globalThis.localStorage?.setItem(STORAGE_KEY, '1');
     } catch {
       // storage can be blocked: the scene will just show again next time
     }
+    // The guided tour (components/guest-tour.tsx) decides where to go next: straight to the Week page
+    // when the tour starts, otherwise the Home page. Doing it there avoids a flash of the wrong page.
+    globalThis.dispatchEvent?.(new Event('ambrosio-intro-done'));
     Animated.timing(fade, { toValue: 0, duration: 350, useNativeDriver: true }).start(() => setVisible(false));
   }
 

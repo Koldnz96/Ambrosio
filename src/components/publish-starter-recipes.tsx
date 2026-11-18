@@ -82,6 +82,8 @@ export function PublishStarterRecipes({ uid, authorName, existing }: Props) {
           authorName,
           ingredients: buildIngredients(recipe),
           steps: SEED_STEPS[recipe.name] ?? [],
+          servings: recipe.servings ?? 4,
+          course: recipe.course ?? 'dinner',
           photo: '',
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),

@@ -3,6 +3,7 @@ import { Platform, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Footer } from '@/components/footer';
+import { TourBanner } from '@/components/guest-tour';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
@@ -22,6 +23,8 @@ export function Screen({ title, children, showFooterOnPhone = false }: { title: 
           <ThemedText type="subtitle" style={isPhone ? styles.titlePhone : undefined}>
             {title}
           </ThemedText>
+          {/* The guided tour card for new guests (only on the page its current step is about). */}
+          <TourBanner />
           {children}
           {(!isPhone || showFooterOnPhone) && <Footer />}
         </ScrollView>

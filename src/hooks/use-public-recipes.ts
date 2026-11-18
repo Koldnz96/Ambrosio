@@ -14,6 +14,7 @@ export type PublicRecipe = {
   steps: string[]; // how to cook it, one step per item
   photo: string; // a small picture saved as text ('' = no photo)
   servings: number; // how many people the amounts are for
+  course: string; // 'dinner' (default), 'dessert', 'cake' or 'breakfast'
   createdAtMs: number;
 } & CopyInfo;
 
@@ -50,6 +51,7 @@ export function usePublicRecipes(enabled: boolean) {
             steps: Array.isArray(data.steps) ? data.steps.filter((s: unknown) => typeof s === 'string') : [],
             photo: typeof data.photo === 'string' ? data.photo : '',
             servings: Number.isInteger(data.servings) && data.servings > 0 ? data.servings : 4, // older recipes: 4
+            course: typeof data.course === 'string' ? data.course : 'dinner',
             copiedFrom: data.copiedFrom ?? '',
             originalAuthor: data.originalAuthor ?? '',
             originalSignature: data.originalSignature ?? '',

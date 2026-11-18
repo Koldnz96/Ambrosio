@@ -90,6 +90,18 @@ async function readShop(shop) {
         pack: best.packText,
         product: [best.name, best.brand].filter(Boolean).join(' · '),
         url: best.url,
+        // Every pack size found (same unit), smallest first: the shopping list picks what to really buy
+        // (for example the 750 ml bottle when the recipes need 15 ml). "loose" = sold by weight (kg).
+        packs: sameUnit
+          .filter((f) => f.packAmount)
+          .sort((a, b) => a.packAmount - b.packAmount)
+          .map((f) => ({
+            amount: f.packAmount,
+            price: f.price,
+            oldPrice: f.oldPrice,
+            product: [f.name, f.brand].filter(Boolean).join(' · '),
+            loose: /granel|avulso|\bkg\b/i.test(f.packText ?? '') && !/emb|saco|pack/i.test(f.packText ?? ''),
+          })),
       };
     }
     if (TEST) console.log(`${shop.name} | ${ingredient}: ${best ? `${best.unitPrice} €/${best.packUnit} (${best.name}, ${best.packText}, ${best.price} €)` : 'no price'}`);
@@ -103,7 +115,7 @@ const results = await Promise.all(SHOPS.map((shop) => readShop(shop)));
 const shops = Object.fromEntries(SHOPS.map((shop, i) => [shop.id, { name: shop.name, items: results[i] }]));
 
 // Safety check: a price far from the other shops is probably the wrong product (for example a small jar of
-// dried onion instead of fresh onions). When 2 or more shops have a price, drop any price more than 3 times
+// dried onion instead of fresh onions). When 2 or more shops have a price, drop any price more than 2 times
 // higher or lower than the middle one.
 const allIngredients = new Set(results.flatMap((items) => Object.keys(items)));
 let dropped = 0;
@@ -118,7 +130,7 @@ for (const ingredient of allIngredients) {
   for (const s of SHOPS) {
     const item = shops[s.id].items[ingredient];
     if (!item) continue;
-    if (item.unit !== unit || item.unitPrice > middle * 3 || item.unitPrice < middle / 3) {
+    if (item.unit !== unit || item.unitPrice > middle * 2 || item.unitPrice < middle / 2) {
       delete shops[s.id].items[ingredient];
       dropped++;
     }

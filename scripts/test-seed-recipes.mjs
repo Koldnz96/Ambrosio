@@ -21,11 +21,11 @@ function check(label, ok) { if (!ok) { fails += 1; console.log('FAIL', label); }
 
 console.log('products read:', products.size);
 check('about 549 products', products.size > 500);
-check('20 recipes', SEED_RECIPES.length === 20);
-check('names are unique', new Set(SEED_RECIPES.map((r) => r.name)).size === 20);
+check('27 recipes (20 dinners, 4 desserts, 2 cakes, 1 breakfast)', SEED_RECIPES.length === 27);
+check('names are unique', new Set(SEED_RECIPES.map((r) => r.name)).size === SEED_RECIPES.length);
 for (const r of SEED_RECIPES) {
   check(`${r.name}: name length`, r.name.length > 0 && r.name.length <= 200);
-  check(`${r.name}: has ingredients`, r.ingredients.length >= 5);
+  check(`${r.name}: has ingredients`, r.ingredients.length >= 3);
   const seen = new Set();
   for (const i of r.ingredients) {
     check(`${r.name}: "${i.product}" exists`, products.has(i.product));
@@ -41,5 +41,5 @@ for (const r of SEED_RECIPES) {
   check(`${r.name}: steps are not empty`, steps.every((x) => x.trim().length > 10));
 }
 check('no steps for unknown recipes', Object.keys(SEED_STEPS).every((k) => SEED_RECIPES.some((r) => r.name === k)));
-console.log(fails ? `FAIL (${fails})` : 'PASS: all 20 recipes valid');
+console.log(fails ? `FAIL (${fails})` : 'PASS: all recipes valid');
 process.exit(fails ? 1 : 0);

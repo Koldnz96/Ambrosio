@@ -14,6 +14,7 @@
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { NEVER, RULES } from './match-rules.mjs';
+import { EXTRA_RULES } from './extra-rules.mjs';
 
 const here = (file) => new URL(file, import.meta.url);
 const catalogText = await readFile(here('../../src/data/products.ts'), 'utf8');
@@ -66,7 +67,8 @@ function autoRule(item) {
   });
 }
 
-const hand = new Map(RULES.map((r) => [r.product, r]));
+// Hand-written rules: EXTRA_RULES (newer) win over RULES.
+const hand = new Map([...RULES, ...EXTRA_RULES].map((r) => [r.product, r]));
 const never = new Set(NEVER);
 
 // Shops often put a general word first: "queijo mozzarella", "massa rigatoni", "molho pesto", "sumo laranja".

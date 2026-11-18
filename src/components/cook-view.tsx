@@ -27,7 +27,7 @@ export function CookView({ recipe, author, original, warnings, extra, onClose }:
   const { t, ingredient: ingredientLabel } = useLanguage();
 
   function ingredientLine(ing: PublicRecipe['ingredients'][number]): string {
-    return [ing.amount ?? '', ing.unit, ingredientLabel(ing)].filter((part) => part !== '').join(' ');
+    return [ing.amount ?? '', ing.unit === 'unit' ? '' : ing.unit, ingredientLabel(ing)].filter((part) => part !== '').join(' ');
   }
 
   const closeButton = (
