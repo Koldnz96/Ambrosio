@@ -13,9 +13,9 @@ function readSavedLanguage(): Lang {
     const saved = globalThis.localStorage?.getItem(STORAGE_KEY);
     if (saved === 'en' || saved === 'pt' || saved === 'fr') return saved;
   } catch {
-    // storage can be blocked: just use English
+    // storage can be blocked: just use the default
   }
-  return 'en';
+  return 'pt'; // first visit: Portuguese, because Ambrósio is made for people in Portugal
 }
 
 type LanguageApi = {

@@ -54,6 +54,27 @@
       * { scrollbar-width: none; -ms-overflow-style: none; }
       *::-webkit-scrollbar { display: none; width: 0; height: 0; }
     </style>
+
+    <!-- First visit: cover the page with a plain cream "curtain" BEFORE anything is drawn, so the app
+         does not flash for a second before the Ambrósio welcome scene (src/components/intro-slide.tsx)
+         appears. The scene removes the curtain when it closes. Safety net: the curtain disappears
+         by itself after 10 seconds in any case. -->
+    <script>
+      try {
+        if (localStorage.getItem('ambrosio-intro-seen') !== '1') document.documentElement.classList.add('intro-first');
+      } catch (e) {}
+    </script>
+    <style id="ambrosio-curtain">
+      html.intro-first body::after {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-color: #F0D5BC;
+        z-index: 999;
+        animation: ambrosio-curtain-off 0s 10s forwards;
+      }
+      @keyframes ambrosio-curtain-off { to { visibility: hidden; } }
+    </style>
   </head>
 
   <body>
