@@ -315,6 +315,15 @@ const en = {
   courseDessert: 'Desserts',
   courseCake: 'Cakes',
   courseBreakfast: 'Breakfast',
+  buyPieces: '{count} pcs',
+  buyUses: 'recipes: {amount}',
+  haveAtHome: 'I have this at home',
+  haveAtHomeTitle: 'At home already ({count})',
+  haveAtHomeHelp: 'Not on the list and not in the price. Tap one to put it back on the list.',
+  buyNote: 'What to buy at each shop: {priced} of {total} products priced · online prices from {date} · approximate. Tap 🏠 on anything you still have.',
+  buyEstimate: '≈ estimate',
+  buyInstead: 'buy {name} instead',
+  buyEstimatedCount: '{count} estimated at {shop} (no online price there).',
 };
 
 export type StringKey = keyof typeof en;
@@ -619,6 +628,15 @@ const pt: Record<StringKey, string> = {
   courseDessert: 'Sobremesas',
   courseCake: 'Bolos',
   courseBreakfast: 'Pequeno-almoço',
+  buyPieces: '{count} un.',
+  buyUses: 'receitas: {amount}',
+  haveAtHome: 'Tenho em casa',
+  haveAtHomeTitle: 'Já tenho em casa ({count})',
+  haveAtHomeHelp: 'Não entram na lista nem no preço. Toque num para o pôr outra vez na lista.',
+  buyNote: 'O que comprar em cada loja: preço de {priced} de {total} produtos · preços online de {date} · aproximado. Toque em 🏠 no que ainda tem em casa.',
+  buyEstimate: '≈ estimativa',
+  buyInstead: 'compre {name}',
+  buyEstimatedCount: '{count} estimados no {shop} (sem preço online lá).',
 };
 
 const fr: Record<StringKey, string> = {
@@ -921,6 +939,15 @@ const fr: Record<StringKey, string> = {
   courseDessert: 'Desserts',
   courseCake: 'Gâteaux',
   courseBreakfast: 'Petit-déjeuner',
+  buyPieces: '{count} pièces',
+  buyUses: 'recettes : {amount}',
+  haveAtHome: "J'en ai à la maison",
+  haveAtHomeTitle: 'Déjà à la maison ({count})',
+  haveAtHomeHelp: 'Pas dans la liste ni dans le prix. Touchez-en un pour le remettre dans la liste.',
+  buyNote: 'Quoi acheter dans chaque magasin : prix de {priced} sur {total} produits · prix en ligne du {date} · approximatif. Touchez 🏠 sur ce que vous avez encore.',
+  buyEstimate: '≈ estimation',
+  buyInstead: 'achetez {name} à la place',
+  buyEstimatedCount: '{count} estimés chez {shop} (pas de prix en ligne).',
 };
 
 export const STRINGS: Record<Lang, Record<StringKey, string>> = { en, pt, fr };

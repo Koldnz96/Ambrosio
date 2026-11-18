@@ -12,6 +12,8 @@ export type PriceItem = {
   pack: string | null;
   product: string;
   url: string;
+  // Every pack size found (newer prices files): amount in kg, l or un. "loose" = sold by weight.
+  packs?: { amount: number; price: number; oldPrice: number | null; product: string; loose: boolean }[];
 };
 
 export type PricesFile = {

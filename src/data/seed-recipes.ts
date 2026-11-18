@@ -75,7 +75,7 @@ export const SEED_RECIPES: SeedRecipe[] = [
   },
   {
     name: 'Esparguete à Carbonara',
-    ingredients: [g('Spaghetti', 400), g('Pancetta', 200), n('Egg', 4), g('Parmesan', 80), g('Black pepper', 3), g('Salt', 6)],
+    ingredients: [g('Spaghetti', 400), g('Bacon', 200), n('Egg', 4), g('Parmesan', 80), g('Black pepper', 3), g('Salt', 6)],
   },
   {
     name: 'Caril de Frango com Arroz',

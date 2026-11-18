@@ -20,6 +20,7 @@ export function useUserData(uid: string | null) {
   const [week, setWeek] = useState<Week>(EMPTY_WEEK);
   const [displayName, setDisplayName] = useState('');
   const [hidden, setHidden] = useState<string[]>([]); // ids of public recipes marked "not interested"
+  const [haveAtHome, setHaveAtHome] = useState<string[]>([]); // products the person still has at home (left out of shopping)
   const [loaded, setLoaded] = useState(false);
   // A guest (no email yet). Watched with onIdTokenChanged, because "Create account" keeps the same uid.
   const [isGuest, setIsGuest] = useState(auth.currentUser?.isAnonymous === true);
@@ -32,6 +33,7 @@ export function useUserData(uid: string | null) {
       setWeek(EMPTY_WEEK);
       setDisplayName('');
       setHidden([]);
+      setHaveAtHome([]);
       setLoaded(false);
       return;
     }
@@ -53,6 +55,7 @@ export function useUserData(uid: string | null) {
         setWeek(nextWeek);
         setDisplayName(typeof data.displayName === 'string' ? data.displayName : '');
         setHidden(Array.isArray(data.hidden) ? data.hidden.filter((id: unknown) => typeof id === 'string') : []);
+        setHaveAtHome(Array.isArray(data.haveAtHome) ? data.haveAtHome.filter((id: unknown) => typeof id === 'string') : []);
         setLoaded(true);
       },
       (err) => setError({ kind: 'load', message: err.message }),
@@ -75,6 +78,7 @@ export function useUserData(uid: string | null) {
   const saveProfile = useCallback((next: Profile) => save({ allergies: next.allergies, vegan: next.vegan }), [save]);
   const saveWeek = useCallback((next: Week) => save({ week: next }), [save]);
   const saveHidden = useCallback((next: string[]) => save({ hidden: next }), [save]);
+  const saveHaveAtHome = useCallback((next: string[]) => save({ haveAtHome: next }), [save]);
 
   // Nicknames are unique: this fails with reason "taken" when someone else has it.
   const saveDisplayName = useCallback(
@@ -88,5 +92,5 @@ export function useUserData(uid: string | null) {
   // Signed in, settings loaded, and still no nickname: the screens ask for one first.
   const needsNickname = uid !== null && loaded && displayName === '' && !isGuest;
 
-    return { profile, week, displayName, needsNickname, isGuest, loaded, error, hidden, saveProfile, saveWeek, saveHidden, saveDisplayName };
+    return { profile, week, displayName, needsNickname, isGuest, loaded, error, hidden, haveAtHome, saveProfile, saveWeek, saveHidden, saveHaveAtHome, saveDisplayName };
 }

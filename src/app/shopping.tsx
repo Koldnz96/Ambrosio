@@ -8,7 +8,8 @@ import { WelcomeCard } from '@/components/welcome-card';
 import { ThemedView } from '@/components/themed-view';
 import { Accent, MaxContentWidth, SavedGreen, Spacing } from '@/constants/theme';
 import { Layout } from '@/constants/layout';
-import { compareShops, formatEuros } from '@/data/prices';
+import { formatEuros } from '@/data/prices';
+import { NOT_BOUGHT, planShops, sumNeeds, type Buy } from '@/data/buy';
 import { buildShoppingList, type Needed } from '@/data/shopping';
 import { useAuthUser } from '@/hooks/use-auth-user';
 import { useIsPhone } from '@/hooks/use-is-phone';
@@ -18,7 +19,7 @@ import { usePublicRecipes } from '@/hooks/use-public-recipes';
 import { parseEntry } from '@/data/week-entry';
 import { scaleLines } from '@/data/prices';
 import { DAYS, useUserData } from '@/hooks/use-user-data';
-import { getProduct, type Category } from '@/data/products';
+import { getProduct, PRODUCTS, type Category } from '@/data/products';
 import { useLanguage } from '@/i18n/language';
 
 // A picture per supermarket section, so the list is quick to scan in the shop.
@@ -45,7 +46,8 @@ export default function ShoppingScreen() {
   const { t, product: productLabel, categoryName } = useLanguage();
   const { user, ready } = useAuthUser();
   const { recipes } = useRecipes(user?.uid ?? null);
-  const { week, loaded, needsNickname, saveDisplayName } = useUserData(user?.uid ?? null);
+  const { week, loaded, needsNickname, saveDisplayName, haveAtHome, saveHaveAtHome } = useUserData(user?.uid ?? null);
+  const [shopId, setShopId] = useState<string | null>(null); // shop tab chosen (null = the cheapest)
   const [ticked, setTicked] = useState<Set<string>>(new Set()); // ticks live in memory only
   const prices = usePrices();
   // Big, thumb-friendly rows on a phone (used in the shop); the normal size of the app on a computer.
@@ -72,9 +74,42 @@ export default function ShoppingScreen() {
     return { groups: buildShoppingList(needed), recipeCount: count, needed };
   }, [week, recipes, publicRecipes]);
 
-  // Which supermarket is cheapest overall for this list (approximate: online prices).
-  const comparison = useMemo(() => compareShops(needed, prices), [needed, prices]);
-  const best = comparison.ranking[0];
+  // What to BUY at each shop (packs and pieces), and which shop is cheapest overall.
+  // Things you said you still have at home are left out.
+  const have = useMemo(() => new Set(haveAtHome), [haveAtHome]);
+  const plan = useMemo(
+    () => planShops(sumNeeds(needed).filter((n) => !have.has(n.productId)), prices),
+    [needed, prices, have],
+  );
+  const best = plan.shops[0];
+  const shown = plan.shops.find((s) => s.shopId === shopId) ?? best; // the shop whose packs are shown
+  // The buy plan for one list item at the shown shop (an item can need g and units: added together).
+  function buyFor(productId: string | null): Buy | null {
+    if (!productId || !shown) return null;
+    const found = [...shown.buys.entries()].filter(([k]) => k.startsWith(`${productId}|`)).map(([, b]) => b);
+    if (found.length === 0) return null;
+    if (found.length === 1) return found[0];
+    return { ...found[0], cost: found.reduce((sum, b) => sum + b.cost, 0) };
+  }
+  function buyText(b: Buy): string {
+    return 'pieces' in b.label ? t('buyPieces', { count: b.label.pieces }) : `${b.label.count} × ${b.label.size}`;
+  }
+  function toggleHave(productId: string) {
+    saveHaveAtHome(have.has(productId) ? haveAtHome.filter((id) => id !== productId) : [...haveAtHome, productId]);
+  }
+  // The list without the things at home; those get their own small card at the end.
+  // The name (in the app language) of the product bought instead, e.g. Pancetta -> "bacon".
+  function insteadLabel(name: string): string {
+    const p = PRODUCTS.find((x) => x.name === name);
+    return p ? productLabel(p) : name;
+  }
+  // Tap water is never bought, so it is not on the list.
+  const isWater = (i: { productId: string | null }) =>
+    !!i.productId && NOT_BOUGHT.has(getProduct(i.productId)?.name ?? '');
+  const listGroups = groups
+    .map((g) => ({ ...g, items: g.items.filter((i) => !isWater(i) && !(i.productId && have.has(i.productId))) }))
+    .filter((g) => g.items.length > 0);
+  const atHome = groups.flatMap((g) => g.items.filter((i) => i.productId && have.has(i.productId)));
 
   function toggle(key: string) {
     setTicked((old) => {
@@ -112,27 +147,38 @@ export default function ShoppingScreen() {
               <ThemedText type="smallBold">
                 🛒 {t('priceBest', { shop: best.name, total: formatEuros(best.total) })}
               </ThemedText>
-              {comparison.ranking.length > 1 ? (
-                <ThemedText type="small">
-                  {comparison.ranking
-                    .slice(1)
-                    .map((s) => `${s.name} ${formatEuros(s.total)}`)
-                    .join(' · ')}
-                </ThemedText>
-              ) : null}
+              {/* Shop tabs: the list below shows the packs and prices of the chosen shop. */}
+              <ThemedView style={styles.shopTabs}>
+                {plan.shops.map((s) => {
+                  const on = s.shopId === shown?.shopId;
+                  return (
+                    <Pressable
+                      key={s.shopId}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: on }}
+                      style={[styles.shopTab, on && styles.shopTabOn]}
+                      onPress={() => setShopId(s.shopId)}>
+                      <ThemedText type="smallBold" style={on ? styles.shopTabTextOn : undefined}>
+                        {s.name} {formatEuros(s.total)}
+                      </ThemedText>
+                    </Pressable>
+                  );
+                })}
+              </ThemedView>
               <ThemedText type="small" themeColor="textSecondary">
-                {t('priceNote', {
-                  priced: comparison.priced,
-                  total: comparison.total,
+                {t('buyNote', {
+                  priced: plan.priced,
+                  total: plan.total,
                   date: new Date(prices.updatedAt).toLocaleDateString(),
                 })}
+                {shown && shown.estimated > 0 ? ` ${t('buyEstimatedCount', { count: shown.estimated, shop: shown.name })}` : ''}
               </ThemedText>
             </ThemedView>
           ) : null}
           {/* How far you are in the shop: "5 of 23 in the basket", with a bar. */}
           {(() => {
-            const total = groups.reduce((n, g) => n + g.items.length, 0);
-            const done = groups.reduce((n, g) => n + g.items.filter((i) => ticked.has(i.key)).length, 0);
+            const total = listGroups.reduce((n, g) => n + g.items.length, 0);
+            const done = listGroups.reduce((n, g) => n + g.items.filter((i) => ticked.has(i.key)).length, 0);
             return (
               <ThemedView type="backgroundElement" style={[Layout.card, styles.progressCard]}>
                 <ThemedView style={styles.progressHead}>
@@ -156,9 +202,9 @@ export default function ShoppingScreen() {
               so a short section (Fruit, 1 item) never leaves a big hole next to a long one. */}
           <ThemedView style={styles.columns}>
             {(() => {
-              const cols: (typeof groups)[] = Array.from({ length: columnCount }, () => []);
+              const cols: (typeof listGroups)[] = Array.from({ length: columnCount }, () => []);
               const heights = new Array(columnCount).fill(0);
-              for (const g of groups) {
+              for (const g of listGroups) {
                 const shortest = heights.indexOf(Math.min(...heights));
                 cols[shortest].push(g);
                 heights[shortest] += 70 + g.items.length * 52; // about: header + rows
@@ -195,16 +241,40 @@ export default function ShoppingScreen() {
                         <ThemedView style={[styles.box, isPhone && styles.boxPhone, done && styles.boxDone]}>
                           {done ? <ThemedText style={[styles.tick, isPhone && styles.tickPhone]}>✓</ThemedText> : null}
                         </ThemedView>
-                        <ThemedText
-                          style={[styles.itemName, isPhone && styles.itemNamePhone, done && styles.itemDone]}
-                          themeColor={done ? 'textSecondary' : 'text'}>
-                          {name}
-                        </ThemedText>
-                        <ThemedView type="backgroundSelected" style={[styles.qty, done && styles.qtyDone]}>
-                          <ThemedText type="small">
-                            {item.quantities.length > 0 ? item.quantities.join(' + ') : t('quantitySome')}
+                        <ThemedView style={styles.itemText}>
+                          <ThemedText
+                            style={[styles.itemName, isPhone && styles.itemNamePhone, done && styles.itemDone]}
+                            themeColor={done ? 'textSecondary' : 'text'}>
+                            {name}
+                          </ThemedText>
+                          {/* What the recipes use, small, and the approximate price of what you buy. */}
+                          <ThemedText type="small" themeColor="textSecondary" style={styles.useLine}>
+                            {t('buyUses', { amount: item.quantities.length > 0 ? item.quantities.join(' + ') : t('quantitySome') })}
+                            {buyFor(item.productId) ? ` · ${formatEuros(buyFor(item.productId)!.cost)}` : ''}
+                            {buyFor(item.productId)?.estimated ? ` · ${t('buyEstimate')}` : ''}
+                            {buyFor(item.productId)?.onSale ? ' · 🏷️' : ''}
+                            {buyFor(item.productId)?.instead ? ` · ${t('buyInstead', { name: insteadLabel(buyFor(item.productId)!.instead!) })}` : ''}
                           </ThemedText>
                         </ThemedView>
+                        {/* What to put in the basket: "1 × 750 ml", "2 un." (or the amount when no price yet). */}
+                        <ThemedView type="backgroundSelected" style={[styles.qty, done && styles.qtyDone]}>
+                          <ThemedText type="smallBold">
+                            {buyFor(item.productId)
+                              ? buyText(buyFor(item.productId)!)
+                              : item.quantities.length > 0
+                                ? item.quantities.join(' + ')
+                                : t('quantitySome')}
+                          </ThemedText>
+                        </ThemedView>
+                        {item.productId ? (
+                          <Pressable
+                            accessibilityRole="button"
+                            accessibilityLabel={t('haveAtHome')}
+                            style={styles.homeButton}
+                            onPress={() => toggleHave(item.productId!)}>
+                            <ThemedText style={styles.homeIcon}>🏠</ThemedText>
+                          </Pressable>
+                        ) : null}
                       </Pressable>
                     );
                   })}
@@ -214,6 +284,25 @@ export default function ShoppingScreen() {
             </ThemedView>
             ))}
           </ThemedView>
+
+          {/* Things you still have at home: not bought, not in the price. Tap to put one back on the list. */}
+          {atHome.length > 0 ? (
+            <ThemedView type="backgroundElement" style={[Layout.card, styles.homeCard]}>
+              <ThemedText type="smallBold">🏠 {t('haveAtHomeTitle', { count: atHome.length })}</ThemedText>
+              <ThemedText type="small" themeColor="textSecondary">
+                {t('haveAtHomeHelp')}
+              </ThemedText>
+              <ThemedView style={styles.homeChips}>
+                {atHome.map((item) => (
+                  <Pressable key={item.key} style={styles.homeChip} onPress={() => toggleHave(item.productId!)}>
+                    <ThemedText type="small">
+                      ↺ {item.productId && getProduct(item.productId) ? productLabel(getProduct(item.productId)!) : item.name}
+                    </ThemedText>
+                  </Pressable>
+                ))}
+              </ThemedView>
+            </ThemedView>
+          ) : null}
         </>
       )}
     </Screen>
@@ -221,7 +310,18 @@ export default function ShoppingScreen() {
 }
 
 const styles = StyleSheet.create({
-  priceBox: { maxWidth: 520 },
+  priceBox: { maxWidth: 720 },
+  shopTabs: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two, backgroundColor: 'transparent' },
+  shopTab: { paddingVertical: 6, paddingHorizontal: 12, borderRadius: 999, borderWidth: 1, borderColor: Accent },
+  shopTabOn: { backgroundColor: Accent },
+  shopTabTextOn: { color: '#FFFFFF' },
+  itemText: { flex: 1, minWidth: 0, backgroundColor: 'transparent' },
+  useLine: { fontSize: 12, lineHeight: 16 },
+  homeButton: { paddingHorizontal: 4, paddingVertical: 4 },
+  homeIcon: { fontSize: 16, lineHeight: 20, opacity: 0.75 },
+  homeCard: { gap: Spacing.two },
+  homeChips: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two, backgroundColor: 'transparent' },
+  homeChip: { paddingVertical: 4, paddingHorizontal: 10, borderRadius: 999, borderWidth: 1, borderColor: 'rgba(42,27,18,0.2)' },
   progressCard: { gap: Spacing.two },
   progressHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: Spacing.two, backgroundColor: 'transparent' },
   bar: { height: 10, borderRadius: 5, overflow: 'hidden' },

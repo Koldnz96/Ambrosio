@@ -1,0 +1,182 @@
+// For new guests: a ready-made week (7 dinners by Ambrosio, for 2 people) and a short guided tour:
+// Week -> open a meal -> Shopping list -> prices -> "create a free account for more".
+// A small card at the bottom of the screen, with "Next" and "Skip". Shown once per browser
+// (localStorage "ambrosio-tour"), and it can be replayed from the Profile tab.
+import { usePathname, useRouter } from 'expo-router';
+import { useEffect, useMemo, useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
+
+import { ThemedText } from '@/components/themed-text';
+import { Accent, Colors } from '@/constants/theme';
+import { getProduct } from '@/data/products';
+import { pickVariedWeek } from '@/data/preset-week';
+import { recipeCategories } from '@/data/recipe-category';
+import { makeEntry } from '@/data/week-entry';
+import { useAuthUser } from '@/hooks/use-auth-user';
+import { useIsPhone } from '@/hooks/use-is-phone';
+import { usePublicRecipes } from '@/hooks/use-public-recipes';
+import { DAYS, useUserData, type Week } from '@/hooks/use-user-data';
+import { useLanguage } from '@/i18n/language';
+
+const TOUR_KEY = 'ambrosio-tour'; // a step number while it runs, "done" when finished
+const PRESET_KEY = 'ambrosio-preset-week'; // "1" once the ready-made week was given
+const INTRO_KEY = 'ambrosio-intro-seen';
+export const TOUR_EVENT = 'ambrosio-tour'; // sent by Profile ("show the tour again")
+
+const STEPS = [
+  { route: '/week', text: 'tourWeek' },
+  { route: '/week', text: 'tourMeal' },
+  { route: '/shopping', text: 'tourShopping' },
+  { route: '/shopping', text: 'tourPrices' },
+  { route: '/shopping', text: 'tourAccount' },
+] as const;
+
+function read(key: string): string | null {
+  try {
+    return globalThis.localStorage?.getItem(key) ?? null;
+  } catch {
+    return null;
+  }
+}
+function write(key: string, value: string) {
+  try {
+    globalThis.localStorage?.setItem(key, value);
+  } catch {
+    // storage blocked: the tour may show again, that is all
+  }
+}
+
+// Profile calls this to show the tour again.
+export function replayTour() {
+  write(TOUR_KEY, '0');
+  globalThis.dispatchEvent?.(new Event(TOUR_EVENT));
+}
+
+export function GuestTour() {
+  const { t } = useLanguage();
+  const router = useRouter();
+  const pathname = usePathname();
+  const isPhone = useIsPhone();
+  const { user } = useAuthUser();
+  const { isGuest, week, loaded, saveWeek } = useUserData(user?.uid ?? null);
+  const weekEmpty = DAYS.every((d) => week[d].length === 0);
+  const [step, setStep] = useState<number | null>(null); // null = not showing
+  const [introSeen, setIntroSeen] = useState(read(INTRO_KEY) === '1');
+  const [replay, setReplay] = useState(0);
+
+  // 1. The ready-made week: only for a guest, only once, only if their week is still empty.
+  const needPreset = isGuest && loaded && weekEmpty && read(PRESET_KEY) !== '1';
+  const { recipes } = usePublicRecipes(needPreset);
+  const starters = useMemo(
+    () => recipes.filter((r) => r.authorName.trim().toLowerCase() === 'ambrosio' && !r.copiedFrom),
+    [recipes],
+  );
+  useEffect(() => {
+    if (!needPreset || starters.length === 0) return;
+    const ids = pickVariedWeek(
+      starters.map((r) => ({ id: r.id, name: r.name, kinds: [...recipeCategories(r.ingredients, getProduct)] })),
+    );
+    const next: Week = { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [], sun: [] };
+    ids.forEach((id, i) => next[DAYS[i]].push(makeEntry(id, 2)));
+    write(PRESET_KEY, '1');
+    saveWeek(next);
+  }, [needPreset, starters, saveWeek]);
+
+  // 2. Wait until the welcome scene is over (it saves INTRO_KEY when it closes).
+  useEffect(() => {
+    if (introSeen) return;
+    const id = setInterval(() => {
+      if (read(INTRO_KEY) === '1') setIntroSeen(true);
+    }, 800);
+    return () => clearInterval(id);
+  }, [introSeen]);
+
+  // "Show the tour again" from Profile.
+  useEffect(() => {
+    const onReplay = () => setReplay((n) => n + 1);
+    globalThis.addEventListener?.(TOUR_EVENT, onReplay);
+    return () => globalThis.removeEventListener?.(TOUR_EVENT, onReplay);
+  }, []);
+
+  // 3. Start (or continue) the tour: a guest with a planned week who has not finished it.
+  useEffect(() => {
+    const saved = read(TOUR_KEY);
+    if (saved === 'done' || !introSeen || !loaded || weekEmpty) return;
+    if (!isGuest && replay === 0) return; // people with an account only see it when they ask
+    const n = Math.min(Math.max(Number(saved ?? 0) || 0, 0), STEPS.length - 1);
+    setStep(n);
+    if (pathname !== STEPS[n].route) router.push(STEPS[n].route);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [introSeen, loaded, weekEmpty, isGuest, replay]);
+
+  function go(n: number) {
+    if (n >= STEPS.length) return finish();
+    write(TOUR_KEY, String(n));
+    setStep(n);
+    if (pathname !== STEPS[n].route) router.push(STEPS[n].route);
+  }
+
+  function finish(toProfile = false) {
+    write(TOUR_KEY, 'done');
+    setStep(null);
+    if (toProfile) router.push('/profile');
+  }
+
+  if (step === null) return null;
+  const last = step === STEPS.length - 1;
+
+  return (
+    <View pointerEvents="box-none" style={[styles.wrap, { bottom: isPhone ? 92 : 24 }]}>
+      <View style={styles.card}>
+        <ThemedText style={styles.count}>{t('tourStep', { n: step + 1, total: STEPS.length })}</ThemedText>
+        <ThemedText style={styles.text}>{t(STEPS[step].text)}</ThemedText>
+        <View style={styles.row}>
+          <Pressable onPress={() => finish()} style={styles.ghost} accessibilityRole="button">
+            <ThemedText style={styles.ghostText}>{last ? t('tourLater') : t('tourSkip')}</ThemedText>
+          </Pressable>
+          {last && isGuest ? (
+            <Pressable onPress={() => finish(true)} style={styles.button} accessibilityRole="button">
+              <ThemedText style={styles.buttonText}>{t('createAccount')}</ThemedText>
+            </Pressable>
+          ) : (
+            <Pressable onPress={() => go(step + 1)} style={styles.button} accessibilityRole="button">
+              <ThemedText style={styles.buttonText}>{last ? t('tourDone') : t('tourNext')}</ThemedText>
+            </Pressable>
+          )}
+        </View>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  wrap: {
+    position: 'fixed' as unknown as 'absolute',
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    zIndex: 900,
+  },
+  card: {
+    width: '100%',
+    maxWidth: 520,
+    gap: 10,
+    padding: 18,
+    borderRadius: 18,
+    borderWidth: 2,
+    borderColor: Accent,
+    backgroundColor: Colors.light.backgroundElement,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 6 },
+  },
+  count: { fontSize: 13, fontWeight: '700', color: Accent },
+  text: { fontSize: 17, lineHeight: 24, color: Colors.light.text },
+  row: { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', gap: 10 },
+  ghost: { paddingVertical: 10, paddingHorizontal: 14 },
+  ghostText: { color: Colors.light.textSecondary, fontSize: 15 },
+  button: { paddingVertical: 10, paddingHorizontal: 20, borderRadius: 12, backgroundColor: Accent },
+  buttonText: { color: '#FFFFFF', fontSize: 15, fontWeight: '700' },
+});
