@@ -19,12 +19,13 @@ type Props = {
   recipeOwnerId: string;
   uid: string; // the person looking
   nickname: string; // their nickname, written on the comments they post
+  canWrite?: boolean; // false for guests: they can read, not write
 };
 
 // Comments under a public recipe. Text only: photos are not allowed in comments.
 // They live in recipes/{recipeId}/comments. You can delete your own comments,
 // and the owner of the recipe can delete any comment on it.
-export function Comments({ recipeId, recipeOwnerId, uid, nickname }: Props) {
+export function Comments({ recipeId, recipeOwnerId, uid, nickname, canWrite = true }: Props) {
   const theme = useTheme();
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
@@ -126,6 +127,13 @@ export function Comments({ recipeId, recipeOwnerId, uid, nickname }: Props) {
         </ThemedView>
       ))}
 
+      {!canWrite ? (
+        <ThemedText type="small" themeColor="textSecondary">
+          {t('guestComment')}
+        </ThemedText>
+      ) : null}
+      {canWrite ? (
+      <>
       <TextInput
         style={[styles.input, { color: theme.text, borderColor: theme.backgroundSelected }]}
         placeholder={t('commentPlaceholder')}
@@ -140,6 +148,8 @@ export function Comments({ recipeId, recipeOwnerId, uid, nickname }: Props) {
           <ThemedText type="smallBold">{busy ? t('saving') : t('postComment')}</ThemedText>
         </Pressable>
       </ThemedView>
+      </>
+      ) : null}
       {error ? <ThemedText type="small">{error}</ThemedText> : null}
     </ThemedView>
   );

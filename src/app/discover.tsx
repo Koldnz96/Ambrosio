@@ -32,6 +32,8 @@ import { db } from '@/firebase';
 import { useAuthUser } from '@/hooks/use-auth-user';
 import { usePublicRecipes, type PublicRecipe } from '@/hooks/use-public-recipes';
 import { useRecipes } from '@/hooks/use-recipes';
+import { DAYS, type Day } from '@/hooks/use-user-data';
+import { makeEntry } from '@/data/week-entry';
 import { usePrices } from '@/hooks/use-prices';
 import { useUserData } from '@/hooks/use-user-data';
 import { useLanguage } from '@/i18n/language';
@@ -40,7 +42,7 @@ export default function DiscoverScreen() {
   const { t, ingredient: ingredientLabel, allergenShortName } = useLanguage();
   const { user, ready } = useAuthUser();
   const { recipes, loaded, error: loadError } = usePublicRecipes(ready);
-  const { profile, displayName, needsNickname, saveDisplayName } = useUserData(user?.uid ?? null);
+  const { profile, displayName, needsNickname, isGuest, saveDisplayName, week, saveWeek } = useUserData(user?.uid ?? null);
   const [copied, setCopied] = useState<Set<string>>(new Set()); // recipes copied in this visit
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
@@ -60,21 +62,44 @@ export default function DiscoverScreen() {
   const servingsFor = (id: string) => servingsById[id] ?? 2;
   const setServingsFor = (id: string, value: number) => setServingsById((old) => ({ ...old, [id]: value }));
   const prices = usePrices();
+  const [guestNoteId, setGuestNoteId] = useState<string | null>(null); // guest pressed Save: explain
+  const [weekPickId, setWeekPickId] = useState<string | null>(null); // card showing the days to add it to
+  const [addedTo, setAddedTo] = useState<Record<string, Day>>({}); // "Added to Tuesday" message per card
+
+  // Puts a Discover recipe in your week as it is (no copy needed), for the number of people chosen.
+  function addToWeek(recipe: PublicRecipe, day: Day) {
+    saveWeek({ ...week, [day]: [...week[day], makeEntry(recipe.id, servingsFor(recipe.id))] });
+    setWeekPickId(null);
+    setAddedTo((old) => ({ ...old, [recipe.id]: day }));
+  }
 
   // The recipe's ingredients for the chosen number of people, and its approximate price.
   function forServings(recipe: PublicRecipe) {
     const ingredients = scaleLines(recipe.ingredients, servingsFor(recipe.id) / recipe.servings);
     const best = compareShops(ingredients, prices).ranking[0];
-    return { ingredients, priceText: best ? `${formatEuros(best.total)} · ${best.name}` : '' };
+    const people = servingsFor(recipe.id);
+    return {
+      ingredients,
+      // "≈ 5,00 € · ≈ 2,50 €/person", and the cheapest shop for it
+      priceText: best ? `${formatEuros(best.total)} · ${t('perPerson', { price: formatEuros(best.total / people) })}` : '',
+      shop: best?.name ?? '',
+    };
   }
 
   // The servings buttons plus the price, used on the cards and in Cook now.
   function servingsRow(recipe: PublicRecipe) {
-    const { priceText } = forServings(recipe);
+    const { priceText, shop } = forServings(recipe);
     return (
       <ThemedView style={Layout.row}>
         <ServingsStepper value={servingsFor(recipe.id)} onChange={(v) => setServingsFor(recipe.id, v)} />
-        {priceText ? <ThemedText type="smallBold">{priceText}</ThemedText> : null}
+        {priceText ? (
+          <ThemedView style={styles.priceCol}>
+            <ThemedText type="smallBold">{priceText}</ThemedText>
+            <ThemedText type="small" themeColor="textSecondary">
+              {shop}
+            </ThemedText>
+          </ThemedView>
+        ) : null}
       </ThemedView>
     );
   }
@@ -537,6 +562,9 @@ export default function DiscoverScreen() {
                   <Pressable style={Layout.smallButton} onPress={() => setCookingId(recipe.id)}>
                     <ThemedText type="smallBold">{t('cookNow')}</ThemedText>
                   </Pressable>
+                  <Pressable style={Layout.smallButton} onPress={() => setWeekPickId(weekPickId === recipe.id ? null : recipe.id)}>
+                    <ThemedText type="smallBold">📅 {t('addToWeek')}</ThemedText>
+                  </Pressable>
                   <Pressable style={Layout.smallButton} onPress={() => toggleOpen(recipe.id)}>
                     <SteadyLabel labels={[t('showDetails'), t('hideDetails')]} active={isOpen ? 1 : 0} />
                   </Pressable>
@@ -554,7 +582,9 @@ export default function DiscoverScreen() {
                     <Pressable
                       accessibilityRole="button"
                       accessibilityState={{ selected: savedIds.has(recipe.id) }}
-                      onPress={() => (savedIds.has(recipe.id) ? removeCopy(recipe) : saveCopy(recipe))}
+                      onPress={() =>
+                        isGuest ? setGuestNoteId(recipe.id) : savedIds.has(recipe.id) ? removeCopy(recipe) : saveCopy(recipe)
+                      }
                       style={[Layout.smallButton, savedIds.has(recipe.id) && styles.savedButton]}>
                       <SteadyLabel
                         labels={[t('saveCopy'), `✓ ${t('savedButton')}`]}
@@ -564,6 +594,25 @@ export default function DiscoverScreen() {
                     </Pressable>
                   )}
                 </ThemedView>
+
+                {guestNoteId === recipe.id ? (
+                  <ThemedText type="small" themeColor="textSecondary">
+                    {t('guestSave')}
+                  </ThemedText>
+                ) : null}
+                {weekPickId === recipe.id ? (
+                  <ThemedView style={Layout.row}>
+                    {DAYS.map((day) => (
+                      <Pressable key={day} style={Layout.smallButton} onPress={() => addToWeek(recipe, day)}>
+                        <ThemedText type="smallBold">{t(day)}</ThemedText>
+                      </Pressable>
+                    ))}
+                  </ThemedView>
+                ) : addedTo[recipe.id] ? (
+                  <ThemedText type="small" style={styles.addedNote}>
+                    ✓ {t('addedToDay', { day: t(addedTo[recipe.id]) })}
+                  </ThemedText>
+                ) : null}
 
                 {showOriginal && version?.parent && version.diff ? (
                   <ThemedView type="backgroundSelected" style={styles.originalBox}>
@@ -614,7 +663,7 @@ export default function DiscoverScreen() {
                       </ThemedText>
                     ))}
                     <RecipeSteps steps={recipe.steps} />
-                    <Comments recipeId={recipe.id} recipeOwnerId={recipe.ownerId} uid={user.uid} nickname={displayName} />
+                    <Comments recipeId={recipe.id} recipeOwnerId={recipe.ownerId} uid={user.uid} nickname={displayName} canWrite={!isGuest} />
                   </>
                 ) : null}
               </ThemedView>
@@ -661,6 +710,8 @@ const styles = StyleSheet.create({
   skipNote: { color: '#D93025' },
   chipWide: { alignSelf: 'flex-start' },
   savedButton: { backgroundColor: SavedGreen, borderColor: SavedGreen },
+  priceCol: { backgroundColor: 'transparent' },
+  addedNote: { color: SavedGreen },
   chipTextSelected: { color: '#FFFFFF' },
   originalBox: { padding: 12, borderRadius: 12, gap: 4 },
 });

@@ -13,6 +13,9 @@ import { buildShoppingList, type Needed } from '@/data/shopping';
 import { useAuthUser } from '@/hooks/use-auth-user';
 import { usePrices } from '@/hooks/use-prices';
 import { useRecipes } from '@/hooks/use-recipes';
+import { usePublicRecipes } from '@/hooks/use-public-recipes';
+import { parseEntry } from '@/data/week-entry';
+import { scaleLines } from '@/data/prices';
 import { DAYS, useUserData } from '@/hooks/use-user-data';
 import { getProduct } from '@/data/products';
 import { useLanguage } from '@/i18n/language';
@@ -24,21 +27,24 @@ export default function ShoppingScreen() {
   const { week, loaded, needsNickname, saveDisplayName } = useUserData(user?.uid ?? null);
   const [ticked, setTicked] = useState<Set<string>>(new Set()); // ticks live in memory only
   const prices = usePrices();
+  const { recipes: publicRecipes } = usePublicRecipes(ready && user !== null); // recipes added from Discover
 
   // Every ingredient of every planned recipe. A recipe planned twice counts twice.
   const { groups, recipeCount, needed } = useMemo(() => {
     const needed: Needed[] = [];
     let count = 0;
     for (const day of DAYS) {
-      for (const recipeId of week[day]) {
-        const recipe = recipes.find((r) => r.id === recipeId);
+      for (const text of week[day]) {
+        const entry = parseEntry(text);
+        const recipe = recipes.find((r) => r.id === entry.recipeId) ?? publicRecipes.find((r) => r.id === entry.recipeId);
         if (!recipe) continue;
         count += 1;
-        needed.push(...recipe.ingredients);
+        // Amounts for the number of people chosen when it was planned (else as the recipe is written).
+        needed.push(...scaleLines(recipe.ingredients, (entry.servings ?? recipe.servings) / recipe.servings));
       }
     }
     return { groups: buildShoppingList(needed), recipeCount: count, needed };
-  }, [week, recipes]);
+  }, [week, recipes, publicRecipes]);
 
   // Which supermarket is cheapest overall for this list (approximate: online prices).
   const comparison = useMemo(() => compareShops(needed, prices), [needed, prices]);

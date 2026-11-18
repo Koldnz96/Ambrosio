@@ -29,7 +29,7 @@ export default function MyRecipesScreen() {
   const { t, ingredient: ingredientLabel } = useLanguage();
   const { user, ready } = useAuthUser();
   const { recipes, error: recipesError } = useRecipes(user?.uid ?? null);
-  const { profile, displayName, needsNickname, saveDisplayName } = useUserData(user?.uid ?? null);
+  const { profile, displayName, needsNickname, isGuest, saveDisplayName } = useUserData(user?.uid ?? null);
   useSyncAuthorName(recipes, displayName);
   const [actionError, setActionError] = useState('');
   const error = actionError || (recipesError ? t('errLoadRecipes', { message: recipesError }) : '');
@@ -138,6 +138,8 @@ export default function MyRecipesScreen() {
           <ThemedText themeColor="textSecondary">{t('recipesSignIn')}</ThemedText>
           <WelcomeCard />
         </>
+      ) : isGuest ? (
+        <ThemedText themeColor="textSecondary">{t('guestRecipes')}</ThemedText>
       ) : needsNickname ? (
         <NicknameForm onSave={saveDisplayName} />
       ) : (

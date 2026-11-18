@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, TextInput } from 'react-native';
 import {
   createUserWithEmailAndPassword,
+  EmailAuthProvider,
+  linkWithCredential,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
@@ -105,7 +107,7 @@ export default function ProfileScreen() {
   const [busy, setBusy] = useState(false);
   const [confirmingSignOut, setConfirmingSignOut] = useState(false);
   const [showEmail, setShowEmail] = useState(false);
-  const { profile, displayName, needsNickname, loaded, error: dataError, saveProfile, saveDisplayName } = useUserData(user?.uid ?? null);
+  const { profile, displayName, needsNickname, isGuest, loaded, error: dataError, saveProfile, saveDisplayName } = useUserData(user?.uid ?? null);
 
   const { recipes } = useRecipes(user?.uid ?? null);
   // Save the new nickname, and put it on the recipes this person already shared.
@@ -150,6 +152,18 @@ export default function ProfileScreen() {
 
   const inputStyle = [styles.input, { color: theme.text, borderColor: theme.backgroundSelected }];
 
+  // A guest becomes a real account: same uid, so the week and allergies stay. Then the nickname is asked.
+  function createAccount() {
+    const current = auth.currentUser;
+    if (current?.isAnonymous) {
+      return run(async () => {
+        await linkWithCredential(current, EmailAuthProvider.credential(email.trim(), password));
+        await current.reload(); // the screens notice the change and ask for a nickname next
+      });
+    }
+    return run(() => createUserWithEmailAndPassword(auth, email.trim(), password));
+  }
+
   return (
     <Screen title={t('profileTitle')} showFooterOnPhone>
       {!ready ? (
@@ -157,6 +171,45 @@ export default function ProfileScreen() {
       ) : user ? (
         <>
           <ThemedView style={Layout.grid}>
+            {isGuest ? (
+            <ThemedView type="backgroundElement" style={Layout.card}>
+              <ThemedText type="smallBold">{t('guestTitle')}</ThemedText>
+              <ThemedText type="small" themeColor="textSecondary">
+                {t('guestHelp')}
+              </ThemedText>
+              <TextInput
+                style={inputStyle}
+                placeholder={t('emailPlaceholder')}
+                placeholderTextColor={theme.textSecondary}
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="email-address"
+                value={email}
+                onChangeText={setEmail}
+              />
+              <TextInput
+                style={inputStyle}
+                placeholder={t('passwordPlaceholder')}
+                placeholderTextColor={theme.textSecondary}
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+              />
+              <Pressable style={Layout.button} disabled={busy} onPress={createAccount}>
+                <ThemedText type="smallBold">{t('createAccount')}</ThemedText>
+              </Pressable>
+              <Pressable
+                style={Layout.smallButton}
+                disabled={busy}
+                onPress={() => run(() => signInWithEmailAndPassword(auth, email.trim(), password))}>
+                <ThemedText type="small">{t('haveAccount')}</ThemedText>
+              </Pressable>
+              <ThemedText type="small" themeColor="textSecondary">
+                {t('haveAccountNote')}
+              </ThemedText>
+              {message ? <ThemedText type="small">{message}</ThemedText> : null}
+            </ThemedView>
+            ) : (
             <ThemedView type="backgroundElement" style={Layout.card}>
               {/* The email is hidden by default, in case someone else is looking at the screen. */}
               <ThemedView style={styles.row}>
@@ -182,6 +235,7 @@ export default function ProfileScreen() {
               )}
 
             </ThemedView>
+            )}
             <ThemedView type="backgroundElement" style={Layout.card}>
               <ThemedText type="smallBold">{t('diet')}</ThemedText>
               <Pressable
@@ -248,7 +302,9 @@ export default function ProfileScreen() {
 
           </ThemedView>
 
-          {/* Sign out sits at the very end, in red, and asks before doing it. */}
+          {/* Sign out sits at the very end, in red, and asks before doing it. (Not for guests.) */}
+          {isGuest ? null : (
+          <>
           <ThemedView style={[styles.divider, { backgroundColor: theme.backgroundSelected }]} />
           {confirmingSignOut ? (
             <ThemedView style={styles.signOutRow}>
@@ -274,6 +330,8 @@ export default function ProfileScreen() {
                 {t('signOut')}
               </ThemedText>
             </Pressable>
+          )}
+          </>
           )}
         </>
       ) : (
@@ -309,7 +367,7 @@ export default function ProfileScreen() {
             <Pressable
               style={Layout.button}
               disabled={busy}
-              onPress={() => run(() => createUserWithEmailAndPassword(auth, email.trim(), password))}>
+              onPress={createAccount}>
               <ThemedText type="smallBold">{t('createAccount')}</ThemedText>
             </Pressable>
           </ThemedView>

@@ -92,7 +92,7 @@ const en = {
   weekTitle: 'Week',
   weekSignIn: 'Sign in on the Profile tab to plan your week.',
   weekHelp: 'Choose what you will cook each day. The Shopping tab adds it all up for you.',
-  weekNoRecipes: 'You have no recipes yet. Write one on the My recipes tab first.',
+  weekNoRecipes: 'No recipes of your own yet: add recipes from Discover with 📅 Week, or write one on My recipes.',
   nothingPlanned: 'Nothing planned.',
   recipeGone: 'A recipe that no longer exists',
   tapToAdd: 'Tap a recipe to add it:',
@@ -274,6 +274,16 @@ const en = {
   servingsMore: 'One person more',
   priceBest: 'Best overall: {shop}, {total}',
   priceNote: 'Priced {priced} of {total} items · online prices from {date} · approximate',
+  perPerson: '{price}/person',
+  addToWeek: 'Week',
+  addedToDay: 'Added to {day}',
+  guestRecipes: 'You are trying Ambrósio as a guest. To write your own recipes, create a free account on the Profile tab: everything you did so far is kept.',
+  guestComment: 'Create a free account on the Profile tab to write comments.',
+  guestSave: 'Create a free account on the Profile tab to save recipes. Meanwhile you can add this one to your week with 📅.',
+  guestTitle: 'You are trying Ambrósio as a guest',
+  guestHelp: 'Your allergies and your week are saved in this browser. Create a free account to write recipes, save copies and comment, and to keep your plan on every device. Nothing you did is lost.',
+  haveAccount: 'I already have an account',
+  haveAccountNote: 'Signing in to another account leaves this guest plan behind.',
 };
 
 export type StringKey = keyof typeof en;
@@ -359,7 +369,7 @@ const pt: Record<StringKey, string> = {
   weekTitle: 'Semana',
   weekSignIn: 'Inicie sessão no separador Perfil para planear a sua semana.',
   weekHelp: 'Escolha o que vai cozinhar em cada dia. O separador Compras faz as contas por si.',
-  weekNoRecipes: 'Ainda não tem receitas. Escreva uma primeiro no separador As minhas receitas.',
+  weekNoRecipes: 'Ainda não tem receitas suas: junte receitas do Descobrir com 📅 Semana, ou escreva uma em As minhas receitas.',
   nothingPlanned: 'Nada planeado.',
   recipeGone: 'Uma receita que já não existe',
   tapToAdd: 'Toque numa receita para a adicionar:',
@@ -537,6 +547,16 @@ const pt: Record<StringKey, string> = {
   servingsMore: 'Mais uma pessoa',
   priceBest: 'Melhor no total: {shop}, {total}',
   priceNote: 'Preço de {priced} de {total} produtos · preços online de {date} · aproximado',
+  perPerson: '{price}/pessoa',
+  addToWeek: 'Semana',
+  addedToDay: 'Adicionada a {day}',
+  guestRecipes: 'Está a experimentar o Ambrósio como convidado. Para escrever as suas receitas, crie uma conta grátis no separador Perfil: tudo o que já fez fica guardado.',
+  guestComment: 'Crie uma conta grátis no separador Perfil para comentar.',
+  guestSave: 'Crie uma conta grátis no separador Perfil para guardar receitas. Entretanto pode juntar esta à sua semana com 📅.',
+  guestTitle: 'Está a experimentar o Ambrósio como convidado',
+  guestHelp: 'As suas alergias e a sua semana ficam guardadas neste navegador. Crie uma conta grátis para escrever receitas, guardar cópias e comentar, e para ter o seu plano em qualquer dispositivo. Nada do que fez se perde.',
+  haveAccount: 'Já tenho conta',
+  haveAccountNote: 'Entrar noutra conta deixa para trás este plano de convidado.',
 };
 
 const fr: Record<StringKey, string> = {
@@ -798,6 +818,16 @@ const fr: Record<StringKey, string> = {
   servingsMore: 'Une personne de plus',
   priceBest: 'Le moins cher au total : {shop}, {total}',
   priceNote: 'Prix de {priced} sur {total} produits · prix en ligne du {date} · approximatif',
+  perPerson: '{price}/personne',
+  addToWeek: 'Semaine',
+  addedToDay: 'Ajoutée à {day}',
+  guestRecipes: "Vous essayez Ambrósio en invité. Pour écrire vos recettes, créez un compte gratuit dans l'onglet Profil : tout ce que vous avez fait est conservé.",
+  guestComment: "Créez un compte gratuit dans l'onglet Profil pour commenter.",
+  guestSave: "Créez un compte gratuit dans l'onglet Profil pour enregistrer des recettes. En attendant, ajoutez celle-ci à votre semaine avec 📅.",
+  guestTitle: 'Vous essayez Ambrósio en invité',
+  guestHelp: "Vos allergies et votre semaine sont gardées dans ce navigateur. Créez un compte gratuit pour écrire des recettes, enregistrer des copies et commenter, et pour garder votre plan sur tous vos appareils. Rien n'est perdu.",
+  haveAccount: "J'ai déjà un compte",
+  haveAccountNote: "Se connecter à un autre compte laisse ce plan d'invité derrière.",
 };
 
 export const STRINGS: Record<Lang, Record<StringKey, string>> = { en, pt, fr };

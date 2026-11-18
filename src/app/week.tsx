@@ -13,6 +13,8 @@ import { Layout } from '@/constants/layout';
 import { recipeWarnings } from '@/data/warnings';
 import { useAuthUser } from '@/hooks/use-auth-user';
 import { useRecipes } from '@/hooks/use-recipes';
+import { usePublicRecipes } from '@/hooks/use-public-recipes';
+import { parseEntry } from '@/data/week-entry';
 import { DAYS, useUserData, type Day } from '@/hooks/use-user-data';
 import { useLanguage } from '@/i18n/language';
 
@@ -20,6 +22,7 @@ export default function WeekScreen() {
   const { t } = useLanguage();
   const { user, ready } = useAuthUser();
   const { recipes } = useRecipes(user?.uid ?? null);
+  const { recipes: publicRecipes } = usePublicRecipes(ready && user !== null); // recipes added from Discover
   const { profile, week, loaded, error, saveWeek, needsNickname, saveDisplayName } = useUserData(user?.uid ?? null);
   const [pickingDay, setPickingDay] = useState<Day | null>(null); // the day whose recipe list is open
 
@@ -69,12 +72,18 @@ export default function WeekScreen() {
                   </ThemedText>
                 ) : null}
 
-                {week[day].map((recipeId, index) => {
-                  const recipe = recipes.find((r) => r.id === recipeId);
+                {week[day].map((text, index) => {
+                  const entry = parseEntry(text);
+                  const recipe = recipes.find((r) => r.id === entry.recipeId) ?? publicRecipes.find((r) => r.id === entry.recipeId);
                   return (
-                    <ThemedView key={`${recipeId}-${index}`} type="backgroundElement" style={styles.itemRow}>
+                    <ThemedView key={`${text}-${index}`} type="backgroundElement" style={styles.itemRow}>
                       <ThemedView type="backgroundElement" style={styles.itemText}>
                         <RecipeHeading name={recipe ? recipe.name : t('recipeGone')} />
+                        {recipe ? (
+                          <ThemedText type="small" themeColor="textSecondary">
+                            👥 {t((entry.servings ?? recipe.servings) === 1 ? 'peopleOne' : 'peopleMany', { count: entry.servings ?? recipe.servings })}
+                          </ThemedText>
+                        ) : null}
                         {recipe ? <WarningChips warnings={recipeWarnings(recipe.ingredients, profile)} /> : null}
                       </ThemedView>
                       <Pressable style={Layout.smallButton} onPress={() => removeRecipe(day, index)}>

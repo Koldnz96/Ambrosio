@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { onIdTokenChanged } from 'firebase/auth';
 
 import { ALLERGEN_LABELS, type Allergen } from '@/data/products';
 import { EMPTY_PROFILE, type Profile } from '@/data/warnings';
 import { claimNickname, type NicknameResult } from '@/data/nickname-store';
-import { db } from '@/firebase';
+import { auth, db } from '@/firebase';
 
 export const DAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const;
 export type Day = (typeof DAYS)[number];
@@ -20,6 +21,9 @@ export function useUserData(uid: string | null) {
   const [displayName, setDisplayName] = useState('');
   const [hidden, setHidden] = useState<string[]>([]); // ids of public recipes marked "not interested"
   const [loaded, setLoaded] = useState(false);
+  // A guest (no email yet). Watched with onIdTokenChanged, because "Create account" keeps the same uid.
+  const [isGuest, setIsGuest] = useState(auth.currentUser?.isAnonymous === true);
+  useEffect(() => onIdTokenChanged(auth, (user) => setIsGuest(user?.isAnonymous === true)), []);
   const [error, setError] = useState<{ kind: 'load' | 'save'; message: string } | null>(null);
 
   useEffect(() => {
@@ -82,7 +86,7 @@ export function useUserData(uid: string | null) {
   );
 
   // Signed in, settings loaded, and still no nickname: the screens ask for one first.
-  const needsNickname = uid !== null && loaded && displayName === '';
+  const needsNickname = uid !== null && loaded && displayName === '' && !isGuest;
 
-    return { profile, week, displayName, needsNickname, loaded, error, hidden, saveProfile, saveWeek, saveHidden, saveDisplayName };
+    return { profile, week, displayName, needsNickname, isGuest, loaded, error, hidden, saveProfile, saveWeek, saveHidden, saveDisplayName };
 }
