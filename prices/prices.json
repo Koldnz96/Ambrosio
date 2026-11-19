@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-11-18T16:24:54.530Z",
+ "updatedAt": "2026-11-19T12:33:18.429Z",
  "note": "Online prices, a reference only.",
  "shops": {
   "continente": {
@@ -1423,16 +1423,6 @@
      "url": "https://www.continente.pt/produto/ameixa-preta-vermelha-continente-2420019.html",
      "packs": []
     },
-    "Fig": {
-     "unitPrice": 0.35,
-     "unit": "un",
-     "price": 6.99,
-     "oldPrice": null,
-     "pack": null,
-     "product": "Figo Continente · Continente",
-     "url": "https://www.continente.pt/produto/figo-continente-2076492.html",
-     "packs": []
-    },
     "Kiwi": {
      "unitPrice": 7.98,
      "unit": "kg",
@@ -2294,17 +2284,17 @@
      "url": "https://www.continente.pt/produto/frango-inteiro-com-miudos-continente-8780471.html",
      "packs": [
       {
+       "amount": 1.22,
+       "price": 5.99,
+       "oldPrice": null,
+       "product": "Frango do Campo Inteiro sem Miúdos Campoaves · Campoaves",
+       "loose": false
+      },
+      {
        "amount": 1.44,
        "price": 2.49,
        "oldPrice": null,
        "product": "Frango Inteiro com Miúdos Continente · Continente",
-       "loose": false
-      },
-      {
-       "amount": 2.37,
-       "price": 6.99,
-       "oldPrice": null,
-       "product": "Frango Inteiro com Miúdos Biológico Campoaves · Campoaves",
        "loose": false
       },
       {
@@ -2947,9 +2937,9 @@
      ]
     },
     "Sea bass": {
-     "unitPrice": 5,
+     "unitPrice": 4,
      "unit": "un",
-     "price": 9.99,
+     "price": 7.99,
      "oldPrice": null,
      "pack": null,
      "product": "Robalo Médio Fresco",
@@ -3137,17 +3127,17 @@
        "loose": false
       },
       {
-       "amount": 0.25,
-       "price": 2.09,
+       "amount": 0.35,
+       "price": 6.69,
        "oldPrice": null,
-       "product": "Delícia de Chocolate A Leiteira · A Leiteira",
+       "product": "Delícia Crocante de Coco",
        "loose": false
       },
       {
-       "amount": 0.3,
-       "price": 5.49,
+       "amount": 0.35,
+       "price": 6.69,
        "oldPrice": null,
-       "product": "Doce de Leite Cremoso Uai Delícias · Uai Delícias",
+       "product": "Delícia Pistácio e Manga",
        "loose": false
       }
      ]
@@ -3289,13 +3279,6 @@
      "product": "Amêijoa Branca Grande Fresca",
      "url": "https://www.continente.pt/produto/ameijoa-branca-grande-fresca-2510169.html",
      "packs": [
-      {
-       "amount": 0.5,
-       "price": 16.99,
-       "oldPrice": null,
-       "product": "Amêijoa Macha Fresca",
-       "loose": false
-      },
       {
        "amount": 1,
        "price": 24.99,
@@ -3872,9 +3855,9 @@
      ]
     },
     "Skyr": {
-     "unitPrice": 8.33,
+     "unitPrice": 6.6,
      "unit": "kg",
-     "price": 1.25,
+     "price": 0.99,
      "oldPrice": null,
      "pack": "emb. 150 gr",
      "product": "Skyr Natural Ehrmann · Ehrmann",
@@ -3882,21 +3865,21 @@
      "packs": [
       {
        "amount": 0.15,
-       "price": 1.29,
+       "price": 1.09,
        "oldPrice": null,
        "product": "Skyr Mirtilo Ehrmann · Ehrmann",
        "loose": false
       },
       {
        "amount": 0.15,
-       "price": 1.25,
+       "price": 0.99,
        "oldPrice": null,
        "product": "Skyr Natural Ehrmann · Ehrmann",
        "loose": false
       },
       {
        "amount": 0.15,
-       "price": 1.29,
+       "price": 1.09,
        "oldPrice": null,
        "product": "Skyr Morango Ehrmann · Ehrmann",
        "loose": false
@@ -5809,45 +5792,6 @@
        "price": 1.49,
        "oldPrice": null,
        "product": "Pão de Forma com Côdea Continente · Continente",
-       "loose": false
-      }
-     ]
-    },
-    "Wholemeal bread": {
-     "unitPrice": 2.08,
-     "unit": "kg",
-     "price": 0.99,
-     "oldPrice": null,
-     "pack": "emb. 475 gr",
-     "product": "Pão de Forma Integral com Côdea Continente · Continente",
-     "url": "https://www.continente.pt/produto/pao-de-forma-integral-com-codea-continente-7158639.html",
-     "packs": [
-      {
-       "amount": 0.3,
-       "price": 2.75,
-       "oldPrice": null,
-       "product": "Pão de Forma Integral com Côdea sem Glúten Continente · Continente",
-       "loose": false
-      },
-      {
-       "amount": 0.45,
-       "price": 1.99,
-       "oldPrice": null,
-       "product": "Pão de Forma Integral sem Côdea Continente · Continente",
-       "loose": false
-      },
-      {
-       "amount": 0.475,
-       "price": 0.99,
-       "oldPrice": null,
-       "product": "Pão de Forma Integral com Côdea Continente · Continente",
-       "loose": false
-      },
-      {
-       "amount": 0.5,
-       "price": 2.85,
-       "oldPrice": null,
-       "product": "Pão Alemão Integral de Centeio Pema · Pema",
        "loose": false
       }
      ]
@@ -8120,6 +8064,24 @@
        "price": 3.99,
        "oldPrice": null,
        "product": "Mostarda Dijon com Mel em Vidro Maille · Maille",
+       "loose": false
+      }
+     ]
+    },
+    "Wholegrain mustard": {
+     "unitPrice": 6.26,
+     "unit": "kg",
+     "price": 1.19,
+     "oldPrice": null,
+     "pack": "emb. 190 gr",
+     "product": "Mostarda em Grãos L'Ancienne em Vidro Continente · Continente",
+     "url": "https://www.continente.pt/produto/mostarda-em-graos-lancienne-em-vidro-continente-4376763.html",
+     "packs": [
+      {
+       "amount": 0.19,
+       "price": 1.19,
+       "oldPrice": null,
+       "product": "Mostarda em Grãos L'Ancienne em Vidro Continente · Continente",
        "loose": false
       }
      ]
@@ -13843,13 +13805,13 @@
      ]
     },
     "Tripe": {
-     "unitPrice": 9.99,
+     "unitPrice": 10.65,
      "unit": "kg",
-     "price": 6.99,
+     "price": 6.39,
      "oldPrice": null,
-     "pack": "0.7 Kg",
-     "product": "Tripas à Moda do Porto Familiar · Comida Fresca",
-     "url": "https://www.pingodoce.pt/home/produtos/take-away/prato-principal-e-acompanhamento/tripas-a-moda-do-porto-familiar-comida-fresca-904742.html",
+     "pack": "0.6 Kg",
+     "product": "Dobrada de Vitelão aos Cubos · Nosso Talho",
+     "url": "https://www.pingodoce.pt/home/produtos/talho/vitela-vitelao-e-bovino/vitela-e-vitelao%E2%80%8B/dobrada-de-vitelao-aos-cubos-nosso-talho-953677.html",
      "packs": [
       {
        "amount": 0.6,
@@ -13860,7 +13822,7 @@
       },
       {
        "amount": 0.7,
-       "price": 6.99,
+       "price": 7.49,
        "oldPrice": null,
        "product": "Tripas à Moda do Porto Familiar · Comida Fresca",
        "loose": true
@@ -19279,7 +19241,7 @@
        "amount": 0.14,
        "price": 1.99,
        "oldPrice": null,
-       "product": "Molho Pesto Fresco · Rana",
+       "product": "Molho de Pesto Fresco · Rana",
        "loose": true
       },
       {
@@ -22487,7 +22449,7 @@
      "oldPrice": null,
      "pack": null,
      "product": "TOMATE CHERRY MUTTI 400G · MUTTI",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/conservas/cogumelo-milho-ervilha-feijao-e-outros/tomate-cherry-mutti-400g/1074899.html",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/conservas/cogumelo-milho-ervilha-feijao-e-outros/tomate-cherry-mutti--400g/1074899.html",
      "packs": [
       {
        "amount": 0.4,
@@ -22915,6 +22877,31 @@
        "price": 0.79,
        "oldPrice": null,
        "product": "PERA ROCHA FRUBIS 20 G · FRUBIS",
+       "loose": false
+      }
+     ]
+    },
+    "Fig": {
+     "unitPrice": 21.95,
+     "unit": "kg",
+     "price": 4.39,
+     "oldPrice": null,
+     "pack": null,
+     "product": "FIGOS SEMEAR EM VINHO DO PORTO 200G · SEMEAR",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/cremes-compotas-e-mel/compotas/figos-semear-em-vinho-do-porto-200g/3365182.html",
+     "packs": [
+      {
+       "amount": 0.2,
+       "price": 4.39,
+       "oldPrice": null,
+       "product": "FIGOS SEMEAR EM VINHO DO PORTO 200G · SEMEAR",
+       "loose": false
+      },
+      {
+       "amount": 0.25,
+       "price": 5.99,
+       "oldPrice": null,
+       "product": "FIGO RECHEADO COM NOZ FRUSEL 250 G · FRUSEL",
        "loose": false
       }
      ]
@@ -24100,7 +24087,7 @@
      "oldPrice": null,
      "pack": null,
      "product": "ARROZ INTEGRAL CIGALA 1KG · CIGALA",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/arroz-e-massa/arroz/arroz-integral-cigala-1kg/3366304.html",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/arroz-e-massa/arroz/arroz-integral-cigala--1kg/3366304.html",
      "packs": [
       {
        "amount": 0.5,
@@ -24139,7 +24126,7 @@
      "oldPrice": null,
      "pack": null,
      "product": "ARROZ RISOTTO AUCHAN 500G · AUCHAN",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/arroz-e-massa/arroz/arroz-risotto-auchan-500g/3037588.html",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/arroz-e-massa/arroz/arroz-risotto-auchan--500g/3037588.html",
      "packs": [
       {
        "amount": 0.5,
@@ -24178,7 +24165,7 @@
      "oldPrice": null,
      "pack": null,
      "product": "ARROZ SELVAGEM AUCHAN 500G · AUCHAN",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/arroz-e-massa/arroz/arroz-selvagem-auchan-500g/3036436.html",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/arroz-e-massa/arroz/arroz-selvagem-auchan--500g/3036436.html",
      "packs": [
       {
        "amount": 0.5,
@@ -24817,45 +24804,6 @@
       }
      ]
     },
-    "Muesli": {
-     "unitPrice": 5.77,
-     "unit": "kg",
-     "price": 2.02,
-     "oldPrice": null,
-     "pack": null,
-     "product": "MUESLI SALUTEM 350G · SALUTEM",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/cereais-e-barras/corn-flakes-e-muesli/muesli-salutem-350g/3773938.html",
-     "packs": [
-      {
-       "amount": 0.2,
-       "price": 4.04,
-       "oldPrice": null,
-       "product": "MUESLI BIO HOLLE FR VERMELHOS 200G · HOLLE",
-       "loose": false
-      },
-      {
-       "amount": 0.35,
-       "price": 2.02,
-       "oldPrice": null,
-       "product": "MUESLI SALUTEM 350G · SALUTEM",
-       "loose": false
-      },
-      {
-       "amount": 0.375,
-       "price": 3.69,
-       "oldPrice": null,
-       "product": "MUESLI SEM GLÚTEN AUCHAN FRUTOS SECOS 375 G · AUCHAN",
-       "loose": false
-      },
-      {
-       "amount": 0.4,
-       "price": 5.39,
-       "oldPrice": null,
-       "product": "MUESLI SERRAMEL 400 G · SERRAMEL",
-       "loose": false
-      }
-     ]
-    },
     "Barley": {
      "unitPrice": 4.18,
      "unit": "kg",
@@ -25101,14 +25049,14 @@
       },
       {
        "amount": 0.45,
-       "price": 1.99,
+       "price": 2.49,
        "oldPrice": null,
        "product": "PAO BIMBO INTEGRAL SEM CÔDEA 450G · BIMBO",
        "loose": false
       },
       {
        "amount": 0.5,
-       "price": 2.39,
+       "price": 1.89,
        "oldPrice": null,
        "product": "PÃO BIMBO INTEGRAL 500G · BIMBO",
        "loose": false
@@ -26107,7 +26055,7 @@
      "oldPrice": null,
      "pack": null,
      "product": "PIRI-PIRI CAMPOS SANTOS MOÍDO SECO 35G · CAMPOS SANTOS",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/sal-ervas-e-temperos/pimenta-piri-piri-e-paprika/piri-piri-campos-santos-moido-seco-35g/3369420.html",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/sal-ervas-e-temperos/pimenta-piri-piri-e-paprika/piri-piri--campos-santos-moido-seco-35g/3369420.html",
      "packs": [
       {
        "amount": 0.014,
@@ -28134,7 +28082,7 @@
       },
       {
        "amount": 0.75,
-       "price": 5.99,
+       "price": 6.99,
        "oldPrice": null,
        "product": "AZEITE MOURA DOP VIRGEM EXTRA AUCHAN AMP COB 750 ML · AUCHAN AMP COB",
        "loose": false
@@ -29508,7 +29456,7 @@
      "oldPrice": null,
      "pack": null,
      "product": "TOMATE SECO PONTI 280G · PONTI",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/conservas/vegetais-secos/tomate-seco-ponti-280g/1080314.html",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/conservas/vegetais-secos/tomate-seco-ponti--280g/1080314.html",
      "packs": [
       {
        "amount": 0.1,
