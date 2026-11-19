@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, useWindowDimensions } from 'react-native';
+import { Pressable, StyleSheet, TextInput, useWindowDimensions } from 'react-native';
 
 import { NicknameForm } from '@/components/nickname-form';
 import { Screen } from '@/components/screen';
@@ -46,7 +46,7 @@ export default function ShoppingScreen() {
   const { t, product: productLabel, categoryName } = useLanguage();
   const { user, ready } = useAuthUser();
   const { recipes } = useRecipes(user?.uid ?? null);
-  const { week, loaded, needsNickname, saveDisplayName, haveAtHome, saveHaveAtHome } = useUserData(user?.uid ?? null);
+  const { week, loaded, needsNickname, saveDisplayName, haveAtHome, saveHaveAtHome, otherItems, saveOtherItems } = useUserData(user?.uid ?? null);
   const [shopId, setShopId] = useState<string | null>(null); // shop tab chosen (null = the cheapest)
   const [ticked, setTicked] = useState<Set<string>>(new Set()); // ticks live in memory only
   const prices = usePrices();
@@ -94,6 +94,65 @@ export default function ShoppingScreen() {
   function buyText(b: Buy): string {
     return 'pieces' in b.label ? t('buyPieces', { count: b.label.pieces }) : `${b.label.count} × ${b.label.size}`;
   }
+  // "Other things for home" (toilet paper...): free notes, never part of prices or the food list.
+  const [otherText, setOtherText] = useState('');
+  function addOther() {
+    const text = otherText.trim().slice(0, 60);
+    if (!text) return;
+    saveOtherItems([...otherItems, { id: `${Date.now()}-${otherItems.length}`, text, done: false }]);
+    setOtherText('');
+  }
+  const otherCard = (
+    <ThemedView type="backgroundElement" style={[Layout.card, styles.otherCard]}>
+      <ThemedText type="smallBold">{t('otherTitle')}</ThemedText>
+      <ThemedText type="small" themeColor="textSecondary">
+        {t('otherHelp')}
+      </ThemedText>
+      {otherItems.map((item) => (
+        <ThemedView key={item.id} style={styles.otherRow}>
+          <Pressable
+            accessibilityRole="button"
+            style={styles.otherMain}
+            onPress={() => saveOtherItems(otherItems.map((x) => (x.id === item.id ? { ...x, done: !x.done } : x)))}>
+            <ThemedView style={[styles.box, isPhone && styles.boxPhone, item.done && styles.boxDone]}>
+              {item.done ? <ThemedText style={[styles.tick, isPhone && styles.tickPhone]}>✓</ThemedText> : null}
+            </ThemedView>
+            <ThemedText style={[styles.otherText, item.done && styles.itemDone]} themeColor={item.done ? 'textSecondary' : 'text'}>
+              {item.text}
+            </ThemedText>
+          </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('otherRemove')}
+            style={styles.homeButton}
+            onPress={() => saveOtherItems(otherItems.filter((x) => x.id !== item.id))}>
+            <ThemedText style={styles.homeIcon}>✕</ThemedText>
+          </Pressable>
+        </ThemedView>
+      ))}
+      <ThemedView style={styles.otherRow}>
+        <TextInput
+          value={otherText}
+          onChangeText={setOtherText}
+          onSubmitEditing={addOther}
+          placeholder={t('otherPlaceholder')}
+          placeholderTextColor="#8A7A70"
+          maxLength={60}
+          returnKeyType="done"
+          style={styles.otherInput}
+        />
+        <Pressable accessibilityRole="button" style={[Layout.smallButton, styles.otherAdd]} onPress={addOther}>
+          <ThemedText type="smallBold">{t('otherAdd')}</ThemedText>
+        </Pressable>
+      </ThemedView>
+      {otherItems.some((x) => x.done) ? (
+        <Pressable accessibilityRole="button" style={Layout.smallButton} onPress={() => saveOtherItems(otherItems.filter((x) => !x.done))}>
+          <ThemedText type="smallBold">{t('otherClear')}</ThemedText>
+        </Pressable>
+      ) : null}
+    </ThemedView>
+  );
+
   function toggleHave(productId: string) {
     saveHaveAtHome(have.has(productId) ? haveAtHome.filter((id) => id !== productId) : [...haveAtHome, productId]);
   }
@@ -134,9 +193,12 @@ export default function ShoppingScreen() {
       ) : !loaded ? (
         <ThemedText themeColor="textSecondary">{t('loadingPlan')}</ThemedText>
       ) : recipeCount === 0 ? (
-        <ThemedText themeColor="textSecondary">
-          {t('nothingToBuy')}
-        </ThemedText>
+        <>
+          <ThemedText themeColor="textSecondary">
+            {t('nothingToBuy')}
+          </ThemedText>
+          {otherCard}
+        </>
       ) : (
         <>
           <ThemedText themeColor="textSecondary">
@@ -303,6 +365,8 @@ export default function ShoppingScreen() {
               </ThemedView>
             </ThemedView>
           ) : null}
+
+          {otherCard}
         </>
       )}
     </Screen>
@@ -320,6 +384,21 @@ const styles = StyleSheet.create({
   homeButton: { paddingHorizontal: 4, paddingVertical: 4 },
   homeIcon: { fontSize: 16, lineHeight: 20, opacity: 0.75 },
   homeCard: { gap: Spacing.two },
+  otherCard: { gap: Spacing.two, maxWidth: 720 },
+  otherRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two, backgroundColor: 'transparent' },
+  otherMain: { flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: Spacing.two, paddingVertical: 4 },
+  otherText: { flex: 1, minWidth: 0, fontSize: 16 },
+  otherInput: {
+    flex: 1,
+    minWidth: 0,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(42,27,18,0.2)',
+    fontSize: 16,
+  },
+  otherAdd: { minWidth: 48, alignItems: 'center' },
   homeChips: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two, backgroundColor: 'transparent' },
   homeChip: { paddingVertical: 4, paddingHorizontal: 10, borderRadius: 999, borderWidth: 1, borderColor: 'rgba(42,27,18,0.2)' },
   progressCard: { gap: Spacing.two },

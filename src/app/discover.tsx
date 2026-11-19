@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { addDoc, collection, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 
@@ -578,7 +578,24 @@ export default function DiscoverScreen() {
                 const count = recipe.ingredients.length;
                 return (
                   <ThemedView key={recipe.id} type="backgroundElement" style={Layout.card}>
-                    {recipe.photo ? <Photo photo={recipe.photo} /> : <PhotoPlaceholder />}
+                    <View style={styles.photoBox}>
+                      {recipe.photo ? <Photo photo={recipe.photo} /> : <PhotoPlaceholder />}
+                      {mine ? null : (
+                        // The heart, top right of the photo: empty = not saved; full = saved in My recipes (press again to take it out).
+                        <Pressable
+                          accessibilityRole="button"
+                          accessibilityLabel={savedIds.has(recipe.id) ? t('unlikeRecipe') : t('likeRecipe')}
+                          accessibilityState={{ selected: savedIds.has(recipe.id) }}
+                          onPress={() =>
+                            isGuest ? setGuestNoteId(recipe.id) : savedIds.has(recipe.id) ? removeCopy(recipe) : saveCopy(recipe)
+                          }
+                          style={styles.photoHeart}>
+                          <ThemedText style={[styles.heart, savedIds.has(recipe.id) && styles.heartOn]}>
+                            {savedIds.has(recipe.id) ? '♥' : '♡'}
+                          </ThemedText>
+                        </Pressable>
+                      )}
+                    </View>
                     <RecipeHeading
                       reserveTwoLines
                       name={recipe.name}
@@ -626,21 +643,6 @@ export default function DiscoverScreen() {
                           />
                         </Pressable>
                       ) : null}
-                      {mine ? null : (
-                        // The heart: empty = not saved; full = saved in My recipes (press again to take it out).
-                        <Pressable
-                          accessibilityRole="button"
-                          accessibilityLabel={savedIds.has(recipe.id) ? t('unlikeRecipe') : t('likeRecipe')}
-                          accessibilityState={{ selected: savedIds.has(recipe.id) }}
-                          onPress={() =>
-                            isGuest ? setGuestNoteId(recipe.id) : savedIds.has(recipe.id) ? removeCopy(recipe) : saveCopy(recipe)
-                          }
-                          style={[Layout.smallButton, styles.heartButton]}>
-                          <ThemedText style={[styles.heart, savedIds.has(recipe.id) && styles.heartOn]}>
-                            {savedIds.has(recipe.id) ? '♥' : '♡'}
-                          </ThemedText>
-                        </Pressable>
-                      )}
                     </ThemedView>
 
                     {guestNoteId === recipe.id ? (
@@ -866,7 +868,19 @@ const styles = StyleSheet.create({
   skipNote: { color: '#D93025' },
   chipWide: { alignSelf: 'flex-start' },
   savedButton: { backgroundColor: SavedGreen, borderColor: SavedGreen },
-  heartButton: { minWidth: 48, alignItems: 'center' },
+  photoBox: { position: 'relative' },
+  photoHeart: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.92)',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.3)',
+  },
   heart: { fontSize: 22, lineHeight: 26, color: Accent },
   heartOn: { color: '#D93025' },
   priceCol: { backgroundColor: 'transparent' },

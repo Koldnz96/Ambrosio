@@ -11,6 +11,8 @@ export const DAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const;
 export type Day = (typeof DAYS)[number];
 // For every day, the ids of the recipes planned for it (the same recipe can appear twice).
 export type Week = Record<Day, string[]>;
+// Things for the home that are not food (toilet paper, toothbrush...): free text typed by the person.
+export type OtherItem = { id: string; text: string; done: boolean };
 export const EMPTY_WEEK: Week = { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [], sun: [] };
 
 // Everything we keep about the person lives in ONE document: users/{uid}.
@@ -21,6 +23,7 @@ export function useUserData(uid: string | null) {
   const [displayName, setDisplayName] = useState('');
   const [hidden, setHidden] = useState<string[]>([]); // ids of public recipes marked "not interested"
   const [haveAtHome, setHaveAtHome] = useState<string[]>([]); // products the person still has at home (left out of shopping)
+  const [otherItems, setOtherItems] = useState<OtherItem[]>([]); // "Other things" on the shopping list
   const [loaded, setLoaded] = useState(false);
   // A guest (no email yet). Watched with onIdTokenChanged, because "Create account" keeps the same uid.
   const [isGuest, setIsGuest] = useState(auth.currentUser?.isAnonymous === true);
@@ -34,6 +37,7 @@ export function useUserData(uid: string | null) {
       setDisplayName('');
       setHidden([]);
       setHaveAtHome([]);
+      setOtherItems([]);
       setLoaded(false);
       return;
     }
@@ -56,6 +60,13 @@ export function useUserData(uid: string | null) {
         setDisplayName(typeof data.displayName === 'string' ? data.displayName : '');
         setHidden(Array.isArray(data.hidden) ? data.hidden.filter((id: unknown) => typeof id === 'string') : []);
         setHaveAtHome(Array.isArray(data.haveAtHome) ? data.haveAtHome.filter((id: unknown) => typeof id === 'string') : []);
+        setOtherItems(
+          Array.isArray(data.otherItems)
+            ? data.otherItems
+                .filter((x: unknown): x is OtherItem => !!x && typeof (x as OtherItem).id === 'string' && typeof (x as OtherItem).text === 'string')
+                .map((x: OtherItem) => ({ id: x.id, text: x.text, done: x.done === true }))
+            : [],
+        );
         setLoaded(true);
       },
       (err) => setError({ kind: 'load', message: err.message }),
@@ -79,6 +90,7 @@ export function useUserData(uid: string | null) {
   const saveWeek = useCallback((next: Week) => save({ week: next }), [save]);
   const saveHidden = useCallback((next: string[]) => save({ hidden: next }), [save]);
   const saveHaveAtHome = useCallback((next: string[]) => save({ haveAtHome: next }), [save]);
+  const saveOtherItems = useCallback((next: OtherItem[]) => save({ otherItems: next }), [save]);
 
   // Nicknames are unique: this fails with reason "taken" when someone else has it.
   const saveDisplayName = useCallback(
@@ -92,5 +104,5 @@ export function useUserData(uid: string | null) {
   // Signed in, settings loaded, and still no nickname: the screens ask for one first.
   const needsNickname = uid !== null && loaded && displayName === '' && !isGuest;
 
-    return { profile, week, displayName, needsNickname, isGuest, loaded, error, hidden, haveAtHome, saveProfile, saveWeek, saveHidden, saveHaveAtHome, saveDisplayName };
+    return { profile, week, displayName, needsNickname, isGuest, loaded, error, hidden, haveAtHome, otherItems, saveProfile, saveWeek, saveHidden, saveHaveAtHome, saveOtherItems, saveDisplayName };
 }

@@ -206,6 +206,11 @@ export function TourBanner() {
       <ThemedText style={styles.text}>{t(STEPS[step].text)}</ThemedText>
       <View style={styles.row}>
         <ThemedText style={styles.count}>{t('tourStep', { n: step + 1, total: STEPS.length })}</ThemedText>
+        {step > 0 ? (
+          <Pressable onPress={() => go(step - 1)} style={styles.ghost} accessibilityRole="button">
+            <ThemedText style={styles.ghostText}>{`← ${t('tourBack')}`}</ThemedText>
+          </Pressable>
+        ) : null}
         <Pressable onPress={() => finish()} style={styles.ghost} accessibilityRole="button">
           <ThemedText style={styles.ghostText}>{last ? t('tourLater') : t('tourSkip')}</ThemedText>
         </Pressable>
