@@ -199,18 +199,21 @@ export function TourBanner() {
         <ThemedText style={styles.who}>Ambrósio</ThemedText>
         <View style={styles.dots}>
           {STEPS.map((_, i) => (
-            <View key={i} style={[styles.dot, i === step && styles.dotOn, i < step && styles.dotDone]} />
+            // Each dot is a button: press it to jump to that step (back or forward). Bigger touch area than the dot.
+            <Pressable
+              key={i}
+              onPress={() => go(i)}
+              hitSlop={6}
+              accessibilityRole="button"
+              accessibilityLabel={t('tourStep', { n: i + 1, total: STEPS.length })}
+              style={styles.dotHit}>
+              <View style={[styles.dot, i === step && styles.dotOn, i < step && styles.dotDone]} />
+            </Pressable>
           ))}
         </View>
       </View>
       <ThemedText style={styles.text}>{t(STEPS[step].text)}</ThemedText>
       <View style={styles.row}>
-        <ThemedText style={styles.count}>{t('tourStep', { n: step + 1, total: STEPS.length })}</ThemedText>
-        {step > 0 ? (
-          <Pressable onPress={() => go(step - 1)} style={styles.ghost} accessibilityRole="button">
-            <ThemedText style={styles.ghostText}>{`← ${t('tourBack')}`}</ThemedText>
-          </Pressable>
-        ) : null}
         <Pressable onPress={() => finish()} style={styles.ghost} accessibilityRole="button">
           <ThemedText style={styles.ghostText}>{last ? t('tourLater') : t('tourSkip')}</ThemedText>
         </Pressable>
@@ -234,13 +237,13 @@ const styles = StyleSheet.create({
   head: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   avatar: { width: 36, height: 36, borderRadius: 18, borderWidth: 2, borderColor: '#FFFFFF' },
   who: { color: '#FFFFFF', fontSize: 16, fontWeight: '800', flex: 1 },
-  dots: { flexDirection: 'row', gap: 6 },
+  dots: { flexDirection: 'row', alignItems: 'center' },
+  dotHit: { paddingVertical: 8, paddingHorizontal: 3 },
   dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.35)' },
   dotDone: { backgroundColor: 'rgba(255,255,255,0.7)' },
   dotOn: { width: 22, backgroundColor: '#FFFFFF' },
   text: { fontSize: 19, lineHeight: 27, fontWeight: '600', color: '#FFFFFF' },
-  row: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  count: { color: 'rgba(255,255,255,0.75)', fontSize: 13, flex: 1 },
+  row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 10 },
   ghost: { paddingVertical: 10, paddingHorizontal: 12 },
   ghostText: { color: 'rgba(255,255,255,0.85)', fontSize: 15 },
   button: { paddingVertical: 11, paddingHorizontal: 20, borderRadius: 12, backgroundColor: '#FFFFFF' },
