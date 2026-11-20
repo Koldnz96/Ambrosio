@@ -1,4 +1,5 @@
-// For new guests: a ready-made week (7 dinners by Ambrosio, for 2 people) and a short guided tour:
+// For new guests: first two quick questions (allergies, how many people), then a ready-made week
+// (up to 7 dinners by Ambrosio, without their allergies, for that many people) and a short guided tour:
 // Week -> open a meal -> Shopping list -> prices -> "create a free account for more".
 //
 // Two parts:
@@ -6,6 +7,7 @@
 //   runs and which step it is on, and opens the right tab.
 // - <TourBanner /> (in every page, under the title): the Ambrósio card itself. It is PART of the page
 //   (it does not cover anything), so it is clear you can still use the page while following it.
+// - <FirstQuestions /> (in every page, under the title): the questions card, before the week is made.
 // Shown once per browser (localStorage "ambrosio-tour"); it can be replayed from the Profile tab.
 import { usePathname, useRouter } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -15,6 +17,8 @@ import { ThemedText } from '@/components/themed-text';
 import { Accent } from '@/constants/theme';
 import { getProduct } from '@/data/products';
 import { pickVariedWeek } from '@/data/preset-week';
+import { ALLERGEN_ICONS, ALLERGEN_ORDER, recipeWarnings, type Profile } from '@/data/warnings';
+import { type Allergen } from '@/data/products';
 import { recipeCategories } from '@/data/recipe-category';
 import { makeEntry } from '@/data/week-entry';
 import { useAuthUser } from '@/hooks/use-auth-user';
@@ -26,6 +30,8 @@ const LOGO = require('@/assets/images/ambrosio-logo.png');
 const TOUR_KEY = 'ambrosio-tour'; // a step number while it runs, "done" when finished
 const PRESET_KEY = 'ambrosio-preset-week'; // "1" once the ready-made week was given
 const INTRO_KEY = 'ambrosio-intro-seen';
+const ASKED_KEY = 'ambrosio-first-questions'; // "1" once allergies and people were answered
+const PEOPLE_KEY = 'ambrosio-first-people'; // how many people they said they cook for
 const TOUR_EVENT = 'ambrosio-tour'; // "show the tour again" (from Profile)
 
 const STEPS = [
@@ -52,8 +58,27 @@ function write(key: string, value: string) {
 }
 
 // --- A tiny shared "store": the current step and the buttons' actions --------------------------
-type TourState = { step: number | null; isGuest: boolean; go: (n: number) => void; finish: (toProfile?: boolean) => void };
-let state: TourState = { step: null, isGuest: false, go: () => {}, finish: () => {} };
+type Answers = { allergies: Allergen[]; vegan: boolean; people: number };
+type TourState = {
+  step: number | null;
+  isGuest: boolean;
+  go: (n: number) => void;
+  finish: (toProfile?: boolean) => void;
+  asking: boolean; // the first questions card is showing
+  answer: (a: Answers) => void;
+  days: number; // how many dinners the ready-made week got (for the first tour text)
+  people: number;
+};
+let state: TourState = {
+  step: null,
+  isGuest: false,
+  go: () => {},
+  finish: () => {},
+  asking: false,
+  answer: () => {},
+  days: 7,
+  people: 2,
+};
 const listeners = new Set<() => void>();
 function setState(next: Partial<TourState>) {
   state = { ...state, ...next };
@@ -87,13 +112,30 @@ export function GuestTour() {
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useAuthUser();
-  const { isGuest, week, loaded, saveWeek } = useUserData(user?.uid ?? null);
+  const { isGuest, week, profile, loaded, saveWeek, saveProfile } = useUserData(user?.uid ?? null);
   const weekEmpty = DAYS.every((d) => week[d].length === 0);
   const [introSeen, setIntroSeen] = useState(read(INTRO_KEY) === '1');
   const [replay, setReplay] = useState(0);
+  const [presetGiven, setPresetGiven] = useState(read(PRESET_KEY) === '1');
+  const [asked, setAsked] = useState(read(ASKED_KEY) === '1');
+  // The answers from the questions card (kept here, because the saved profile arrives a moment later).
+  const [answers, setAnswers] = useState<Answers | null>(null);
 
-  // 1. The ready-made week: only for a guest, only once, only if their week is still empty.
-  const needPreset = isGuest && loaded && weekEmpty && read(PRESET_KEY) !== '1';
+  // 1. First the questions: a new guest, after the welcome scene, before the ready-made week.
+  const asking = isGuest && loaded && introSeen && weekEmpty && !presetGiven && !asked;
+  useEffect(() => {
+    const answer = (a: Answers) => {
+      saveProfile({ allergies: a.allergies, vegan: a.vegan }); // same allergies as on the Profile tab
+      write(ASKED_KEY, '1');
+      write(PEOPLE_KEY, String(a.people));
+      setAnswers(a);
+      setAsked(true);
+    };
+    setState({ asking, answer });
+  }, [asking, saveProfile]);
+
+  // 2. The ready-made week: only for a guest, only once, only if their week is still empty, after the questions.
+  const needPreset = isGuest && loaded && weekEmpty && !presetGiven && asked;
   const { recipes } = usePublicRecipes(needPreset);
   const starters = useMemo(
     // Only dinners (no desserts, cakes or breakfasts in the ready-made week).
@@ -102,14 +144,28 @@ export function GuestTour() {
   );
   useEffect(() => {
     if (!needPreset || starters.length === 0) return;
+    const prof: Profile = answers ? { allergies: answers.allergies, vegan: answers.vegan } : profile;
+    const people = answers?.people ?? (Number(read(PEOPLE_KEY)) || 2);
+    // Leave out every dinner that contains (or may contain) one of their allergies, or is not vegan for a vegan.
+    // If fewer than 7 are left, some days simply stay empty.
+    const safe = starters.filter((r) => !recipeWarnings(r.ingredients, prof).some((w) => w.level !== 'unchecked'));
     const ids = pickVariedWeek(
-      starters.map((r) => ({ id: r.id, name: r.name, kinds: [...recipeCategories(r.ingredients, getProduct)] })),
+      safe.map((r) => ({ id: r.id, name: r.name, kinds: [...recipeCategories(r.ingredients, getProduct)] })),
     );
     const next: Week = { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [], sun: [] };
-    ids.forEach((id, i) => next[DAYS[i]].push(makeEntry(id, 2)));
+    ids.forEach((id, i) => next[DAYS[i]].push(makeEntry(id, people)));
     write(PRESET_KEY, '1');
+    setPresetGiven(true);
+    setState({ days: ids.length, people });
     saveWeek(next);
-  }, [needPreset, starters, saveWeek]);
+  }, [needPreset, starters, saveWeek, answers, profile]);
+
+  // For the first tour text ("we planned N dinners for P people") after a page reload.
+  useEffect(() => {
+    if (!loaded) return;
+    const days = DAYS.filter((d) => week[d].length > 0).length;
+    if (days > 0) setState({ days, people: Number(read(PEOPLE_KEY)) || 2 });
+  }, [loaded, week]);
 
   // 2. When the welcome scene closes: go straight to where the visitor should be (no flash of Home).
   const guestRef = useRef(isGuest);
@@ -161,12 +217,13 @@ export function GuestTour() {
   // 3. Start (or continue) the tour: a guest with a planned week who has not finished it.
   useEffect(() => {
     const saved = read(TOUR_KEY);
-    if (saved === 'done' || !introSeen || !loaded || weekEmpty) return;
+    // Waits for the ready-made week (it can be empty when every starter clashes with their allergies).
+    if (saved === 'done' || !introSeen || !loaded || (weekEmpty && !presetGiven)) return;
     if (!isGuest && replay === 0) return; // people with an account only see it when they ask
     const n = Math.min(Math.max(Number(saved ?? 0) || 0, 0), STEPS.length - 1);
     state.go(n);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [introSeen, loaded, weekEmpty, isGuest, replay]);
+  }, [introSeen, loaded, weekEmpty, presetGiven, isGuest, replay]);
 
   return null;
 }
@@ -175,7 +232,7 @@ export function GuestTour() {
 export function TourBanner() {
   const { t } = useLanguage();
   const pathname = usePathname();
-  const { step, isGuest, go, finish } = useTourState();
+  const { step, isGuest, go, finish, days, people } = useTourState();
   const drop = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -212,7 +269,14 @@ export function TourBanner() {
           ))}
         </View>
       </View>
-      <ThemedText style={styles.text}>{t(STEPS[step].text)}</ThemedText>
+      <ThemedText style={styles.text}>
+        {step === 0
+          ? t(days === 0 ? 'tourWeekNone' : days === 1 ? 'tourWeekOne' : 'tourWeek', {
+              days,
+              people: t(people === 1 ? 'peopleOne' : 'peopleMany', { count: people }),
+            })
+          : t(STEPS[step].text)}
+      </ThemedText>
       <View style={styles.row}>
         <Pressable onPress={() => finish()} style={styles.ghost} accessibilityRole="button">
           <ThemedText style={styles.ghostText}>{last ? t('tourLater') : t('tourSkip')}</ThemedText>
@@ -228,6 +292,89 @@ export function TourBanner() {
         )}
       </View>
     </Animated.View>
+  );
+}
+
+// --- The first questions card (under the title, on the Week page) ------------------------------
+export function FirstQuestions() {
+  const { t, allergenShortName } = useLanguage();
+  const pathname = usePathname();
+  const { asking, answer } = useTourState();
+  const [allergies, setAllergies] = useState<Allergen[]>([]);
+  const [vegan, setVegan] = useState(false);
+  const [people, setPeople] = useState(2);
+
+  if (!asking || pathname !== STEPS[0].route) return null;
+  const toggle = (a: Allergen) =>
+    setAllergies((old) => (old.includes(a) ? old.filter((x) => x !== a) : [...old, a]));
+  const nothingPicked = allergies.length === 0 && !vegan;
+
+  return (
+    <View style={styles.card}>
+      <View style={styles.head}>
+        <Image source={LOGO} style={styles.avatar} />
+        <ThemedText style={styles.who}>Ambrósio</ThemedText>
+      </View>
+      <ThemedText style={styles.text}>{t('fqTitle')}</ThemedText>
+      <ThemedText style={styles.small}>{t('fqAllergies')}</ThemedText>
+      <View style={styles.chips}>
+        {ALLERGEN_ORDER.map((a) => {
+          const on = allergies.includes(a);
+          return (
+            <Pressable
+              key={a}
+              onPress={() => toggle(a)}
+              accessibilityRole="checkbox"
+              accessibilityState={{ checked: on }}
+              style={[styles.chip, on && styles.chipOn]}>
+              <ThemedText style={[styles.chipText, on && styles.chipTextOn]}>
+                {on ? '✓ ' : ''}
+                {ALLERGEN_ICONS[a]} {allergenShortName(a)}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+        <Pressable
+          onPress={() => setVegan((v) => !v)}
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked: vegan }}
+          style={[styles.chip, vegan && styles.chipOn]}>
+          <ThemedText style={[styles.chipText, vegan && styles.chipTextOn]}>
+            {vegan ? '✓ ' : ''}🌱 {t('imVegan')}
+          </ThemedText>
+        </Pressable>
+      </View>
+      <ThemedText style={styles.note}>{t('fqPackaging')}</ThemedText>
+
+      <ThemedText style={styles.small}>{t('fqPeople')}</ThemedText>
+      <View style={styles.stepper}>
+        <Pressable
+          onPress={() => setPeople((n) => Math.max(1, n - 1))}
+          disabled={people <= 1}
+          accessibilityRole="button"
+          accessibilityLabel={t('servingsLess')}
+          style={[styles.stepButton, people <= 1 && styles.off]}>
+          <ThemedText style={styles.stepText}>−</ThemedText>
+        </Pressable>
+        <ThemedText style={styles.stepValue}>
+          👥 {t(people === 1 ? 'peopleOne' : 'peopleMany', { count: people })}
+        </ThemedText>
+        <Pressable
+          onPress={() => setPeople((n) => Math.min(20, n + 1))}
+          disabled={people >= 20}
+          accessibilityRole="button"
+          accessibilityLabel={t('servingsMore')}
+          style={[styles.stepButton, people >= 20 && styles.off]}>
+          <ThemedText style={styles.stepText}>+</ThemedText>
+        </Pressable>
+      </View>
+
+      <View style={styles.row}>
+        <Pressable onPress={() => answer({ allergies, vegan, people })} style={styles.button} accessibilityRole="button">
+          <ThemedText style={styles.buttonText}>{nothingPicked ? t('fqNone') : `${t('fqContinue')} →`}</ThemedText>
+        </Pressable>
+      </View>
+    </View>
   );
 }
 
@@ -248,4 +395,17 @@ const styles = StyleSheet.create({
   ghostText: { color: 'rgba(255,255,255,0.85)', fontSize: 15 },
   button: { paddingVertical: 11, paddingHorizontal: 20, borderRadius: 12, backgroundColor: '#FFFFFF' },
   buttonText: { color: Accent, fontSize: 16, fontWeight: '800' },
+  // the first questions card
+  small: { fontSize: 15, lineHeight: 21, fontWeight: '700', color: '#FFFFFF' },
+  note: { fontSize: 13, lineHeight: 18, color: 'rgba(255,255,255,0.85)' },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  chip: { paddingVertical: 7, paddingHorizontal: 12, borderRadius: 999, borderWidth: 1.5, borderColor: 'rgba(255,255,255,0.7)' },
+  chipOn: { backgroundColor: '#FFFFFF', borderColor: '#FFFFFF' },
+  chipText: { fontSize: 14, lineHeight: 19, color: '#FFFFFF' },
+  chipTextOn: { color: Accent, fontWeight: '700' },
+  stepper: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  stepButton: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFFFFF' },
+  stepText: { color: Accent, fontSize: 20, lineHeight: 24, fontWeight: '800' },
+  stepValue: { color: '#FFFFFF', fontSize: 16, fontWeight: '700' },
+  off: { opacity: 0.4 },
 });

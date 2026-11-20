@@ -17,6 +17,8 @@ import { usePublicRecipes } from '@/hooks/use-public-recipes';
 import { makeEntry, parseEntry } from '@/data/week-entry';
 import { scaleLines } from '@/data/prices';
 import { RecipeSteps } from '@/components/recipe-steps';
+import { RecipePickCard } from '@/components/recipe-pick-card';
+import { usePrices } from '@/hooks/use-prices';
 import { useTourActive } from '@/components/guest-tour';
 import { DAYS, useUserData, type Day } from '@/hooks/use-user-data';
 import { useLanguage } from '@/i18n/language';
@@ -41,6 +43,7 @@ export default function WeekScreen() {
   const tourOn = useTourActive();
   const [fullKeys, setFullKeys] = useState<Set<string>>(new Set()); // "Ver tudo" pressed during the tour
   const [pickingDay, setPickingDay] = useState<Day | null>(null); // the day whose recipe list is open
+  const prices = usePrices(); // for the price per person on the pick cards
 
   function addRecipe(day: Day, recipeId: string) {
     saveWeek({ ...week, [day]: [...week[day], recipeId] });
@@ -262,21 +265,20 @@ export default function WeekScreen() {
                         <ThemedText type="small" themeColor="textSecondary">
                           {t('changeAsk')}
                         </ThemedText>
-                        <ScrollView style={styles.pickList} nestedScrollEnabled>
+                        <ScrollView style={styles.pickList} contentContainerStyle={styles.pickListInner} nestedScrollEnabled>
                           {listed.length === 0 ? (
                             <ThemedText type="small" themeColor="textSecondary">
                               {t('changeNone')}
                             </ThemedText>
                           ) : null}
                           {listed.map((c) => (
-                            <Pressable
+                            <RecipePickCard
                               key={c.id}
-                              style={styles.pickRow}
-                              accessibilityRole="button"
-                              onPress={() => changeRecipe(day, index, c.id, keepServings)}>
-                              <RecipeHeading name={c.name} />
-                              <WarningChips warnings={recipeWarnings(c.ingredients, profile)} />
-                            </Pressable>
+                              recipe={c}
+                              profile={profile}
+                              prices={prices}
+                              onPress={() => changeRecipe(day, index, c.id, keepServings)}
+                            />
                           ))}
                         </ScrollView>
                         {warnedCount > 0 && !showWarned ? (
@@ -299,10 +301,13 @@ export default function WeekScreen() {
                       {t('tapToAdd')}
                     </ThemedText>
                     {recipes.map((recipe) => (
-                      <Pressable key={recipe.id} style={styles.pickRow} onPress={() => addRecipe(day, recipe.id)}>
-                        <RecipeHeading name={recipe.name} />
-                        <WarningChips warnings={recipeWarnings(recipe.ingredients, profile)} />
-                      </Pressable>
+                      <RecipePickCard
+                        key={recipe.id}
+                        recipe={recipe}
+                        profile={profile}
+                        prices={prices}
+                        onPress={() => addRecipe(day, recipe.id)}
+                      />
                     ))}
                     <Pressable style={Layout.smallButton} onPress={() => setPickingDay(null)}>
                       <ThemedText type="smallBold">{t('cancel')}</ThemedText>
@@ -353,6 +358,6 @@ const styles = StyleSheet.create({
   },
   binIcon: { fontSize: 13, lineHeight: 16 },
   buttonOn: { opacity: 0.6 },
-  pickList: { maxHeight: 320 },
-  pickRow: { gap: Spacing.one, paddingVertical: 4 },
+  pickList: { maxHeight: 360 },
+  pickListInner: { gap: Spacing.two },
 });
