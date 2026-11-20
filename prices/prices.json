@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-11-19T12:33:18.429Z",
+ "updatedAt": "2026-11-20T12:36:21.319Z",
  "note": "Online prices, a reference only.",
  "shops": {
   "continente": {
@@ -485,9 +485,9 @@
      ]
     },
     "Red pepper": {
-     "unitPrice": 0.99,
+     "unitPrice": 1.05,
      "unit": "un",
-     "price": 3.29,
+     "price": 3.49,
      "oldPrice": null,
      "pack": null,
      "product": "Pimento Vermelho Continente · Continente",
@@ -495,9 +495,9 @@
      "packs": []
     },
     "Green pepper": {
-     "unitPrice": 0.75,
+     "unitPrice": 0.87,
      "unit": "un",
-     "price": 2.99,
+     "price": 3.49,
      "oldPrice": null,
      "pack": null,
      "product": "Pimento Verde Continente · Continente",
@@ -1514,9 +1514,9 @@
      "packs": []
     },
     "Avocado": {
-     "unitPrice": 5.38,
+     "unitPrice": 3.98,
      "unit": "kg",
-     "price": 2.69,
+     "price": 1.99,
      "oldPrice": null,
      "pack": "emb. 500 gr",
      "product": "Abacate Hass Continente · Continente",
@@ -1538,7 +1538,7 @@
       },
       {
        "amount": 0.5,
-       "price": 2.69,
+       "price": 1.99,
        "oldPrice": null,
        "product": "Abacate Hass Continente · Continente",
        "loose": false
@@ -2093,9 +2093,9 @@
      ]
     },
     "Pork shoulder": {
-     "unitPrice": 2.14,
+     "unitPrice": 1.9,
      "unit": "kg",
-     "price": 4.49,
+     "price": 3.99,
      "oldPrice": null,
      "pack": "emb. 2,1 kg (aprox.)",
      "product": "Pá de Porco com Osso Continente · Continente",
@@ -2103,7 +2103,7 @@
      "packs": [
       {
        "amount": 2.1,
-       "price": 4.49,
+       "price": 3.99,
        "oldPrice": null,
        "product": "Pá de Porco com Osso Continente · Continente",
        "loose": false
@@ -2299,7 +2299,7 @@
       },
       {
        "amount": 2.43,
-       "price": 4.49,
+       "price": 3.99,
        "oldPrice": null,
        "product": "Frango do Campo Inteiro Com Miúdos Continente · Continente",
        "loose": false
@@ -2982,7 +2982,7 @@
      "packs": [
       {
        "amount": 0.21,
-       "price": 13.99,
+       "price": 11.89,
        "oldPrice": null,
        "product": "Posta de Pescada do Chile nº5 Congelada Continente · Continente",
        "loose": false
@@ -3104,9 +3104,9 @@
      ]
     },
     "Surimi": {
-     "unitPrice": 5.16,
+     "unitPrice": 3.96,
      "unit": "kg",
-     "price": 1.29,
+     "price": 0.99,
      "oldPrice": null,
      "pack": "emb. 250 gr",
      "product": "Delícias do Mar Ultracongeladas Continente · Continente",
@@ -3114,7 +3114,7 @@
      "packs": [
       {
        "amount": 0.25,
-       "price": 1.29,
+       "price": 0.99,
        "oldPrice": null,
        "product": "Delícias do Mar Ultracongeladas Continente · Continente",
        "loose": false
@@ -3130,14 +3130,14 @@
        "amount": 0.35,
        "price": 6.69,
        "oldPrice": null,
-       "product": "Delícia Crocante de Coco",
+       "product": "Delícia Pistácio e Manga",
        "loose": false
       },
       {
        "amount": 0.35,
        "price": 6.69,
        "oldPrice": null,
-       "product": "Delícia Pistácio e Manga",
+       "product": "Delícia Crocante de Coco",
        "loose": false
       }
      ]
@@ -3280,6 +3280,13 @@
      "url": "https://www.continente.pt/produto/ameijoa-branca-grande-fresca-2510169.html",
      "packs": [
       {
+       "amount": 0.5,
+       "price": 16.99,
+       "oldPrice": null,
+       "product": "Amêijoa Macha Fresca",
+       "loose": false
+      },
+      {
        "amount": 1,
        "price": 24.99,
        "oldPrice": null,
@@ -3371,9 +3378,9 @@
      ]
     },
     "Tiger prawns": {
-     "unitPrice": 2.88,
+     "unitPrice": 2.4,
      "unit": "un",
-     "price": 35.99,
+     "price": 29.99,
      "oldPrice": null,
      "pack": null,
      "product": "Camarão Tigre Selvagem Médio Congelado",
@@ -5796,6 +5803,45 @@
       }
      ]
     },
+    "Wholemeal bread": {
+     "unitPrice": 2.08,
+     "unit": "kg",
+     "price": 0.99,
+     "oldPrice": null,
+     "pack": "emb. 475 gr",
+     "product": "Pão de Forma Integral com Côdea Continente · Continente",
+     "url": "https://www.continente.pt/produto/pao-de-forma-integral-com-codea-continente-7158639.html",
+     "packs": [
+      {
+       "amount": 0.3,
+       "price": 2.75,
+       "oldPrice": null,
+       "product": "Pão de Forma Integral com Côdea sem Glúten Continente · Continente",
+       "loose": false
+      },
+      {
+       "amount": 0.45,
+       "price": 1.99,
+       "oldPrice": null,
+       "product": "Pão de Forma Integral sem Côdea Continente · Continente",
+       "loose": false
+      },
+      {
+       "amount": 0.475,
+       "price": 0.99,
+       "oldPrice": null,
+       "product": "Pão de Forma Integral com Côdea Continente · Continente",
+       "loose": false
+      },
+      {
+       "amount": 0.5,
+       "price": 2.85,
+       "oldPrice": null,
+       "product": "Pão Alemão Integral de Centeio Pema · Pema",
+       "loose": false
+      }
+     ]
+    },
     "Rye bread": {
      "unitPrice": 3.48,
      "unit": "kg",
@@ -7798,7 +7844,7 @@
      "packs": [
       {
        "amount": 0.15,
-       "price": 4.29,
+       "price": 3.19,
        "oldPrice": null,
        "product": "Molho de Soja Heinz · Heinz",
        "loose": false
@@ -7837,7 +7883,7 @@
       },
       {
        "amount": 0.15,
-       "price": 5.29,
+       "price": 3.94,
        "oldPrice": null,
        "product": "Molho Inglês Lea & Perrins · Lea & Perrins",
        "loose": false
@@ -8324,7 +8370,7 @@
       },
       {
        "amount": 0.14,
-       "price": 1.29,
+       "price": 0.99,
        "oldPrice": null,
        "product": "Tomate Concentrado Compal da Horta · Compal da Horta",
        "loose": false
@@ -8466,7 +8512,7 @@
       },
       {
        "amount": 0.48,
-       "price": 4.69,
+       "price": 2.99,
        "oldPrice": null,
        "product": "Molho Barbecue Clássico Top Down Heinz · Heinz",
        "loose": false
@@ -9462,7 +9508,7 @@
       },
       {
        "amount": 1,
-       "price": 1.59,
+       "price": 1.27,
        "oldPrice": null,
        "product": "Farinha de Trigo para Bolos com Fermento Nacional · Nacional",
        "loose": false
@@ -10933,7 +10979,7 @@
       },
       {
        "amount": 0.15,
-       "price": 2.39,
+       "price": 2.99,
        "oldPrice": null,
        "product": "Amêndoa com Pele Biológica Continente Bio · Continente Bio",
        "loose": false
@@ -11934,10 +11980,10 @@
        "loose": false
       },
       {
-       "amount": 0.125,
-       "price": 1.49,
+       "amount": 0.33,
+       "price": 4.19,
        "oldPrice": null,
-       "product": "Chocolate em Pó sem Glúten Pantagruel · Pantagruel",
+       "product": "Bebida de Chocolate em Pó Nescau · Nescau",
        "loose": false
       }
      ]
@@ -12119,38 +12165,6 @@
        "price": 0.99,
        "oldPrice": null,
        "product": "Continente Vinho Tinto · Continente",
-       "loose": false
-      }
-     ]
-    },
-    "White wine": {
-     "unitPrice": 0.99,
-     "unit": "l",
-     "price": 0.99,
-     "oldPrice": null,
-     "pack": "emb. 1 lt",
-     "product": "Continente Vinho Branco · Continente",
-     "url": "https://www.continente.pt/produto/continente-vinho-branco-6878014.html",
-     "packs": [
-      {
-       "amount": 0.25,
-       "price": 0.55,
-       "oldPrice": null,
-       "product": "Continente Vinho Branco · Continente",
-       "loose": false
-      },
-      {
-       "amount": 0.25,
-       "price": 1.39,
-       "oldPrice": null,
-       "product": "Gatão Vinho Branco · Gatão",
-       "loose": false
-      },
-      {
-       "amount": 1,
-       "price": 0.99,
-       "oldPrice": null,
-       "product": "Continente Vinho Branco · Continente",
        "loose": false
       }
      ]
@@ -14001,8 +14015,8 @@
      "packs": [
       {
        "amount": 0.5,
-       "price": 6.49,
-       "oldPrice": null,
+       "price": 6.19,
+       "oldPrice": 6.49,
        "product": "Bife/Peito de Frango a granel · Nosso Talho",
        "loose": true
       },
@@ -14862,45 +14876,6 @@
       }
      ]
     },
-    "Sea bream": {
-     "unitPrice": 17.98,
-     "unit": "kg",
-     "price": 8.99,
-     "oldPrice": null,
-     "pack": "0.5 Kg",
-     "product": "Dourada Fresca até 600g · Nossa Peixaria",
-     "url": "https://www.pingodoce.pt/home/produtos/peixaria/peixe/dourada-e-robalo%E2%80%8B/dourada-fresca-ate-600g-nossa-peixaria-44047.html",
-     "packs": [
-      {
-       "amount": 0.2,
-       "price": 7.99,
-       "oldPrice": 9.99,
-       "product": "Filetes de Dourada Congelados · Iglo",
-       "loose": true
-      },
-      {
-       "amount": 0.5,
-       "price": 8.99,
-       "oldPrice": null,
-       "product": "Dourada Fresca até 600g · Nossa Peixaria",
-       "loose": true
-      },
-      {
-       "amount": 0.7,
-       "price": 12.99,
-       "oldPrice": null,
-       "product": "Dourada Fresca Nacional +600g · Nossa Peixaria",
-       "loose": true
-      },
-      {
-       "amount": 1,
-       "price": 30.99,
-       "oldPrice": null,
-       "product": "Dourada de Mar Fresca · Nossa Peixaria",
-       "loose": true
-      }
-     ]
-    },
     "Hake": {
      "unitPrice": 9.98,
      "unit": "kg",
@@ -15016,10 +14991,10 @@
      ]
     },
     "Octopus": {
-     "unitPrice": 13.33,
+     "unitPrice": 10.83,
      "unit": "kg",
-     "price": 15.99,
-     "oldPrice": null,
+     "price": 12.99,
+     "oldPrice": 15.99,
      "pack": "1.2 Kg",
      "product": "Polvo Fresco · Nossa Peixaria",
      "url": "https://www.pingodoce.pt/home/produtos/peixaria/polvo-lula-pota-e-choco/fresco/polvo-fresco-nossa-peixaria-570063.html",
@@ -15040,8 +15015,8 @@
       },
       {
        "amount": 1.2,
-       "price": 15.99,
-       "oldPrice": null,
+       "price": 12.99,
+       "oldPrice": 15.99,
        "product": "Polvo Fresco · Nossa Peixaria",
        "loose": true
       }
@@ -15119,10 +15094,10 @@
      ]
     },
     "Mussels": {
-     "unitPrice": 2.69,
+     "unitPrice": 1.99,
      "unit": "kg",
-     "price": 2.69,
-     "oldPrice": null,
+     "price": 1.99,
+     "oldPrice": 2.69,
      "pack": "1 Kg",
      "product": "Mexilhão Fresco · Nossa Peixaria",
      "url": "https://www.pingodoce.pt/home/produtos/peixaria/marisco/marisco-vivo-e-cozido/mexilhao-fresco-nossa-peixaria-53291.html",
@@ -15136,8 +15111,8 @@
       },
       {
        "amount": 1,
-       "price": 2.69,
-       "oldPrice": null,
+       "price": 1.99,
+       "oldPrice": 2.69,
        "product": "Mexilhão Fresco · Nossa Peixaria",
        "loose": true
       }
@@ -16911,18 +16886,18 @@
      ]
     },
     "Gnocchi": {
-     "unitPrice": 4.08,
+     "unitPrice": 3.38,
      "unit": "kg",
-     "price": 2.04,
-     "oldPrice": 2.56,
+     "price": 1.69,
+     "oldPrice": 2.67,
      "pack": "0.5 Kg",
-     "product": "Massa Gnocchi de Batata · La Molisana",
-     "url": "https://www.pingodoce.pt/home/produtos/mercearia/arroz-massa-e-leguminosas/massa/massa-gnocchi-de-batata-la-molisana-776880.html",
+     "product": "Massa Gnocchi de Batata · Delverde",
+     "url": "https://www.pingodoce.pt/home/produtos/mercearia/arroz-massa-e-leguminosas/massa/massa-gnocchi-de-batata-delverde-1005424.html",
      "packs": [
       {
        "amount": 0.5,
-       "price": 2.67,
-       "oldPrice": null,
+       "price": 1.69,
+       "oldPrice": 2.67,
        "product": "Massa Gnocchi de Batata · Delverde",
        "loose": true
       },
@@ -17451,10 +17426,10 @@
      ]
     },
     "Baguette": {
-     "unitPrice": 2.36,
+     "unitPrice": 1.96,
      "unit": "kg",
-     "price": 0.59,
-     "oldPrice": null,
+     "price": 0.49,
+     "oldPrice": 0.59,
      "pack": "0.25 Kg",
      "product": "Cacete Galego · Nossa Padaria",
      "url": "https://www.pingodoce.pt/home/produtos/padaria-e-pastelaria/pao-da-nossa-padaria/pao-familiar/cacete-galego-nossa-padaria-319873.html",
@@ -17475,8 +17450,8 @@
       },
       {
        "amount": 0.25,
-       "price": 0.59,
-       "oldPrice": null,
+       "price": 0.49,
+       "oldPrice": 0.59,
        "product": "Cacete Galego · Nossa Padaria",
        "loose": true
       },
@@ -19816,10 +19791,10 @@
      ]
     },
     "Sunflower oil": {
-     "unitPrice": 2.14,
+     "unitPrice": 1.99,
      "unit": "l",
-     "price": 2.14,
-     "oldPrice": null,
+     "price": 1.99,
+     "oldPrice": 2.14,
      "pack": "1 L",
      "product": "Óleo de Girassol · Fula",
      "url": "https://www.pingodoce.pt/home/produtos/mercearia/azeite-oleo-e-vinagre/oleo/oleo-de-girassol-fula-767814.html",
@@ -19840,8 +19815,8 @@
       },
       {
        "amount": 1,
-       "price": 2.14,
-       "oldPrice": null,
+       "price": 1.99,
+       "oldPrice": 2.14,
        "product": "Óleo de Girassol · Fula",
        "loose": false
       }
@@ -19865,8 +19840,8 @@
       },
       {
        "amount": 1,
-       "price": 2.19,
-       "oldPrice": null,
+       "price": 1.99,
+       "oldPrice": 2.19,
        "product": "Óleo Alimentar · Fula",
        "loose": false
       },
@@ -19879,8 +19854,8 @@
       },
       {
        "amount": 3,
-       "price": 6.39,
-       "oldPrice": null,
+       "price": 5.99,
+       "oldPrice": 6.39,
        "product": "Óleo Alimentar · Fula",
        "loose": false
       }
@@ -20011,8 +19986,8 @@
       },
       {
        "amount": 1,
-       "price": 0.69,
-       "oldPrice": null,
+       "price": 0.59,
+       "oldPrice": 0.69,
        "product": "Farinha de Trigo Tipo 65 sem Fermento · Pérola",
        "loose": true
       },
@@ -22243,13 +22218,13 @@
      ]
     },
     "White wine": {
-     "unitPrice": 0.99,
+     "unitPrice": 2.2,
      "unit": "l",
-     "price": 0.99,
+     "price": 0.55,
      "oldPrice": null,
-     "pack": "1 L",
+     "pack": "0.25 L",
      "product": "Vinho Branco Pingo Doce · Pingo Doce",
-     "url": "https://www.pingodoce.pt/home/produtos/vinhos/vinho-branco/vinho-branco-pingo-doce-pingo-doce-559197.html",
+     "url": "https://www.pingodoce.pt/home/produtos/vinhos/vinho-branco/vinho-branco-pingo-doce-pingo-doce-879468.html",
      "packs": [
       {
        "amount": 0.25,
@@ -22273,10 +22248,10 @@
        "loose": false
       },
       {
-       "amount": 1,
-       "price": 0.99,
+       "amount": 0.75,
+       "price": 1.99,
        "oldPrice": null,
-       "product": "Vinho Branco Pingo Doce · Pingo Doce",
+       "product": "Vinho Verde Branco Pingo Doce · Pingo Doce",
        "loose": false
       }
      ]
@@ -25864,7 +25839,7 @@
      "packs": [
       {
        "amount": 0.25,
-       "price": 0.29,
+       "price": 0.33,
        "oldPrice": null,
        "product": "SAL AUCHAN DE MESA 250G · AUCHAN",
        "loose": false
@@ -28416,7 +28391,7 @@
      "oldPrice": null,
      "pack": null,
      "product": "FARINHA DE CENTEIO NACIONAL 900G · NACIONAL",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/farinha/farinha-especialidades/farinha-de-centeio-nacional-900g/3391434.html",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/farinha/farinha-especialidades/farinha-de-centeio-nacional--900g/3391434.html",
      "packs": [
       {
        "amount": 0.5,
@@ -28521,13 +28496,6 @@
      "product": "FARINHA MAIZENA 700G · MAIZENA",
      "url": "https://www.auchan.pt/pt/alimentacao/mercearia/farinha/farinha-especialidades/farinha-maizena-700g/2138903.html",
      "packs": [
-      {
-       "amount": 0.25,
-       "price": 3.2,
-       "oldPrice": null,
-       "product": "FARINHA MAIZENA 250G · MAIZENA",
-       "loose": false
-      },
       {
        "amount": 0.4,
        "price": 2.6,
@@ -29602,7 +29570,7 @@
       },
       {
        "amount": 0.125,
-       "price": 1.29,
+       "price": 1.99,
        "oldPrice": null,
        "product": "SUMO DE LIMÃO BIO POLENGHI 125ML · POLENGHI",
        "loose": false
