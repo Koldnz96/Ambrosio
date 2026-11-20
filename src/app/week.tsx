@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Image, Pressable, StyleSheet } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { NicknameForm } from '@/components/nickname-form';
 import { RecipeHeading } from '@/components/recipe-heading';
@@ -14,7 +14,7 @@ import { recipeWarnings } from '@/data/warnings';
 import { useAuthUser } from '@/hooks/use-auth-user';
 import { useRecipes } from '@/hooks/use-recipes';
 import { usePublicRecipes } from '@/hooks/use-public-recipes';
-import { parseEntry } from '@/data/week-entry';
+import { makeEntry, parseEntry } from '@/data/week-entry';
 import { scaleLines } from '@/data/prices';
 import { RecipeSteps } from '@/components/recipe-steps';
 import { useTourActive } from '@/components/guest-tour';
@@ -45,6 +45,42 @@ export default function WeekScreen() {
   function addRecipe(day: Day, recipeId: string) {
     saveWeek({ ...week, [day]: [...week[day], recipeId] });
     setPickingDay(null);
+  }
+
+  // "Trocar": swap one planned meal for another recipe, keeping the number of people.
+  const [changingKey, setChangingKey] = useState<string | null>(null); // the meal whose "change" list is open
+  const [showWarned, setShowWarned] = useState(false); // also list recipes with allergy warnings
+
+  // Everything you can pick: your own recipes and the public ones (no repeats), A to Z.
+  const choices = [...recipes, ...publicRecipes.filter((p) => !recipes.some((r) => r.id === p.id))].sort((a, b) =>
+    a.name.localeCompare(b.name),
+  );
+  // A recipe is "warned" when it contains (or may contain) one of your allergies, or is not vegan for a vegan.
+  // Recipes we simply cannot check stay in the list, with their yellow chip.
+  const isWarned = (ingredients: { productId: string | null }[]) =>
+    recipeWarnings(ingredients, profile).some((w) => w.level !== 'unchecked');
+
+  function openChange(key: string) {
+    setChangingKey(changingKey === key ? null : key);
+    setShowWarned(false);
+    setConfirmKey(null);
+  }
+
+  function changeRecipe(day: Day, index: number, newId: string, servings: number | null) {
+    const key = `${day}-${index}`;
+    saveWeek({ ...week, [day]: week[day].map((text, i) => (i === index ? makeEntry(newId, servings) : text)) });
+    setChangingKey(null);
+    // The meal in this spot is a new one: close its recipe.
+    setOpenKeys((old) => {
+      const next = new Set(old);
+      next.delete(key);
+      return next;
+    });
+    setFullKeys((old) => {
+      const next = new Set(old);
+      next.delete(key);
+      return next;
+    });
   }
 
   function removeRecipe(day: Day, index: number) {
@@ -94,16 +130,40 @@ export default function WeekScreen() {
                 {week[day].map((text, index) => {
                   const entry = parseEntry(text);
                   const recipe = recipes.find((r) => r.id === entry.recipeId) ?? publicRecipes.find((r) => r.id === entry.recipeId);
+                  const key = `${day}-${index}`;
+                  // Same number of people as the meal it replaces.
+                  const keepServings = entry.servings ?? recipe?.servings ?? null;
+                  const options = choices.filter((c) => c.id !== entry.recipeId);
+                  const safe = options.filter((c) => !isWarned(c.ingredients));
+                  const warnedCount = options.length - safe.length;
+                  const listed = showWarned ? options : safe;
                   return (
-                    <ThemedView key={`${text}-${index}`} type="backgroundElement" style={styles.itemRow}>
-                      {/* A small picture of the dish (or a plate when it has no photo). */}
-                      {recipe?.photo?.startsWith('data:image/') ? (
-                        <Image source={{ uri: recipe.photo }} resizeMode="cover" style={styles.thumb} />
-                      ) : (
-                        <ThemedView type="backgroundSelected" style={[styles.thumb, styles.thumbEmpty]}>
-                          <ThemedText style={styles.thumbIcon}>🍽️</ThemedText>
-                        </ThemedView>
-                      )}
+                    <ThemedView key={`${text}-${index}`} type="backgroundElement" style={styles.meal}>
+                    <ThemedView type="backgroundElement" style={styles.itemRow}>
+                      {/* A small picture of the dish (or a plate when it has no photo), with a small bin on its corner. */}
+                      <View style={styles.thumbBox}>
+                        {recipe?.photo?.startsWith('data:image/') ? (
+                          <Image source={{ uri: recipe.photo }} resizeMode="cover" style={styles.thumb} />
+                        ) : (
+                          <ThemedView type="backgroundSelected" style={[styles.thumb, styles.thumbEmpty]}>
+                            <ThemedText style={styles.thumbIcon}>🍽️</ThemedText>
+                          </ThemedView>
+                        )}
+                        {/* Remove from the week. Hidden during the tour (a removed meal cannot come back there). */}
+                        {tourOn ? null : (
+                          <Pressable
+                            style={styles.binOnPhoto}
+                            hitSlop={8}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('removeFromWeek')}
+                            onPress={() => {
+                              setChangingKey(null);
+                              setConfirmKey(confirmKey === key ? null : key);
+                            }}>
+                            <ThemedText style={styles.binIcon}>🗑️</ThemedText>
+                          </Pressable>
+                        )}
+                      </View>
                       <Pressable
                         style={styles.itemText}
                         disabled={!recipe}
@@ -167,31 +227,68 @@ export default function WeekScreen() {
                           </ThemedText>
                         ) : null}
                       </Pressable>
-                      {/* Remove from the week: a bin. Hidden during the tour (a removed meal cannot come back there). */}
-                      {tourOn ? null : confirmKey === `${day}-${index}` ? (
-                        // Asks first, so a meal is not removed by accident.
-                        <ThemedView style={styles.confirm}>
-                          <ThemedText type="small">{t('removeFromWeekAsk')}</ThemedText>
-                          <Pressable
-                            style={[Layout.smallButton, styles.dangerButton]}
-                            onPress={() => removeRecipe(day, index)}>
-                            <ThemedText type="smallBold" style={styles.dangerText}>
-                              {t('removeYes')}
-                            </ThemedText>
-                          </Pressable>
-                          <Pressable style={Layout.smallButton} onPress={() => setConfirmKey(null)}>
-                            <ThemedText type="smallBold">{t('cancel')}</ThemedText>
-                          </Pressable>
-                        </ThemedView>
-                      ) : (
+                    </ThemedView>
+
+                    {/* Under the meal: "remove?" question, or the quiet "Trocar" button. */}
+                    {confirmKey === key ? (
+                      // Asks first, so a meal is not removed by accident.
+                      <ThemedView style={styles.confirm}>
+                        <ThemedText type="small">{t('removeFromWeekAsk')}</ThemedText>
                         <Pressable
-                          style={Layout.smallButton}
-                          accessibilityRole="button"
-                          accessibilityLabel={t('removeFromWeek')}
-                          onPress={() => setConfirmKey(`${day}-${index}`)}>
-                          <ThemedText type="smallBold">🗑️</ThemedText>
+                          style={[Layout.smallButton, styles.dangerButton]}
+                          onPress={() => removeRecipe(day, index)}>
+                          <ThemedText type="smallBold" style={styles.dangerText}>
+                            {t('removeYes')}
+                          </ThemedText>
                         </Pressable>
-                      )}
+                        <Pressable style={Layout.smallButton} onPress={() => setConfirmKey(null)}>
+                          <ThemedText type="smallBold">{t('cancel')}</ThemedText>
+                        </Pressable>
+                      </ThemedView>
+                    ) : (
+                      // Also during the tour: if you like the example week, keep it and swap what you don't like.
+                      <Pressable
+                        style={[Layout.smallButton, changingKey === key && styles.buttonOn]}
+                        accessibilityRole="button"
+                        accessibilityLabel={t('changeRecipe')}
+                        onPress={() => openChange(key)}>
+                        <ThemedText type="small">🔄 {t('changeRecipe')}</ThemedText>
+                      </Pressable>
+                    )}
+
+                    {/* The list of recipes to swap to. Allergy-safe ones first; the others only if asked for. */}
+                    {changingKey === key ? (
+                      <ThemedView type="backgroundElement" style={styles.picker}>
+                        <ThemedText type="small" themeColor="textSecondary">
+                          {t('changeAsk')}
+                        </ThemedText>
+                        <ScrollView style={styles.pickList} nestedScrollEnabled>
+                          {listed.length === 0 ? (
+                            <ThemedText type="small" themeColor="textSecondary">
+                              {t('changeNone')}
+                            </ThemedText>
+                          ) : null}
+                          {listed.map((c) => (
+                            <Pressable
+                              key={c.id}
+                              style={styles.pickRow}
+                              accessibilityRole="button"
+                              onPress={() => changeRecipe(day, index, c.id, keepServings)}>
+                              <RecipeHeading name={c.name} />
+                              <WarningChips warnings={recipeWarnings(c.ingredients, profile)} />
+                            </Pressable>
+                          ))}
+                        </ScrollView>
+                        {warnedCount > 0 && !showWarned ? (
+                          <Pressable style={Layout.smallButton} onPress={() => setShowWarned(true)}>
+                            <ThemedText type="small">{t('changeShowWarned', { count: warnedCount })}</ThemedText>
+                          </Pressable>
+                        ) : null}
+                        <Pressable style={Layout.smallButton} onPress={() => setChangingKey(null)}>
+                          <ThemedText type="smallBold">{t('cancel')}</ThemedText>
+                        </Pressable>
+                      </ThemedView>
+                    ) : null}
                     </ThemedView>
                   );
                 })}
@@ -236,10 +333,26 @@ const styles = StyleSheet.create({
   thumbIcon: { fontSize: 28, lineHeight: 34, opacity: 0.6 },
   itemText: { flex: 1, gap: Spacing.one },
   weekGrid: { alignItems: 'flex-start' },
-  confirm: { alignItems: 'flex-end', gap: Spacing.one, backgroundColor: 'transparent' },
+  confirm: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: Spacing.one, backgroundColor: 'transparent' },
   dangerButton: { backgroundColor: '#D93025', borderColor: '#D93025' },
   dangerText: { color: '#FFFFFF' },
   openRecipe: { gap: Spacing.one, paddingTop: Spacing.one, backgroundColor: 'transparent' },
   picker: { gap: Spacing.two },
+  meal: { gap: Spacing.two },
+  thumbBox: { position: 'relative' },
+  binOnPhoto: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.85)',
+  },
+  binIcon: { fontSize: 13, lineHeight: 16 },
+  buttonOn: { opacity: 0.6 },
+  pickList: { maxHeight: 320 },
   pickRow: { gap: Spacing.one, paddingVertical: 4 },
 });
