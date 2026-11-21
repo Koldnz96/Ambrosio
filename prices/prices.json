@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-11-20T12:36:21.319Z",
+ "updatedAt": "2026-11-21T11:55:42.136Z",
  "note": "Online prices, a reference only.",
  "shops": {
   "continente": {
@@ -300,7 +300,7 @@
       },
       {
        "amount": 0.5,
-       "price": 1.09,
+       "price": 0.99,
        "oldPrice": null,
        "product": "Cenoura Biológica Continente Bio · Continente Bio",
        "loose": false
@@ -1309,7 +1309,7 @@
      "price": 3.99,
      "oldPrice": null,
      "pack": "emb. 400 gr",
-     "product": "Cereja Nacional Premium",
+     "product": "Cereja",
      "url": "https://www.continente.pt/produto/cereja-nacional-premium-8042745.html",
      "packs": [
       {
@@ -1323,7 +1323,7 @@
        "amount": 0.4,
        "price": 3.99,
        "oldPrice": null,
-       "product": "Cereja Nacional Premium",
+       "product": "Cereja",
        "loose": false
       }
      ]
@@ -2738,9 +2738,9 @@
      ]
     },
     "Cooked ham": {
-     "unitPrice": 7.95,
+     "unitPrice": 7.75,
      "unit": "kg",
-     "price": 1.59,
+     "price": 1.55,
      "oldPrice": null,
      "pack": "emb. 200 gr",
      "product": "Fiambre da Pá Fatiado Continente · Continente",
@@ -2755,7 +2755,7 @@
       },
       {
        "amount": 0.2,
-       "price": 1.59,
+       "price": 1.55,
        "oldPrice": null,
        "product": "Fiambre da Pá Fatiado Continente · Continente",
        "loose": false
@@ -2937,9 +2937,9 @@
      ]
     },
     "Sea bass": {
-     "unitPrice": 4,
+     "unitPrice": 5,
      "unit": "un",
-     "price": 7.99,
+     "price": 9.99,
      "oldPrice": null,
      "pack": null,
      "product": "Robalo Médio Fresco",
@@ -4262,7 +4262,7 @@
       },
       {
        "amount": 0.5,
-       "price": 3.99,
+       "price": 3.59,
        "oldPrice": null,
        "product": "Queijo Flamengo Fatiado Continente · Continente",
        "loose": false
@@ -4543,13 +4543,13 @@
      ]
     },
     "Sliced cheese": {
-     "unitPrice": 7.45,
+     "unitPrice": 7.18,
      "unit": "kg",
-     "price": 1.49,
+     "price": 3.59,
      "oldPrice": null,
-     "pack": "emb. 200 gr",
-     "product": "Queijo Gouda Fatiado Continente · Continente",
-     "url": "https://www.continente.pt/produto/queijo-gouda-fatiado-continente-7455027.html",
+     "pack": "emb. 500 g",
+     "product": "Queijo Flamengo Fatiado Continente · Continente",
+     "url": "https://www.continente.pt/produto/queijo-flamengo-fatiado-continente-2888438.html",
      "packs": [
       {
        "amount": 0.2,
@@ -4574,7 +4574,7 @@
       },
       {
        "amount": 0.5,
-       "price": 3.99,
+       "price": 3.59,
        "oldPrice": null,
        "product": "Queijo Flamengo Fatiado Continente · Continente",
        "loose": false
@@ -12169,6 +12169,38 @@
       }
      ]
     },
+    "White wine": {
+     "unitPrice": 0.99,
+     "unit": "l",
+     "price": 0.99,
+     "oldPrice": null,
+     "pack": "emb. 1 lt",
+     "product": "Continente Vinho Branco · Continente",
+     "url": "https://www.continente.pt/produto/continente-vinho-branco-6878014.html",
+     "packs": [
+      {
+       "amount": 0.25,
+       "price": 0.55,
+       "oldPrice": null,
+       "product": "Continente Vinho Branco · Continente",
+       "loose": false
+      },
+      {
+       "amount": 0.25,
+       "price": 1.39,
+       "oldPrice": null,
+       "product": "Gatão Vinho Branco · Gatão",
+       "loose": false
+      },
+      {
+       "amount": 1,
+       "price": 0.99,
+       "oldPrice": null,
+       "product": "Continente Vinho Branco · Continente",
+       "loose": false
+      }
+     ]
+    },
     "Port wine": {
      "unitPrice": 13.45,
      "unit": "l",
@@ -12185,8 +12217,8 @@
      "price": 15.09,
      "oldPrice": null,
      "pack": null,
-     "product": "Vinho da Madeira Vintners 5 anos Doce · Madeira Vintners",
-     "url": "https://www.continente.pt/produto/vinho-da-madeira-vintners-5-anos-doce-8034961.html",
+     "product": "Vinho da Madeira Vintners 5 anos Meio Seco · Madeira Vintners",
+     "url": "https://www.continente.pt/produto/vinho-da-madeira-vintners-5-anos-meio-seco-8034960.html",
      "packs": []
     },
     "Sparkling wine": {
@@ -17417,6 +17449,13 @@
        "loose": true
       },
       {
+       "amount": 0.3,
+       "price": 1.89,
+       "oldPrice": 1.99,
+       "product": "Broas de Milho Embaladas · Nossa Padaria",
+       "loose": true
+      },
+      {
        "amount": 0.8,
        "price": 2.49,
        "oldPrice": null,
@@ -22218,13 +22257,13 @@
      ]
     },
     "White wine": {
-     "unitPrice": 2.2,
+     "unitPrice": 0.99,
      "unit": "l",
-     "price": 0.55,
+     "price": 0.99,
      "oldPrice": null,
-     "pack": "0.25 L",
+     "pack": "1 L",
      "product": "Vinho Branco Pingo Doce · Pingo Doce",
-     "url": "https://www.pingodoce.pt/home/produtos/vinhos/vinho-branco/vinho-branco-pingo-doce-pingo-doce-879468.html",
+     "url": "https://www.pingodoce.pt/home/produtos/vinhos/vinho-branco/vinho-branco-pingo-doce-pingo-doce-559197.html",
      "packs": [
       {
        "amount": 0.25,
@@ -22248,10 +22287,10 @@
        "loose": false
       },
       {
-       "amount": 0.75,
-       "price": 1.99,
+       "amount": 1,
+       "price": 0.99,
        "oldPrice": null,
-       "product": "Vinho Verde Branco Pingo Doce · Pingo Doce",
+       "product": "Vinho Branco Pingo Doce · Pingo Doce",
        "loose": false
       }
      ]
@@ -23810,7 +23849,7 @@
      "oldPrice": null,
      "pack": null,
      "product": "QUEIJO DE CABRA FRESCO AUCHAN 150G · AUCHAN",
-     "url": "https://www.auchan.pt/pt/alimentacao/produtos-lacteos/queijaria/queijo-frescomagrorequeijaomozzarella/queijo-de-cabra-fresco-auchan-150g/2300347.html",
+     "url": "https://www.auchan.pt/pt/alimentacao/produtos-lacteos/queijaria/queijo-frescomagrorequeijaomozzarella/queijo-de-cabra-fresco--auchan-150g/2300347.html",
      "packs": [
       {
        "amount": 0.125,
@@ -24243,7 +24282,7 @@
      "oldPrice": null,
      "pack": null,
      "product": "MASSA FUSILLI AUCHAN 500G · AUCHAN",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/arroz-e-massa/cotovelos-espiral-e-massinhas/massa-fusilli-auchan-500g/3824491.html",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/arroz-e-massa/cotovelos-espiral-e-massinhas/massa-fusilli-auchan--500g/3824491.html",
      "packs": [
       {
        "amount": 0.163,
@@ -24935,7 +24974,7 @@
      "oldPrice": null,
      "pack": null,
      "product": "PÃO RALADO AUCHAN 240G · AUCHAN",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/tostas-e-pao-embalado/tostas-mini-tostas-e-gressinos/pao-ralado-auchan-240g/747959.html",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/tostas-e-pao-embalado/tostas-mini-tostas-e-gressinos/pao-ralado-auchan--240g/747959.html",
      "packs": [
       {
        "amount": 0.2,
@@ -27488,7 +27527,7 @@
      "oldPrice": null,
      "pack": null,
      "product": "MANTEIGA AMENDOIM AUCHAN CREMOSA 100% AMENDOIM 500G · AUCHAN",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/cremes-compotas-e-mel/cremes-de-barrar/manteiga-amendoim-auchan-cremosa-100-amendoim-500g/3503408.html",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/cremes-compotas-e-mel/cremes-de-barrar/manteiga-amendoim-auchan--cremosa-100-amendoim-500g/3503408.html",
      "packs": [
       {
        "amount": 0.35,
@@ -28497,6 +28536,13 @@
      "url": "https://www.auchan.pt/pt/alimentacao/mercearia/farinha/farinha-especialidades/farinha-maizena-700g/2138903.html",
      "packs": [
       {
+       "amount": 0.25,
+       "price": 3.2,
+       "oldPrice": null,
+       "product": "FARINHA MAIZENA 250G · MAIZENA",
+       "loose": false
+      },
+      {
        "amount": 0.4,
        "price": 2.6,
        "oldPrice": null,
@@ -28519,7 +28565,7 @@
      "oldPrice": null,
      "pack": null,
      "product": "FARINHA DE ARROZ CEIFEIRA 500G · CEIFEIRA",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/farinha/farinha-especialidades/farinha-de-arroz-ceifeira-500g/1121149.html",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/farinha/farinha-especialidades/farinha-de-arroz-ceifeira--500g/1121149.html",
      "packs": [
       {
        "amount": 0.5,
