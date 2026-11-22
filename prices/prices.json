@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-11-21T11:55:42.136Z",
+ "updatedAt": "2026-11-22T12:19:43.983Z",
  "note": "Online prices, a reference only.",
  "shops": {
   "continente": {
@@ -13747,6 +13747,13 @@
        "oldPrice": null,
        "product": "Tâmaras sem Caroço · Seeberger",
        "loose": true
+      },
+      {
+       "amount": 0.25,
+       "price": 3.49,
+       "oldPrice": 3.99,
+       "product": "Tâmaras Medjool · Pingo Doce",
+       "loose": true
       }
      ]
     },
@@ -19840,8 +19847,8 @@
      "packs": [
       {
        "amount": 0.075,
-       "price": 7.44,
-       "oldPrice": 9.99,
+       "price": 9.99,
+       "oldPrice": null,
        "product": "Óleo para Cabelo Gliss Suavidade e Brilho · Gliss Schwarzkopf",
        "loose": false
       },
@@ -19929,8 +19936,8 @@
      "packs": [
       {
        "amount": 0.1,
-       "price": 13.99,
-       "oldPrice": 14.99,
+       "price": 14.99,
+       "oldPrice": null,
        "product": "Óleo com Coco Caracóis Perfeitos · Pantene",
        "loose": false
       },
