@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-11-22T12:19:43.983Z",
+ "updatedAt": "2026-11-23T13:41:04.513Z",
  "note": "Online prices, a reference only.",
  "shops": {
   "continente": {
@@ -148,13 +148,13 @@
      ]
     },
     "Garlic": {
-     "unitPrice": 3.98,
+     "unitPrice": 5.98,
      "unit": "kg",
-     "price": 1.59,
+     "price": 2.39,
      "oldPrice": null,
      "pack": "emb. 400 gr",
-     "product": "Massa de Alho sem Glúten Continente · Continente",
-     "url": "https://www.continente.pt/produto/massa-de-alho-sem-gluten-continente-4617643.html",
+     "product": "Alho Seco Continente · Continente",
+     "url": "https://www.continente.pt/produto/alho-seco-continente-4599477.html",
      "packs": [
       {
        "amount": 0.15,
@@ -164,17 +164,17 @@
        "loose": false
       },
       {
-       "amount": 0.4,
-       "price": 2.39,
+       "amount": 0.25,
+       "price": 1.99,
        "oldPrice": null,
-       "product": "Alho Seco Continente · Continente",
+       "product": "Alho Seco Morado Continente · Continente",
        "loose": false
       },
       {
        "amount": 0.4,
-       "price": 1.59,
+       "price": 2.39,
        "oldPrice": null,
-       "product": "Massa de Alho sem Glúten Continente · Continente",
+       "product": "Alho Seco Continente · Continente",
        "loose": false
       }
      ]
@@ -300,7 +300,7 @@
       },
       {
        "amount": 0.5,
-       "price": 0.99,
+       "price": 1.09,
        "oldPrice": null,
        "product": "Cenoura Biológica Continente Bio · Continente Bio",
        "loose": false
@@ -1310,7 +1310,7 @@
      "oldPrice": null,
      "pack": "emb. 400 gr",
      "product": "Cereja",
-     "url": "https://www.continente.pt/produto/cereja-nacional-premium-8042745.html",
+     "url": "https://www.continente.pt/produto/cereja-8042745.html",
      "packs": [
       {
        "amount": 0.2,
@@ -1424,29 +1424,14 @@
      "packs": []
     },
     "Kiwi": {
-     "unitPrice": 7.98,
-     "unit": "kg",
+     "unitPrice": 0.44,
+     "unit": "un",
      "price": 3.99,
      "oldPrice": null,
-     "pack": "emb. 500 gr",
-     "product": "Kiwi Gold Zespri · Zespri",
-     "url": "https://www.continente.pt/produto/kiwi-gold-zespri-7640212.html",
-     "packs": [
-      {
-       "amount": 0.4,
-       "price": 3.39,
-       "oldPrice": null,
-       "product": "Kiwi Biológico Continente Bio · Continente Bio",
-       "loose": false
-      },
-      {
-       "amount": 0.5,
-       "price": 3.99,
-       "oldPrice": null,
-       "product": "Kiwi Gold Zespri · Zespri",
-       "loose": false
-      }
-     ]
+     "pack": null,
+     "product": "Kiwi Continente · Continente",
+     "url": "https://www.continente.pt/produto/kiwi-continente-3725842.html",
+     "packs": []
     },
     "Pineapple": {
      "unitPrice": 15.59,
@@ -3424,14 +3409,14 @@
        "amount": 1,
        "price": 5.99,
        "oldPrice": null,
-       "product": "Sapateira com 10 Prateleiras Bazarão · Bazarão",
+       "product": "Sapateira de Madeira 3 Níveis Bazarão · Bazarão",
        "loose": false
       },
       {
        "amount": 1,
-       "price": 5.99,
+       "price": 8.49,
        "oldPrice": null,
-       "product": "Sapateira de Madeira 3 Níveis Bazarão · Bazarão",
+       "product": "Sapateira com Tampo em Madeira Bazarão · Bazarão",
        "loose": false
       }
      ]
@@ -9266,9 +9251,9 @@
       },
       {
        "amount": 5,
-       "price": 57.99,
+       "price": 67.99,
        "oldPrice": null,
-       "product": "Óleo Motor 5W40 Galp · Galp",
+       "product": "Óleo Motor 5W30 Galp · Galp",
        "loose": false
       }
      ]
@@ -10162,13 +10147,6 @@
      "packs": [
       {
        "amount": 0.1,
-       "price": 4.89,
-       "oldPrice": null,
-       "product": "Cacau em Pó Seara · Seara",
-       "loose": false
-      },
-      {
-       "amount": 0.1,
        "price": 1.71,
        "oldPrice": null,
        "product": "Cacau em Pó Cimarrom · Cimarrom",
@@ -10186,6 +10164,13 @@
        "price": 1.99,
        "oldPrice": null,
        "product": "Cacau Magro em Pó Jerónimos · Jerónimos",
+       "loose": false
+      },
+      {
+       "amount": 0.125,
+       "price": 2.79,
+       "oldPrice": null,
+       "product": "Cacau em Pó sem Glúten Pantagruel · Pantagruel",
        "loose": false
       }
      ]
@@ -13443,45 +13428,6 @@
        "price": 1.99,
        "oldPrice": 2.99,
        "product": "Romã Vermelha · Nossa Fruta e Legumes",
-       "loose": true
-      }
-     ]
-    },
-    "Kiwi": {
-     "unitPrice": 6.98,
-     "unit": "kg",
-     "price": 3.49,
-     "oldPrice": null,
-     "pack": "0.5 Kg",
-     "product": "Kiwi Green Zespri Embalado · Zespri",
-     "url": "https://www.pingodoce.pt/home/produtos/frutas-e-vegetais/frutas/fruta-da-epoca/kiwi-green-zespri-embalado-zespri-847103.html",
-     "packs": [
-      {
-       "amount": 0.11,
-       "price": 4.39,
-       "oldPrice": null,
-       "product": "Kiwi Verde Calibre 27/30 · Nossa Fruta e Legumes",
-       "loose": true
-      },
-      {
-       "amount": 0.5,
-       "price": 3.49,
-       "oldPrice": null,
-       "product": "Kiwi Green Zespri Embalado · Zespri",
-       "loose": true
-      },
-      {
-       "amount": 0.5,
-       "price": 3.99,
-       "oldPrice": null,
-       "product": "Kiwi Sungold Zespri Embalado · Zespri",
-       "loose": true
-      },
-      {
-       "amount": 0.5,
-       "price": 3.49,
-       "oldPrice": null,
-       "product": "Kiwi Amarelo Nacional · Os Nossos Frescos",
        "loose": true
       }
      ]
@@ -19847,8 +19793,8 @@
      "packs": [
       {
        "amount": 0.075,
-       "price": 9.99,
-       "oldPrice": null,
+       "price": 7.44,
+       "oldPrice": 9.99,
        "product": "Óleo para Cabelo Gliss Suavidade e Brilho · Gliss Schwarzkopf",
        "loose": false
       },
@@ -19936,8 +19882,8 @@
      "packs": [
       {
        "amount": 0.1,
-       "price": 14.99,
-       "oldPrice": null,
+       "price": 13.99,
+       "oldPrice": 14.99,
        "product": "Óleo com Coco Caracóis Perfeitos · Pantene",
        "loose": false
       },
@@ -24048,7 +23994,7 @@
       },
       {
        "amount": 1,
-       "price": 1.19,
+       "price": 1.05,
        "oldPrice": null,
        "product": "ARROZ CAROLINO VIDA AUCHAN EXTRA LONGO BRANQUEADO CULTIVAMOS O BOM 1KG · AUCHAN COB",
        "loose": false
