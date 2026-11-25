@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-11-24T14:37:36.229Z",
+ "updatedAt": "2026-11-25T13:51:45.587Z",
  "note": "Online prices, a reference only.",
  "shops": {
   "continente": {
@@ -222,14 +222,14 @@
      "packs": [
       {
        "amount": 0.75,
-       "price": 1.79,
+       "price": 1.89,
        "oldPrice": null,
        "product": "Batata Wedges Continente · Continente",
        "loose": false
       },
       {
        "amount": 1,
-       "price": 1.85,
+       "price": 1.89,
        "oldPrice": null,
        "product": "Batata Palitos Continente · Continente",
        "loose": false
@@ -261,7 +261,7 @@
      "packs": [
       {
        "amount": 0.5,
-       "price": 2.59,
+       "price": 2.69,
        "oldPrice": null,
        "product": "Batata Doce Palitos Continente · Continente",
        "loose": false
@@ -1132,6 +1132,13 @@
        "loose": false
       },
       {
+       "amount": 0.75,
+       "price": 1.99,
+       "oldPrice": null,
+       "product": "Clementina com Folha Continente · Continente",
+       "loose": false
+      },
+      {
        "amount": 1,
        "price": 2.29,
        "oldPrice": null,
@@ -1625,6 +1632,45 @@
        "price": 3.49,
        "oldPrice": null,
        "product": "Ameixa Seca Os Originais · Os Originais",
+       "loose": false
+      }
+     ]
+    },
+    "Dried figs": {
+     "unitPrice": 6.73,
+     "unit": "kg",
+     "price": 2.69,
+     "oldPrice": null,
+     "pack": "emb. 400 gr",
+     "product": "Figo Seco Continente · Continente",
+     "url": "https://www.continente.pt/produto/figo-seco-continente-8116819.html",
+     "packs": [
+      {
+       "amount": 0.2,
+       "price": 3.79,
+       "oldPrice": null,
+       "product": "Figo Seco Turco Continente · Continente",
+       "loose": false
+      },
+      {
+       "amount": 0.2,
+       "price": 2.99,
+       "oldPrice": null,
+       "product": "Figo Pingo de Mel Seco Biológico Jomavil · Jomavil",
+       "loose": false
+      },
+      {
+       "amount": 0.25,
+       "price": 4.49,
+       "oldPrice": null,
+       "product": "Figo Seco Os Originais · Os Originais",
+       "loose": false
+      },
+      {
+       "amount": 0.4,
+       "price": 2.69,
+       "oldPrice": null,
+       "product": "Figo Seco Continente · Continente",
        "loose": false
       }
      ]
@@ -2152,6 +2198,45 @@
        "price": 2.49,
        "oldPrice": null,
        "product": "Fígado de Porco Continente · Continente",
+       "loose": false
+      }
+     ]
+    },
+    "Chicken breast": {
+     "unitPrice": 2.95,
+     "unit": "kg",
+     "price": 6.49,
+     "oldPrice": null,
+     "pack": "emb. 2,2 kg (aprox.)",
+     "product": "Peito de Frango em Vácuo Continente · Continente",
+     "url": "https://www.continente.pt/produto/peito-de-frango-em-vacuo-continente-6950358.html",
+     "packs": [
+      {
+       "amount": 0.7,
+       "price": 6.59,
+       "oldPrice": null,
+       "product": "Peito de Frango Continente · Continente",
+       "loose": false
+      },
+      {
+       "amount": 0.7,
+       "price": 8.29,
+       "oldPrice": null,
+       "product": "Peito de Frango do Campo Continente Seleção · Continente Seleção",
+       "loose": false
+      },
+      {
+       "amount": 1.2,
+       "price": 6.49,
+       "oldPrice": null,
+       "product": "Peito de Frango Continente · Continente",
+       "loose": false
+      },
+      {
+       "amount": 2.2,
+       "price": 6.49,
+       "oldPrice": null,
+       "product": "Peito de Frango em Vácuo Continente · Continente",
        "loose": false
       }
      ]
@@ -2963,6 +3048,31 @@
       }
      ]
     },
+    "Sardines": {
+     "unitPrice": 4.99,
+     "unit": "kg",
+     "price": 4.99,
+     "oldPrice": null,
+     "pack": "emb. 1 kg",
+     "product": "Sardinha Pequena Congelada Continente · Continente",
+     "url": "https://www.continente.pt/produto/sardinha-pequena-congelada-continente-8290301.html",
+     "packs": [
+      {
+       "amount": 1,
+       "price": 4.99,
+       "oldPrice": null,
+       "product": "Sardinha Pequena Congelada Continente · Continente",
+       "loose": false
+      },
+      {
+       "amount": 1,
+       "price": 7.99,
+       "oldPrice": null,
+       "product": "Sardinha Nacional Inteira Congelada Continente · Continente",
+       "loose": false
+      }
+     ]
+    },
     "Horse mackerel": {
      "unitPrice": 0.28,
      "unit": "un",
@@ -3485,26 +3595,19 @@
      ]
     },
     "Semi-skimmed milk": {
-     "unitPrice": 0.85,
+     "unitPrice": 0.82,
      "unit": "l",
-     "price": 5.1,
+     "price": 6.56,
      "oldPrice": null,
-     "pack": "emb. 6 x 1 lt",
+     "pack": "emb. 8 x 1 lt",
      "product": "Leite UHT Meio Gordo Continente · Continente",
-     "url": "https://www.continente.pt/produto/leite-uht-meio-gordo-continente-8504295.html",
+     "url": "https://www.continente.pt/produto/leite-uht-meio-gordo-continente-8952652.html",
      "packs": [
       {
        "amount": 0.6,
        "price": 0.94,
        "oldPrice": null,
        "product": "Leite UHT Meio Gordo Continente · Continente",
-       "loose": false
-      },
-      {
-       "amount": 0.6,
-       "price": 1.29,
-       "oldPrice": null,
-       "product": "Leite UHT Meio Gordo sem Lactose Continente · Continente",
        "loose": false
       },
       {
@@ -3519,6 +3622,13 @@
        "price": 6.42,
        "oldPrice": null,
        "product": "Leite UHT Meio Gordo sem Lactose Continente · Continente",
+       "loose": false
+      },
+      {
+       "amount": 8,
+       "price": 6.56,
+       "oldPrice": null,
+       "product": "Leite UHT Meio Gordo Continente · Continente",
        "loose": false
       }
      ]
@@ -3643,17 +3753,17 @@
      "url": "https://www.continente.pt/produto/creme-vegetal-culinario-continente-8650191.html",
      "packs": [
       {
-       "amount": 0.4,
-       "price": 3.49,
-       "oldPrice": null,
-       "product": "Creme Vegetal para Barrar Flora · Flora",
-       "loose": false
-      },
-      {
        "amount": 0.45,
        "price": 2.59,
        "oldPrice": null,
        "product": "Creme Vegetal Culinário Becel · Becel",
+       "loose": false
+      },
+      {
+       "amount": 0.5,
+       "price": 1.35,
+       "oldPrice": null,
+       "product": "Creme Vegetal para Barrar Original Continente · Continente",
        "loose": false
       },
       {
@@ -5764,9 +5874,9 @@
      ]
     },
     "Wholemeal bread": {
-     "unitPrice": 2.76,
+     "unitPrice": 2.08,
      "unit": "kg",
-     "price": 1.31,
+     "price": 0.99,
      "oldPrice": null,
      "pack": "emb. 475 gr",
      "product": "Pão de Forma Integral com Côdea Continente · Continente",
@@ -5788,7 +5898,7 @@
       },
       {
        "amount": 0.475,
-       "price": 1.31,
+       "price": 0.99,
        "oldPrice": null,
        "product": "Pão de Forma Integral com Côdea Continente · Continente",
        "loose": false
@@ -10168,7 +10278,7 @@
       },
       {
        "amount": 0.125,
-       "price": 2.01,
+       "price": 1.99,
        "oldPrice": null,
        "product": "Cacau Magro em Pó Jerónimos · Jerónimos",
        "loose": false
@@ -12700,8 +12810,8 @@
      "packs": [
       {
        "amount": 0.18,
-       "price": 1.89,
-       "oldPrice": null,
+       "price": 1.49,
+       "oldPrice": 1.89,
        "product": "Beterraba em Vinagre · Ferbar",
        "loose": true
       },
@@ -12743,8 +12853,8 @@
      "packs": [
       {
        "amount": 0.18,
-       "price": 2.39,
-       "oldPrice": null,
+       "price": 1.89,
+       "oldPrice": 2.39,
        "product": "Pepinos em Vinagre Conversa · Ferbar",
        "loose": true
       },
@@ -12844,27 +12954,27 @@
      ]
     },
     "Cauliflower": {
-     "unitPrice": 2.93,
+     "unitPrice": 2.11,
      "unit": "kg",
-     "price": 2.49,
-     "oldPrice": null,
+     "price": 1.79,
+     "oldPrice": 2.49,
      "pack": "0.85 Kg",
      "product": "Couve-Flor · Nossa Fruta e Legumes",
      "url": "https://www.pingodoce.pt/home/produtos/frutas-e-vegetais/vegetais/cenouras-couves-e-brocolos/couve-flor-nossa-fruta-e-legumes-495689.html",
      "packs": [
       {
        "amount": 0.85,
-       "price": 2.49,
-       "oldPrice": null,
+       "price": 1.79,
+       "oldPrice": 2.49,
        "product": "Couve-Flor · Nossa Fruta e Legumes",
        "loose": true
       }
      ]
     },
     "Galician kale": {
-     "unitPrice": 2.69,
+     "unitPrice": 2.01,
      "unit": "kg",
-     "price": 1.99,
+     "price": 1.49,
      "oldPrice": null,
      "pack": "0.74 Kg",
      "product": "Couve Portuguesa · Nossa Fruta e Legumes",
@@ -12872,7 +12982,7 @@
      "packs": [
       {
        "amount": 0.74,
-       "price": 1.99,
+       "price": 1.49,
        "oldPrice": null,
        "product": "Couve Portuguesa · Nossa Fruta e Legumes",
        "loose": true
@@ -13204,8 +13314,8 @@
      "packs": [
       {
        "amount": 0.28,
-       "price": 1.69,
-       "oldPrice": null,
+       "price": 1.19,
+       "oldPrice": 1.69,
        "product": "Laranja · Nossa Fruta e Legumes",
        "loose": true
       },
@@ -13269,13 +13379,13 @@
      ]
     },
     "Blueberry": {
-     "unitPrice": 16.63,
+     "unitPrice": 15.92,
      "unit": "kg",
-     "price": 4.99,
-     "oldPrice": null,
-     "pack": "0.3 Kg",
-     "product": "Mirtilos Embalados · Os Nossos Frescos",
-     "url": "https://www.pingodoce.pt/home/produtos/frutas-e-vegetais/frutas/morangos-e-frutos-vermelhos/mirtilos-embalados-os-nossos-frescos-957832.html",
+     "price": 1.99,
+     "oldPrice": 3.99,
+     "pack": "0.125 Kg",
+     "product": "Mirtilos Vermelhos · Seeberger",
+     "url": "https://www.pingodoce.pt/home/produtos/mercearia/batatas-fritas-snacks-e-frutos-secos/frutos-secos-e-desidratados/mirtilos-vermelhos-seeberger-695156.html",
      "packs": [
       {
        "amount": 0.1,
@@ -13286,8 +13396,8 @@
       },
       {
        "amount": 0.125,
-       "price": 3.99,
-       "oldPrice": null,
+       "price": 1.99,
+       "oldPrice": 3.99,
        "product": "Mirtilos Vermelhos · Seeberger",
        "loose": true
       },
@@ -13308,9 +13418,9 @@
      ]
     },
     "Raspberry": {
-     "unitPrice": 15.96,
+     "unitPrice": 17.16,
      "unit": "kg",
-     "price": 3.99,
+     "price": 4.29,
      "oldPrice": null,
      "pack": "0.25 Kg",
      "product": "Framboesas Embaladas · Os Nossos Frescos",
@@ -13325,7 +13435,7 @@
       },
       {
        "amount": 0.25,
-       "price": 3.99,
+       "price": 4.29,
        "oldPrice": null,
        "product": "Framboesas Embaladas · Os Nossos Frescos",
        "loose": true
@@ -13358,18 +13468,18 @@
      ]
     },
     "Cherry": {
-     "unitPrice": 12.48,
+     "unitPrice": 9.98,
      "unit": "kg",
-     "price": 4.99,
-     "oldPrice": null,
+     "price": 3.99,
+     "oldPrice": 4.99,
      "pack": "0.4 Kg",
      "product": "Cereja Embalada · Honey",
      "url": "https://www.pingodoce.pt/home/produtos/frutas-e-vegetais/frutas/morangos-e-frutos-vermelhos/cereja-embalada-honey-948064.html",
      "packs": [
       {
        "amount": 0.4,
-       "price": 4.99,
-       "oldPrice": null,
+       "price": 3.99,
+       "oldPrice": 4.99,
        "product": "Cereja Embalada · Honey",
        "loose": true
       }
@@ -13386,15 +13496,15 @@
      "packs": [
       {
        "amount": 0.4,
-       "price": 2.79,
-       "oldPrice": null,
+       "price": 2.39,
+       "oldPrice": 2.79,
        "product": "Uva Branca sem Grainha · Honey",
        "loose": true
       },
       {
        "amount": 0.4,
-       "price": 2.79,
-       "oldPrice": null,
+       "price": 2.39,
+       "oldPrice": 2.79,
        "product": "Uva Rosada sem Grainha · Honey",
        "loose": true
       },
@@ -13435,6 +13545,31 @@
        "price": 2.99,
        "oldPrice": null,
        "product": "Romã Vermelha · Nossa Fruta e Legumes",
+       "loose": true
+      }
+     ]
+    },
+    "Mango": {
+     "unitPrice": 9.5,
+     "unit": "kg",
+     "price": 3.99,
+     "oldPrice": 4.99,
+     "pack": "0.42 Kg",
+     "product": "Manga Pronta a Comer · Nossa Fruta e Legumes",
+     "url": "https://www.pingodoce.pt/home/produtos/frutas-e-vegetais/frutas/uvas-kiwi-e-frutos-tropicais/manga-pronta-a-comer-nossa-fruta-e-legumes-46514.html",
+     "packs": [
+      {
+       "amount": 0.05,
+       "price": 1.34,
+       "oldPrice": null,
+       "product": "Manga Soft · Frubis",
+       "loose": true
+      },
+      {
+       "amount": 0.42,
+       "price": 3.99,
+       "oldPrice": 4.99,
+       "product": "Manga Pronta a Comer · Nossa Fruta e Legumes",
        "loose": true
       }
      ]
@@ -13564,8 +13699,8 @@
       },
       {
        "amount": 0.2,
-       "price": 2.99,
-       "oldPrice": null,
+       "price": 1.49,
+       "oldPrice": 2.99,
        "product": "Sultana Preta · Seeberger",
        "loose": true
       }
@@ -13607,40 +13742,40 @@
       },
       {
        "amount": 0.2,
-       "price": 4.89,
-       "oldPrice": null,
+       "price": 2.44,
+       "oldPrice": 4.89,
        "product": "Ameixas Secas Soft · Seeberger",
        "loose": true
       },
       {
        "amount": 0.2,
-       "price": 2.74,
-       "oldPrice": null,
+       "price": 2.19,
+       "oldPrice": 2.74,
        "product": "Ameixa Seca com Caroço · Frutorra",
        "loose": true
       },
       {
        "amount": 0.2,
-       "price": 2.79,
-       "oldPrice": null,
+       "price": 2.19,
+       "oldPrice": 2.79,
        "product": "Ameixa Seca sem Caroço · Frutorra",
        "loose": true
       }
      ]
     },
     "Dried figs": {
-     "unitPrice": 26.45,
+     "unitPrice": 13.2,
      "unit": "kg",
-     "price": 5.29,
-     "oldPrice": null,
+     "price": 2.64,
+     "oldPrice": 5.29,
      "pack": "0.2 Kg",
      "product": "Figo Seco · Seeberger",
      "url": "https://www.pingodoce.pt/home/produtos/mercearia/batatas-fritas-snacks-e-frutos-secos/frutos-secos-e-desidratados/figo-seco-seeberger-874286.html",
      "packs": [
       {
        "amount": 0.2,
-       "price": 5.29,
-       "oldPrice": null,
+       "price": 2.64,
+       "oldPrice": 5.29,
        "product": "Figo Seco · Seeberger",
        "loose": true
       }
@@ -13664,15 +13799,15 @@
       },
       {
        "amount": 0.2,
-       "price": 2.39,
-       "oldPrice": null,
+       "price": 1.89,
+       "oldPrice": 2.39,
        "product": "Tamara sem Caroço · Frutorra",
        "loose": true
       },
       {
        "amount": 0.2,
-       "price": 3.19,
-       "oldPrice": null,
+       "price": 1.59,
+       "oldPrice": 3.19,
        "product": "Tâmaras sem Caroço · Seeberger",
        "loose": true
       },
@@ -13686,18 +13821,18 @@
      ]
     },
     "Dried mango": {
-     "unitPrice": 47.9,
+     "unitPrice": 23.9,
      "unit": "kg",
-     "price": 4.79,
-     "oldPrice": null,
+     "price": 2.39,
+     "oldPrice": 4.79,
      "pack": "0.1 Kg",
      "product": "Manga Desidratada · Seeberger",
      "url": "https://www.pingodoce.pt/home/produtos/mercearia/batatas-fritas-snacks-e-frutos-secos/frutos-secos-e-desidratados/manga-desidratada-seeberger-882119.html",
      "packs": [
       {
        "amount": 0.1,
-       "price": 4.79,
-       "oldPrice": null,
+       "price": 2.39,
+       "oldPrice": 4.79,
        "product": "Manga Desidratada · Seeberger",
        "loose": true
       }
@@ -13728,8 +13863,8 @@
       },
       {
        "amount": 0.45,
-       "price": 21.99,
-       "oldPrice": null,
+       "price": 17.99,
+       "oldPrice": 21.99,
        "product": "Bife da Alcatra Selecionado · Pingo Doce",
        "loose": true
       },
@@ -13811,18 +13946,18 @@
      ]
     },
     "Veal": {
-     "unitPrice": 25.98,
+     "unitPrice": 23.98,
      "unit": "kg",
-     "price": 12.99,
-     "oldPrice": null,
+     "price": 11.99,
+     "oldPrice": 12.99,
      "pack": "0.5 Kg",
      "product": "Vitela para Cozer/Estufar · Nosso Talho",
      "url": "https://www.pingodoce.pt/home/produtos/talho/vitela-vitelao-e-bovino/vitela-e-vitelao%E2%80%8B/vitela-para-cozer%2Festufar-nosso-talho-250189.html",
      "packs": [
       {
        "amount": 0.5,
-       "price": 12.99,
-       "oldPrice": null,
+       "price": 11.99,
+       "oldPrice": 12.99,
        "product": "Vitela para Cozer/Estufar · Nosso Talho",
        "loose": true
       }
@@ -13906,24 +14041,6 @@
        "price": 4.89,
        "oldPrice": null,
        "product": "Entremeada de Porco Embalada · Pingo Doce",
-       "loose": true
-      }
-     ]
-    },
-    "Pork ribs": {
-     "unitPrice": 3.93,
-     "unit": "kg",
-     "price": 6.29,
-     "oldPrice": null,
-     "pack": "1.6 Kg",
-     "product": "Entrecosto de Porco para Grelhar · Nosso Talho",
-     "url": "https://www.pingodoce.pt/home/produtos/talho/porco/entrecosto-de-porco-para-grelhar-nosso-talho-250175.html",
-     "packs": [
-      {
-       "amount": 1.6,
-       "price": 6.29,
-       "oldPrice": null,
-       "product": "Entrecosto de Porco para Grelhar · Nosso Talho",
        "loose": true
       }
      ]
@@ -14043,18 +14160,18 @@
      ]
     },
     "Chicken drumstick": {
-     "unitPrice": 7.48,
+     "unitPrice": 6.23,
      "unit": "kg",
-     "price": 2.99,
-     "oldPrice": null,
+     "price": 2.49,
+     "oldPrice": 2.99,
      "pack": "0.4 Kg",
      "product": "Perna de Frango · Nosso Talho",
      "url": "https://www.pingodoce.pt/home/produtos/talho/aves/frango/perna-de-frango-nosso-talho-543987.html",
      "packs": [
       {
        "amount": 0.4,
-       "price": 2.99,
-       "oldPrice": null,
+       "price": 2.49,
+       "oldPrice": 2.99,
        "product": "Perna de Frango · Nosso Talho",
        "loose": true
       }
@@ -14315,10 +14432,10 @@
      ]
     },
     "Chouriço": {
-     "unitPrice": 12.45,
+     "unitPrice": 11.2,
      "unit": "kg",
-     "price": 2.49,
-     "oldPrice": null,
+     "price": 2.24,
+     "oldPrice": 2.49,
      "pack": "0.2 Kg",
      "product": "Chouriço do Fundão · Pingo Doce",
      "url": "https://www.pingodoce.pt/home/produtos/charcutaria-e-queijos/charcutaria/chourico-alheira-e-farinheira%E2%80%8B/chourico-do-fundao-pingo-doce-989963.html",
@@ -14332,8 +14449,8 @@
       },
       {
        "amount": 0.2,
-       "price": 2.49,
-       "oldPrice": null,
+       "price": 2.24,
+       "oldPrice": 2.49,
        "product": "Chouriço do Fundão · Pingo Doce",
        "loose": true
       },
@@ -14371,8 +14488,8 @@
       },
       {
        "amount": 0.2,
-       "price": 1.99,
-       "oldPrice": null,
+       "price": 1.79,
+       "oldPrice": 1.99,
        "product": "Farinheira do Fundão · Pingo Doce",
        "loose": true
       },
@@ -14410,8 +14527,8 @@
       },
       {
        "amount": 0.22,
-       "price": 2.25,
-       "oldPrice": null,
+       "price": 2.15,
+       "oldPrice": 2.25,
        "product": "Morcela Assar da Beira Baixa Fundão · Pingo Doce",
        "loose": true
       },
@@ -14449,15 +14566,15 @@
       },
       {
        "amount": 0.18,
-       "price": 2.05,
-       "oldPrice": null,
+       "price": 1.85,
+       "oldPrice": 2.05,
        "product": "Linguiça · Stec",
        "loose": true
       },
       {
        "amount": 0.18,
-       "price": 2.05,
-       "oldPrice": null,
+       "price": 1.85,
+       "oldPrice": 2.05,
        "product": "Linguiça Picante · Stec",
        "loose": true
       }
@@ -14488,8 +14605,8 @@
       },
       {
        "amount": 0.25,
-       "price": 4.99,
-       "oldPrice": null,
+       "price": 4.69,
+       "oldPrice": 4.99,
        "product": "Paio do Lombo Fundão · Pingo Doce",
        "loose": true
       },
@@ -14630,8 +14747,8 @@
       },
       {
        "amount": 0.2,
-       "price": 1.99,
-       "oldPrice": null,
+       "price": 1.79,
+       "oldPrice": 1.99,
        "product": "Fiambre da Perna Extra Fatiado · Pingo Doce",
        "loose": true
       },
@@ -14669,8 +14786,8 @@
       },
       {
        "amount": 0.25,
-       "price": 1.99,
-       "oldPrice": null,
+       "price": 1.89,
+       "oldPrice": 1.99,
        "product": "Salsichas de Churrasco · Pingo Doce",
        "loose": true
       },
@@ -14701,8 +14818,8 @@
       },
       {
        "amount": 0.25,
-       "price": 2.65,
-       "oldPrice": null,
+       "price": 1.49,
+       "oldPrice": 2.65,
        "product": "Salsichas Frankfurt · Izidoro",
        "loose": true
       }
@@ -14758,8 +14875,8 @@
      "packs": [
       {
        "amount": 0.077,
-       "price": 3.09,
-       "oldPrice": null,
+       "price": 2.29,
+       "oldPrice": 3.09,
        "product": "Salmão ao Natural · Ramirez",
        "loose": true
       },
@@ -14914,20 +15031,20 @@
       }
      ]
     },
-    "Mackerel": {
-     "unitPrice": 19.52,
+    "Sardines": {
+     "unitPrice": 7.99,
      "unit": "kg",
-     "price": 4.49,
+     "price": 7.99,
      "oldPrice": null,
-     "pack": "0.23 Kg",
-     "product": "Cavala Fresca · Nossa Peixaria",
-     "url": "https://www.pingodoce.pt/home/produtos/peixaria/peixe/peixe-selvagem/cavala-fresca-nossa-peixaria-528328.html",
+     "pack": "1 Kg",
+     "product": "Sardinha Nacional Congelada · Pingo Doce",
+     "url": "https://www.pingodoce.pt/home/produtos/peixaria/peixe/peixe-selvagem/sardinha-nacional-congelada-pingo-doce-1008601.html",
      "packs": [
       {
-       "amount": 0.23,
-       "price": 4.49,
+       "amount": 1,
+       "price": 7.99,
        "oldPrice": null,
-       "product": "Cavala Fresca · Nossa Peixaria",
+       "product": "Sardinha Nacional Congelada · Pingo Doce",
        "loose": true
       }
      ]
@@ -14990,9 +15107,9 @@
      ]
     },
     "Octopus": {
-     "unitPrice": 13.33,
+     "unitPrice": 12.49,
      "unit": "kg",
-     "price": 15.99,
+     "price": 14.99,
      "oldPrice": null,
      "pack": "1.2 Kg",
      "product": "Polvo Fresco · Nossa Peixaria",
@@ -15000,21 +15117,21 @@
      "packs": [
       {
        "amount": 0.072,
-       "price": 1.99,
-       "oldPrice": null,
+       "price": 1.59,
+       "oldPrice": 1.99,
        "product": "Polvo e Pota em Alho · Vasco da Gama",
        "loose": true
       },
       {
        "amount": 0.072,
-       "price": 1.99,
-       "oldPrice": null,
+       "price": 1.59,
+       "oldPrice": 1.99,
        "product": "Polvo e Pota Caldeirada · Vasco da Gama",
        "loose": true
       },
       {
        "amount": 1.2,
-       "price": 15.99,
+       "price": 14.99,
        "oldPrice": null,
        "product": "Polvo Fresco · Nossa Peixaria",
        "loose": true
@@ -15690,7 +15807,7 @@
      "packs": [
       {
        "amount": 0.15,
-       "price": 1.78,
+       "price": 1.09,
        "oldPrice": null,
        "product": "Kefir Natural · Nestlé",
        "loose": true
@@ -15977,6 +16094,13 @@
      "url": "https://www.pingodoce.pt/home/produtos/charcutaria-e-queijos/queijos/queijo-fatiado-e-bola%E2%80%8B/queijo-gouda-fatiado-pingo-doce-926653.html",
      "packs": [
       {
+       "amount": 0.15,
+       "price": 5.29,
+       "oldPrice": null,
+       "product": "Queijo Gouda Mediterrâneo · Especial Pingo Doce",
+       "loose": true
+      },
+      {
        "amount": 0.2,
        "price": 1.49,
        "oldPrice": null,
@@ -15995,13 +16119,6 @@
        "price": 1.99,
        "oldPrice": null,
        "product": "Queijo Gouda · Mr. Cheese",
-       "loose": true
-      },
-      {
-       "amount": 0.8,
-       "price": 6.39,
-       "oldPrice": 7.99,
-       "product": "Queijo Gouda Fatiado · Campainha",
        "loose": true
       }
      ]
@@ -16298,8 +16415,8 @@
       },
       {
        "amount": 0.397,
-       "price": 2.95,
-       "oldPrice": null,
+       "price": 2.34,
+       "oldPrice": 2.95,
        "product": "Leite Condensado Cozido · Nestlé",
        "loose": true
       }
@@ -16324,13 +16441,13 @@
      ]
     },
     "Milk powder": {
-     "unitPrice": 18.39,
+     "unitPrice": 17.3,
      "unit": "kg",
-     "price": 6.99,
-     "oldPrice": null,
-     "pack": "0.38 Kg",
-     "product": "Leite em Pó Magro · Molico",
-     "url": "https://www.pingodoce.pt/home/produtos/leite-e-bebidas-vegetais/leite/leite-em-po-e-bebidas-lacteas%E2%80%8B/leite-em-po-magro-molico-953130.html",
+     "price": 13.84,
+     "oldPrice": 17.49,
+     "pack": "0.8 Kg",
+     "product": "Leite em Pó NAN 2 OptiPro · NAN",
+     "url": "https://www.pingodoce.pt/home/produtos/bebe-e-crianca/alimentacao/leites-infantis/leite-em-po-nan-2-optipro-nan-614852.html",
      "packs": [
       {
        "amount": 0.38,
@@ -16348,8 +16465,8 @@
       },
       {
        "amount": 0.8,
-       "price": 17.49,
-       "oldPrice": null,
+       "price": 13.84,
+       "oldPrice": 17.49,
        "product": "Leite em Pó NAN 2 OptiPro · NAN",
        "loose": true
       },
@@ -17048,8 +17165,8 @@
      "packs": [
       {
        "amount": 0.4,
-       "price": 1.29,
-       "oldPrice": null,
+       "price": 0.99,
+       "oldPrice": 1.29,
        "product": "Flocos de Aveia · Jerónimos",
        "loose": true
       },
@@ -17101,8 +17218,8 @@
       },
       {
        "amount": 0.56,
-       "price": 5.19,
-       "oldPrice": null,
+       "price": 4.39,
+       "oldPrice": 5.19,
        "product": "Muesli sem Açúcar · Alpen",
        "loose": true
       },
@@ -17151,15 +17268,15 @@
       },
       {
        "amount": 0.2,
-       "price": 3.89,
-       "oldPrice": null,
+       "price": 2.49,
+       "oldPrice": 3.89,
        "product": "Cevada Solúvel · Delta",
        "loose": true
       },
       {
        "amount": 0.2,
-       "price": 3.99,
-       "oldPrice": null,
+       "price": 2.39,
+       "oldPrice": 3.99,
        "product": "Cevada Solúvel · Pensal",
        "loose": true
       },
@@ -17294,10 +17411,10 @@
      ]
     },
     "Sliced white bread": {
-     "unitPrice": 1.7,
+     "unitPrice": 1.57,
      "unit": "kg",
-     "price": 1.39,
-     "oldPrice": null,
+     "price": 1.29,
+     "oldPrice": 1.39,
      "pack": "0.82 Kg",
      "product": "Pão de Forma para Torradas · Pingo Doce",
      "url": "https://www.pingodoce.pt/home/produtos/padaria-e-pastelaria/pao-embalado/pao-de-forma-e-embalado/pao-de-forma-para-torradas-pingo-doce-1011731.html",
@@ -17325,8 +17442,8 @@
       },
       {
        "amount": 0.82,
-       "price": 1.39,
-       "oldPrice": null,
+       "price": 1.29,
+       "oldPrice": 1.39,
        "product": "Pão de Forma para Torradas · Pingo Doce",
        "loose": true
       }
@@ -17350,8 +17467,8 @@
       },
       {
        "amount": 0.385,
-       "price": 2.59,
-       "oldPrice": null,
+       "price": 1.99,
+       "oldPrice": 2.59,
        "product": "Pão de Forma Integral · Panrico",
        "loose": true
       },
@@ -17421,8 +17538,8 @@
      "packs": [
       {
        "amount": 0.25,
-       "price": 1.69,
-       "oldPrice": null,
+       "price": 1.29,
+       "oldPrice": 1.69,
        "product": "Broa Castelar Embalada · Broa Castelar",
        "loose": true
       },
@@ -17677,8 +17794,8 @@
       },
       {
        "amount": 0.468,
-       "price": 2.19,
-       "oldPrice": null,
+       "price": 1.79,
+       "oldPrice": 2.19,
        "product": "Grão Cozido em Lata · Compal",
        "loose": true
       },
@@ -17781,10 +17898,10 @@
      ]
     },
     "Black beans (canned)": {
-     "unitPrice": 4.68,
+     "unitPrice": 3.82,
      "unit": "kg",
-     "price": 2.19,
-     "oldPrice": null,
+     "price": 1.79,
+     "oldPrice": 2.19,
      "pack": "0.468 Kg",
      "product": "Feijão Preto Cozido em Lata · Compal",
      "url": "https://www.pingodoce.pt/home/produtos/mercearia/conservas/feijao-grao-e-outros/feijao-preto-cozido-em-lata-compal-510601.html",
@@ -17798,8 +17915,8 @@
       },
       {
        "amount": 0.468,
-       "price": 2.19,
-       "oldPrice": null,
+       "price": 1.79,
+       "oldPrice": 2.19,
        "product": "Feijão Preto Cozido em Lata · Compal",
        "loose": true
       }
@@ -17869,8 +17986,8 @@
       },
       {
        "amount": 0.468,
-       "price": 2.19,
-       "oldPrice": null,
+       "price": 1.79,
+       "oldPrice": 2.19,
        "product": "Feijão Branco Cozido em Lata · Compal",
        "loose": true
       }
@@ -17951,8 +18068,8 @@
       },
       {
        "amount": 0.468,
-       "price": 2.19,
-       "oldPrice": null,
+       "price": 1.79,
+       "oldPrice": 2.19,
        "product": "Feijão Frade Cozido em Lata · Compal",
        "loose": true
       }
@@ -18814,8 +18931,8 @@
       },
       {
        "amount": 0.2,
-       "price": 1.79,
-       "oldPrice": null,
+       "price": 1.34,
+       "oldPrice": 1.79,
        "product": "Molho de Soja · Paladin",
        "loose": false
       }
@@ -18839,8 +18956,8 @@
       },
       {
        "amount": 0.2,
-       "price": 1.69,
-       "oldPrice": null,
+       "price": 1.24,
+       "oldPrice": 1.69,
        "product": "Molho Inglês · Paladin",
        "loose": false
       }
@@ -18875,8 +18992,8 @@
      "packs": [
       {
        "amount": 0.075,
-       "price": 1.24,
-       "oldPrice": null,
+       "price": 0.89,
+       "oldPrice": 1.24,
        "product": "Molho Piri-Piri · Sacana Paladin",
        "loose": false
       },
@@ -18907,8 +19024,8 @@
      "packs": [
       {
        "amount": 0.25,
-       "price": 2.99,
-       "oldPrice": null,
+       "price": 1.99,
+       "oldPrice": 2.99,
        "product": "Ketchup Top Down · Heinz",
        "loose": true
       },
@@ -18961,25 +19078,25 @@
      ]
     },
     "Mustard": {
-     "unitPrice": 6.36,
+     "unitPrice": 4.76,
      "unit": "kg",
-     "price": 1.59,
-     "oldPrice": null,
+     "price": 1.19,
+     "oldPrice": 1.59,
      "pack": "0.25 Kg",
      "product": "Mostarda Clássica · Paladin",
      "url": "https://www.pingodoce.pt/home/produtos/mercearia/temperos-e-molhos/maionese-mostarda-e-ketchup/mostarda-classica-paladin-732883.html",
      "packs": [
       {
        "amount": 0.25,
-       "price": 1.59,
-       "oldPrice": null,
+       "price": 1.19,
+       "oldPrice": 1.59,
        "product": "Mostarda Clássica · Paladin",
        "loose": true
       },
       {
        "amount": 0.257,
-       "price": 2.59,
-       "oldPrice": null,
+       "price": 1.64,
+       "oldPrice": 2.59,
        "product": "Mostarda Top Down · Calvé",
        "loose": true
       }
@@ -19039,15 +19156,15 @@
      "packs": [
       {
        "amount": 0.25,
-       "price": 1.69,
-       "oldPrice": null,
+       "price": 1.29,
+       "oldPrice": 1.69,
        "product": "Vinagre de Vinho Branco · Gallo",
        "loose": false
       },
       {
        "amount": 0.5,
-       "price": 1.79,
-       "oldPrice": null,
+       "price": 1.16,
+       "oldPrice": 1.79,
        "product": "Vinagre de Vinho Branco · Cristal",
        "loose": false
       },
@@ -19085,8 +19202,8 @@
       },
       {
        "amount": 0.25,
-       "price": 2.29,
-       "oldPrice": null,
+       "price": 1.69,
+       "oldPrice": 2.29,
        "product": "Vinagre Balsâmico · Gallo",
        "loose": false
       },
@@ -19128,8 +19245,8 @@
      "packs": [
       {
        "amount": 0.25,
-       "price": 2.29,
-       "oldPrice": null,
+       "price": 1.69,
+       "oldPrice": 2.29,
        "product": "Vinagre de Sidra · Gallo",
        "loose": false
       },
@@ -19189,25 +19306,25 @@
      ]
     },
     "Passata": {
-     "unitPrice": 4.71,
+     "unitPrice": 3.76,
      "unit": "kg",
-     "price": 0.99,
-     "oldPrice": null,
+     "price": 0.79,
+     "oldPrice": 0.99,
      "pack": "0.21 Kg",
      "product": "Passata de Tomate com Cebola e Alho · Guloso",
      "url": "https://www.pingodoce.pt/home/produtos/mercearia/temperos-e-molhos/polpas-e-concentrados/passata-de-tomate-com-cebola-e-alho-guloso-957194.html",
      "packs": [
       {
        "amount": 0.21,
-       "price": 0.99,
-       "oldPrice": null,
+       "price": 0.79,
+       "oldPrice": 0.99,
        "product": "Passata de Tomate com Cebola e Alho · Guloso",
        "loose": true
       },
       {
        "amount": 0.21,
-       "price": 0.99,
-       "oldPrice": null,
+       "price": 0.79,
+       "oldPrice": 0.99,
        "product": "Passata de Tomate com Manjericão e Orégãos · Guloso",
        "loose": true
       }
@@ -19320,8 +19437,8 @@
       },
       {
        "amount": 0.35,
-       "price": 3.79,
-       "oldPrice": null,
+       "price": 2.45,
+       "oldPrice": 3.79,
        "product": "Manteiga de Amendoim Cremosa · Calvé",
        "loose": true
       }
@@ -19345,8 +19462,8 @@
       },
       {
        "amount": 0.45,
-       "price": 3.14,
-       "oldPrice": null,
+       "price": 2.79,
+       "oldPrice": 3.14,
        "product": "Mel Top Down · Favo",
        "loose": true
       },
@@ -19480,8 +19597,8 @@
      "packs": [
       {
        "amount": 0.18,
-       "price": 2.14,
-       "oldPrice": null,
+       "price": 1.69,
+       "oldPrice": 2.14,
        "product": "Pickles em Vinagre · Ferbar",
        "loose": true
       },
@@ -19494,8 +19611,8 @@
       },
       {
        "amount": 0.251,
-       "price": 2.99,
-       "oldPrice": null,
+       "price": 1.94,
+       "oldPrice": 2.99,
        "product": "Molho Pickles · Calvé",
        "loose": true
       },
@@ -19907,8 +20024,8 @@
       },
       {
        "amount": 0.2,
-       "price": 4.99,
-       "oldPrice": null,
+       "price": 3.99,
+       "oldPrice": 4.99,
        "product": "Óleo de Coco Biológico · Origens Bio",
        "loose": false
       },
@@ -19947,13 +20064,13 @@
      ]
     },
     "Cooking spray": {
-     "unitPrice": 6.58,
+     "unitPrice": 3.99,
      "unit": "l",
-     "price": 3.29,
-     "oldPrice": null,
-     "pack": "0.5 L",
-     "product": "Spray de Limpeza Cozinha · Ajax",
-     "url": "https://www.pingodoce.pt/home/produtos/limpeza/casa/multisuperficies-e-desengordurantes/spray-de-limpeza-cozinha-ajax-912127.html",
+     "price": 2.99,
+     "oldPrice": 4.99,
+     "pack": "0.75 L",
+     "product": "Spray de Limpeza Cozinha Express · Mistolin",
+     "url": "https://www.pingodoce.pt/home/produtos/limpeza/casa/multisuperficies-e-desengordurantes/spray-de-limpeza-cozinha-express-mistolin-896324.html",
      "packs": [
       {
        "amount": 0.5,
@@ -19964,17 +20081,17 @@
       },
       {
        "amount": 0.75,
-       "price": 4.99,
-       "oldPrice": null,
+       "price": 2.99,
+       "oldPrice": 4.99,
        "product": "Spray de Limpeza Cozinha Express · Mistolin",
        "loose": false
       }
      ]
     },
     "Plain flour": {
-     "unitPrice": 0.59,
+     "unitPrice": 0.69,
      "unit": "kg",
-     "price": 0.59,
+     "price": 0.69,
      "oldPrice": null,
      "pack": "1 Kg",
      "product": "Farinha de Trigo Tipo 55 sem Fermento · Pingo Doce",
@@ -19982,7 +20099,7 @@
      "packs": [
       {
        "amount": 1,
-       "price": 0.59,
+       "price": 0.69,
        "oldPrice": null,
        "product": "Farinha de Trigo Tipo 55 sem Fermento · Pingo Doce",
        "loose": true
@@ -19996,7 +20113,7 @@
       },
       {
        "amount": 1,
-       "price": 0.69,
+       "price": 0.79,
        "oldPrice": null,
        "product": "Farinha de Trigo Tipo 65 sem Fermento · Pérola",
        "loose": true
@@ -20011,9 +20128,9 @@
      ]
     },
     "Self-raising flour": {
-     "unitPrice": 0.69,
+     "unitPrice": 0.79,
      "unit": "kg",
-     "price": 0.69,
+     "price": 0.79,
      "oldPrice": null,
      "pack": "1 Kg",
      "product": "Farinha de Trigo Super Fina com Fermento · Pingo Doce",
@@ -20021,7 +20138,7 @@
      "packs": [
       {
        "amount": 1,
-       "price": 0.69,
+       "price": 0.79,
        "oldPrice": null,
        "product": "Farinha de Trigo Super Fina com Fermento · Pingo Doce",
        "loose": true
@@ -20050,9 +20167,9 @@
      ]
     },
     "Wholemeal flour": {
-     "unitPrice": 0.79,
+     "unitPrice": 0.84,
      "unit": "kg",
-     "price": 0.79,
+     "price": 0.84,
      "oldPrice": null,
      "pack": "1 Kg",
      "product": "Farinha de Trigo Integral · Pingo Doce",
@@ -20074,7 +20191,7 @@
       },
       {
        "amount": 1,
-       "price": 0.79,
+       "price": 0.84,
        "oldPrice": null,
        "product": "Farinha de Trigo Integral · Pingo Doce",
        "loose": true
@@ -20527,10 +20644,10 @@
      ]
     },
     "Cocoa powder": {
-     "unitPrice": 11.96,
+     "unitPrice": 8.96,
      "unit": "kg",
-     "price": 2.99,
-     "oldPrice": null,
+     "price": 2.24,
+     "oldPrice": 2.99,
      "pack": "0.25 Kg",
      "product": "Farinha com Cacau e Alfarroba · Pensal",
      "url": "https://www.pingodoce.pt/home/produtos/bolachas-cereais-e-guloseimas/cereais-barras-e-bolsas-de-fruta/cereais-linha-e-fibra/farinha-com-cacau-e-alfarroba-pensal-865268.html",
@@ -20558,8 +20675,8 @@
       },
       {
        "amount": 0.25,
-       "price": 2.99,
-       "oldPrice": null,
+       "price": 2.24,
+       "oldPrice": 2.99,
        "product": "Farinha com Cacau e Alfarroba · Pensal",
        "loose": true
       }
@@ -20590,8 +20707,8 @@
       },
       {
        "amount": 0.2,
-       "price": 5.39,
-       "oldPrice": null,
+       "price": 3.98,
+       "oldPrice": 5.39,
        "product": "Tablete de Chocolate Culinária 53% Cacau · Nestlé",
        "loose": true
       },
@@ -20723,10 +20840,10 @@
      ]
     },
     "Maria biscuits": {
-     "unitPrice": 1.99,
+     "unitPrice": 1.86,
      "unit": "kg",
-     "price": 1.59,
-     "oldPrice": null,
+     "price": 1.49,
+     "oldPrice": 1.59,
      "pack": "0.8 Kg",
      "product": "Bolacha Maria Pack 4 · Pingo Doce",
      "url": "https://www.pingodoce.pt/home/produtos/bolachas-cereais-e-guloseimas/bolachas-e-biscoitos/maria-manteiga-e-classicas/bolacha-maria-pack-4-pingo-doce-673345.html",
@@ -20754,8 +20871,8 @@
       },
       {
        "amount": 0.8,
-       "price": 1.59,
-       "oldPrice": null,
+       "price": 1.49,
+       "oldPrice": 1.59,
        "product": "Bolacha Maria Pack 4 · Pingo Doce",
        "loose": true
       }
@@ -20804,8 +20921,8 @@
       },
       {
        "amount": 0.39,
-       "price": 1.29,
-       "oldPrice": null,
+       "price": 0.94,
+       "oldPrice": 1.29,
        "product": "Tomate Pelado · Guloso",
        "loose": true
       },
@@ -20843,8 +20960,8 @@
       },
       {
        "amount": 0.39,
-       "price": 1.95,
-       "oldPrice": null,
+       "price": 1.44,
+       "oldPrice": 1.95,
        "product": "Tomate em Pedaços · Guloso",
        "loose": true
       }
@@ -21113,15 +21230,15 @@
      "packs": [
       {
        "amount": 0.1,
-       "price": 4.49,
-       "oldPrice": null,
+       "price": 2.24,
+       "oldPrice": 4.49,
        "product": "Ananás Pedaços sem Açúcar · Seeberger",
        "loose": true
       },
       {
        "amount": 0.2,
-       "price": 4.29,
-       "oldPrice": null,
+       "price": 2.14,
+       "oldPrice": 4.29,
        "product": "Ananás Pedaços · Seeberger",
        "loose": true
       },
@@ -21423,21 +21540,21 @@
      "packs": [
       {
        "amount": 0.175,
-       "price": 3.79,
-       "oldPrice": null,
+       "price": 2.99,
+       "oldPrice": 3.79,
        "product": "Pistáchios Torrados com Sal · Frutorra",
        "loose": true
       },
       {
        "amount": 0.2,
-       "price": 2.75,
+       "price": 4.99,
        "oldPrice": null,
        "product": "Pistáchio Torrado sem Sal · Pingo Doce",
        "loose": true
       },
       {
        "amount": 0.25,
-       "price": 3.49,
+       "price": 5.99,
        "oldPrice": null,
        "product": "Pistáchio Torrado com Sal · Pingo Doce",
        "loose": true
@@ -21462,8 +21579,8 @@
      "packs": [
       {
        "amount": 0.125,
-       "price": 8.99,
-       "oldPrice": null,
+       "price": 4.49,
+       "oldPrice": 8.99,
        "product": "Castanha do Maranhão · Seeberger",
        "loose": true
       },
@@ -21512,8 +21629,8 @@
      "packs": [
       {
        "amount": 0.125,
-       "price": 8.99,
-       "oldPrice": null,
+       "price": 4.49,
+       "oldPrice": 8.99,
        "product": "Castanha do Maranhão · Seeberger",
        "loose": true
       },
@@ -22096,8 +22213,8 @@
      "packs": [
       {
        "amount": 0.25,
-       "price": 0.99,
-       "oldPrice": null,
+       "price": 0.89,
+       "oldPrice": 0.99,
        "product": "Bebida Vegetal de Soja Baunilha · Alpro",
        "loose": false
       },
@@ -22355,15 +22472,15 @@
      "packs": [
       {
        "amount": 0.7,
-       "price": 17.99,
-       "oldPrice": null,
+       "price": 14.29,
+       "oldPrice": 17.99,
        "product": "Whisky Novo J&B · J&B",
        "loose": false
       },
       {
        "amount": 0.7,
-       "price": 30.99,
-       "oldPrice": null,
+       "price": 26.29,
+       "oldPrice": 30.99,
        "product": "Whisky 15 anos J&B · J&B",
        "loose": false
       },
@@ -22595,7 +22712,7 @@
       },
       {
        "amount": 0.9,
-       "price": 5.19,
+       "price": 4.39,
        "oldPrice": null,
        "product": "COUVE COM CENOURA MOYA SEMYA 900G · MOYA SEMYA",
        "loose": false
@@ -23009,24 +23126,6 @@
        "price": 2.99,
        "oldPrice": null,
        "product": "SALMÃO MINERVA AO NATURAL 120G · MINERVA",
-       "loose": false
-      }
-     ]
-    },
-    "Sardines": {
-     "unitPrice": 16.58,
-     "unit": "kg",
-     "price": 1.99,
-     "oldPrice": null,
-     "pack": null,
-     "product": "SARDINHA AUCHAN COLLECTION SEM PELE E SEM ESPINHA (85)120G · AUCHAN COLLECTION",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/conservas/sardinha/sardinha-auchan-collection-sem-pele-e-sem-espinha-%2885%29120g/3853446.html",
-     "packs": [
-      {
-       "amount": 0.12,
-       "price": 1.99,
-       "oldPrice": null,
-       "product": "SARDINHA AUCHAN COLLECTION SEM PELE E SEM ESPINHA (85)120G · AUCHAN COLLECTION",
        "loose": false
       }
      ]
@@ -23514,10 +23613,10 @@
        "loose": false
       },
       {
-       "amount": 0.5,
-       "price": 2.65,
+       "amount": 0.2,
+       "price": 2.39,
        "oldPrice": null,
-       "product": "NATA PARMALAT PARA BATER 500ML · PARMALAT",
+       "product": "NATAS LONGA VIDA PARA BATER PASTEURIZADAS 200ML · LONGA VIDA",
        "loose": false
       }
      ]
@@ -24768,7 +24867,7 @@
       },
       {
        "amount": 0.5,
-       "price": 2.24,
+       "price": 1.59,
        "oldPrice": null,
        "product": "FUBÁ YOKI MIMOSO 500G · YOKI",
        "loose": false
@@ -24956,7 +25055,7 @@
       },
       {
        "amount": 0.5,
-       "price": 4.85,
+       "price": 3.59,
        "oldPrice": null,
        "product": "TAPIOCA YOKI 500G · YOKI",
        "loose": false
@@ -25059,7 +25158,7 @@
       },
       {
        "amount": 0.45,
-       "price": 2.49,
+       "price": 1.99,
        "oldPrice": null,
        "product": "PAO BIMBO INTEGRAL SEM CÔDEA 450G · BIMBO",
        "loose": false
@@ -25091,7 +25190,7 @@
      "packs": [
       {
        "amount": 0.275,
-       "price": 3.49,
+       "price": 2.44,
        "oldPrice": null,
        "product": "PÃO WASA CROCANTE ORIGINAL COM FARINHA CENTEIO 275G · WASA",
        "loose": false
@@ -25290,7 +25389,7 @@
      "packs": [
       {
        "amount": 0.38,
-       "price": 1.59,
+       "price": 0.99,
        "oldPrice": null,
        "product": "FEIJÃO PRETO FERBAR TETRA 380G · FERBAR",
        "loose": false
@@ -25998,16 +26097,16 @@
       },
       {
        "amount": 0.02,
-       "price": 2.59,
-       "oldPrice": null,
-       "product": "PIMENTA MARGÃO VERDE GRÃO 20G · MARGÃO",
-       "loose": false
-      },
-      {
-       "amount": 0.02,
        "price": 3.19,
        "oldPrice": null,
        "product": "PIMENTA ROSA MARGÃO GRÃO SAQUETA 20G · MARGÃO",
+       "loose": false
+      },
+      {
+       "amount": 0.025,
+       "price": 3.19,
+       "oldPrice": null,
+       "product": "PIMENTA MARGÃO MISTURA GRÃO SAQUETA 25G · MARGÃO",
        "loose": false
       },
       {
@@ -26777,6 +26876,13 @@
      "url": "https://www.auchan.pt/pt/alimentacao/mercearia/maionese-ketchup-mostarda-e-especialidades/molhos-e-cocktails/molho-auchan-ingles-192ml/887960.html",
      "packs": [
       {
+       "amount": 0.12,
+       "price": 1.89,
+       "oldPrice": null,
+       "product": "MOLHO SAVORA INGLÊS 120ML · SAVORA",
+       "loose": false
+      },
+      {
        "amount": 0.15,
        "price": 5.59,
        "oldPrice": null,
@@ -26792,7 +26898,7 @@
       },
       {
        "amount": 0.2,
-       "price": 1.69,
+       "price": 1.23,
        "oldPrice": null,
        "product": "MOLHO INGLÊS PALADIN 200ML · PALADIN",
        "loose": false
@@ -26874,7 +26980,7 @@
      "packs": [
       {
        "amount": 0.27,
-       "price": 2.13,
+       "price": 2.14,
        "oldPrice": null,
        "product": "MOLHO DE MEL SACANA PICANTE 270G · SACANA",
        "loose": false
@@ -26934,7 +27040,7 @@
       },
       {
        "amount": 0.195,
-       "price": 1.29,
+       "price": 0.9,
        "oldPrice": null,
        "product": "MOLHO FERBAR PIRI-PIRI HOT 195ML · FERBAR",
        "loose": false
@@ -27094,7 +27200,7 @@
      "packs": [
       {
        "amount": 0.15,
-       "price": 3.59,
+       "price": 2.69,
        "oldPrice": null,
        "product": "MOSTARDA BORNIER DIJON COPO 150G · BORNIER",
        "loose": false
@@ -27108,7 +27214,7 @@
       },
       {
        "amount": 0.21,
-       "price": 4.69,
+       "price": 3.52,
        "oldPrice": null,
        "product": "MOSTARDA BORNIER FORTE DIJON 210G · BORNIER",
        "loose": false
@@ -27179,7 +27285,7 @@
       },
       {
        "amount": 0.5,
-       "price": 1.69,
+       "price": 1.18,
        "oldPrice": null,
        "product": "VINAGRE VINHO BRANCO MORENO 500ML · MORENO",
        "loose": false
@@ -27349,49 +27455,10 @@
       }
      ]
     },
-    "Rice vinegar": {
-     "unitPrice": 7.96,
-     "unit": "l",
-     "price": 1.99,
-     "oldPrice": null,
-     "pack": null,
-     "product": "VINAGRE DE ARROZ MORENO 250ML · MORENO",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/azeite-oleo-e-vinagre/vinagre/vinagre-de-arroz-moreno-250ml/3946290.html",
-     "packs": [
-      {
-       "amount": 0.15,
-       "price": 1.89,
-       "oldPrice": null,
-       "product": "VINAGRE MIYATA ARROZ 150ML · MIYATA",
-       "loose": false
-      },
-      {
-       "amount": 0.15,
-       "price": 2.99,
-       "oldPrice": null,
-       "product": "VINAGRE DE ARROZ SAITAKU 150ML · SAITAKU",
-       "loose": false
-      },
-      {
-       "amount": 0.25,
-       "price": 1.99,
-       "oldPrice": null,
-       "product": "VINAGRE DE ARROZ MORENO 250ML · MORENO",
-       "loose": false
-      },
-      {
-       "amount": 0.25,
-       "price": 2.99,
-       "oldPrice": null,
-       "product": "VINAGRE DE ARROZ CRISTAL GOURMET 250ML · CRISTAL",
-       "loose": false
-      }
-     ]
-    },
     "Tomato paste": {
-     "unitPrice": 9.21,
+     "unitPrice": 7.07,
      "unit": "kg",
-     "price": 1.29,
+     "price": 0.99,
      "oldPrice": null,
      "pack": null,
      "product": "TOMATE COMPAL DA HORTA CONCENTRADO BISNAGA 140G · COMPAL",
@@ -27406,7 +27473,7 @@
       },
       {
        "amount": 0.14,
-       "price": 1.29,
+       "price": 0.99,
        "oldPrice": null,
        "product": "TOMATE COMPAL DA HORTA CONCENTRADO BISNAGA 140G · COMPAL",
        "loose": false
@@ -27517,9 +27584,9 @@
      ]
     },
     "Teriyaki sauce": {
-     "unitPrice": 5.92,
+     "unitPrice": 5.96,
      "unit": "l",
-     "price": 1.48,
+     "price": 1.49,
      "oldPrice": null,
      "pack": null,
      "product": "MOLHOS TERIYAKI PALADIN 250ML · PALADIN",
@@ -27534,7 +27601,7 @@
       },
       {
        "amount": 0.25,
-       "price": 1.48,
+       "price": 1.49,
        "oldPrice": null,
        "product": "MOLHOS TERIYAKI PALADIN 250ML · PALADIN",
        "loose": false
@@ -27584,7 +27651,7 @@
      "packs": [
       {
        "amount": 0.35,
-       "price": 2.45,
+       "price": 3.79,
        "oldPrice": null,
        "product": "MANTEIGA CALVÉ AMENDOIM 350G · CALVÉ",
        "loose": false
@@ -27605,7 +27672,7 @@
       },
       {
        "amount": 1,
-       "price": 5.69,
+       "price": 8.74,
        "oldPrice": null,
        "product": "MANTEIGA CALVÉ AMENDOIM 1KG · CALVÉ",
        "loose": false
@@ -28633,7 +28700,7 @@
       },
       {
        "amount": 0.5,
-       "price": 3.99,
+       "price": 2.94,
        "oldPrice": null,
        "product": "FARINHA YOKI MANDIOCA CRUA 500G · YOKI",
        "loose": false
@@ -29822,7 +29889,7 @@
       },
       {
        "amount": 1,
-       "price": 1.35,
+       "price": 1.29,
        "oldPrice": null,
        "product": "BEBIDA AMÊNDOAS AUCHAN SEM AÇÚCARES 1L · AUCHAN",
        "loose": false
