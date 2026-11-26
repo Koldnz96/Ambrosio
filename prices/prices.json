@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-11-25T13:51:45.587Z",
+ "updatedAt": "2026-11-26T13:30:31.077Z",
  "note": "Online prices, a reference only.",
  "shops": {
   "continente": {
@@ -801,7 +801,46 @@
        "amount": 0.035,
        "price": 1.44,
        "oldPrice": null,
-       "product": "Erva Doce Saqueta Margão · Margão",
+       "product": "Erva Doce Grão em Saqueta Margão · Margão",
+       "loose": false
+      }
+     ]
+    },
+    "Asparagus": {
+     "unitPrice": 6.94,
+     "unit": "kg",
+     "price": 2.29,
+     "oldPrice": null,
+     "pack": "emb. 330 gr (peso escorrido 205 gr)",
+     "product": "Espargos Brancos Continente · Continente",
+     "url": "https://www.continente.pt/produto/espargos-brancos-continente-7522798.html",
+     "packs": [
+      {
+       "amount": 0.25,
+       "price": 4.99,
+       "oldPrice": null,
+       "product": "Espargos Verdes Continente · Continente",
+       "loose": false
+      },
+      {
+       "amount": 0.25,
+       "price": 4.69,
+       "oldPrice": null,
+       "product": "Espargos Finos IMG · IMG",
+       "loose": false
+      },
+      {
+       "amount": 0.33,
+       "price": 2.29,
+       "oldPrice": null,
+       "product": "Espargos Brancos Continente · Continente",
+       "loose": false
+      },
+      {
+       "amount": 0.53,
+       "price": 3.69,
+       "oldPrice": null,
+       "product": "Espargos Brancos Extra Grosso Continente · Continente",
        "loose": false
       }
      ]
@@ -3534,16 +3573,16 @@
       },
       {
        "amount": 12,
-       "price": 2.99,
+       "price": 3.19,
        "oldPrice": null,
-       "product": "Ovos de Solo Classe M Continente · Continente",
+       "product": "Ovos de Solo Classe L Continente · Continente",
        "loose": false
       },
       {
        "amount": 12,
-       "price": 3.19,
+       "price": 2.99,
        "oldPrice": null,
-       "product": "Ovos de Solo Classe L Continente · Continente",
+       "product": "Ovos de Solo Classe M Continente · Continente",
        "loose": false
       }
      ]
@@ -3572,24 +3611,6 @@
        "price": 1.29,
        "oldPrice": null,
        "product": "Ovos de Codorniz Continente · Continente",
-       "loose": false
-      }
-     ]
-    },
-    "Whole milk": {
-     "unitPrice": 2.25,
-     "unit": "l",
-     "price": 1.8,
-     "oldPrice": null,
-     "pack": "emb. 4 x 200 ml",
-     "product": "Leite UHT Gordo Mimosa · Mimosa",
-     "url": "https://www.continente.pt/produto/leite-uht-gordo-mimosa-8596969.html",
-     "packs": [
-      {
-       "amount": 0.8,
-       "price": 1.8,
-       "oldPrice": null,
-       "product": "Leite UHT Gordo Mimosa · Mimosa",
        "loose": false
       }
      ]
@@ -3912,14 +3933,14 @@
        "amount": 0.46,
        "price": 1.69,
        "oldPrice": null,
-       "product": "Iogurte Grego Mythos Morango Continente · Continente",
+       "product": "Iogurte Grego Mythos Natural Continente · Continente",
        "loose": false
       },
       {
        "amount": 0.46,
        "price": 1.69,
        "oldPrice": null,
-       "product": "Iogurte Grego Mythos Natural Continente · Continente",
+       "product": "Iogurte Grego Mythos Morango Continente · Continente",
        "loose": false
       }
      ]
@@ -3937,14 +3958,14 @@
        "amount": 0.15,
        "price": 1.29,
        "oldPrice": null,
-       "product": "Skyr Mirtilo Ehrmann · Ehrmann",
+       "product": "Skyr Morango Ehrmann · Ehrmann",
        "loose": false
       },
       {
        "amount": 0.15,
        "price": 1.29,
        "oldPrice": null,
-       "product": "Skyr Morango Ehrmann · Ehrmann",
+       "product": "Skyr Mirtilo Ehrmann · Ehrmann",
        "loose": false
       },
       {
@@ -4629,13 +4650,6 @@
        "loose": false
       },
       {
-       "amount": 0.15,
-       "price": 1.49,
-       "oldPrice": null,
-       "product": "Queijo Emmental Fatiado Continente · Continente",
-       "loose": false
-      },
-      {
        "amount": 0.2,
        "price": 1.68,
        "oldPrice": null,
@@ -4647,6 +4661,13 @@
        "price": 1.39,
        "oldPrice": null,
        "product": "Queijo Gouda Fatiado Continente · Continente",
+       "loose": false
+      },
+      {
+       "amount": 0.5,
+       "price": 3.99,
+       "oldPrice": null,
+       "product": "Queijo Flamengo Fatiado Continente · Continente",
        "loose": false
       }
      ]
@@ -6952,13 +6973,6 @@
      "url": "https://www.continente.pt/produto/manjericao-biologico-continente-bio-6193040.html",
      "packs": [
       {
-       "amount": 0.011,
-       "price": 2.01,
-       "oldPrice": null,
-       "product": "Manjericão Margão · Margão",
-       "loose": false
-      },
-      {
        "amount": 0.02,
        "price": 1.45,
        "oldPrice": null,
@@ -7201,10 +7215,10 @@
      "url": "https://www.continente.pt/produto/pimenta-preta-moida-em-saqueta-continente-6046661.html",
      "packs": [
       {
-       "amount": 0.043,
-       "price": 3.49,
+       "amount": 0.035,
+       "price": 1.84,
        "oldPrice": null,
-       "product": "Pimenta Preta Moída Margão · Margão",
+       "product": "Pimenta Preta Grão em Saqueta Margão · Margão",
        "loose": false
       },
       {
@@ -7225,7 +7239,7 @@
        "amount": 0.05,
        "price": 1.09,
        "oldPrice": null,
-       "product": "Pimenta Preta em Grão em Saqueta Continente · Continente",
+       "product": "Pimenta Preta Grão em Saqueta Continente · Continente",
        "loose": false
       }
      ]
@@ -7236,14 +7250,14 @@
      "price": 1.09,
      "oldPrice": null,
      "pack": "emb. 50 gr",
-     "product": "Pimenta Branca Moída em Saqueta Continente · Continente",
-     "url": "https://www.continente.pt/produto/pimenta-branca-moida-em-saqueta-continente-7209853.html",
+     "product": "Pimenta Branca Grão em Saqueta Continente · Continente",
+     "url": "https://www.continente.pt/produto/pimenta-branca-grao-em-saqueta-continente-7209860.html",
      "packs": [
       {
-       "amount": 0.035,
-       "price": 1.84,
+       "amount": 0.04,
+       "price": 2.69,
        "oldPrice": null,
-       "product": "Pimenta Branca Moída Margão · Margão",
+       "product": "Pimenta Branca Moída em Frasco Margão · Margão",
        "loose": false
       },
       {
@@ -7257,14 +7271,14 @@
        "amount": 0.05,
        "price": 1.09,
        "oldPrice": null,
-       "product": "Pimenta Branca Moída em Saqueta Continente · Continente",
+       "product": "Pimenta Branca Grão em Saqueta Continente · Continente",
        "loose": false
       },
       {
        "amount": 0.05,
        "price": 1.09,
        "oldPrice": null,
-       "product": "Pimenta Branca em Grão em Saqueta Continente · Continente",
+       "product": "Pimenta Branca Moída em Saqueta Continente · Continente",
        "loose": false
       }
      ]
@@ -7339,7 +7353,7 @@
        "amount": 0.028,
        "price": 2.89,
        "oldPrice": null,
-       "product": "Cominhos Moídos Margão · Margão",
+       "product": "Cominhos Grão em Frasco Margão · Margão",
        "loose": false
       },
       {
@@ -7367,6 +7381,13 @@
      "product": "Coentros Grão em Frasco Margão · Margão",
      "url": "https://www.continente.pt/produto/coentros-grao-em-frasco-margao-7472310.html",
      "packs": [
+      {
+       "amount": 0.02,
+       "price": 2.25,
+       "oldPrice": null,
+       "product": "Coentros Grão para Gin em Frasco Gin Mix · Gin Mix",
+       "loose": false
+      },
       {
        "amount": 0.022,
        "price": 2.44,
@@ -7407,7 +7428,7 @@
        "amount": 0.035,
        "price": 1.24,
        "oldPrice": null,
-       "product": "Açafrão das Índias Saqueta Margão · Margão",
+       "product": "Açafrão das Índias em Saqueta Margão · Margão",
        "loose": false
       },
       {
@@ -7531,14 +7552,14 @@
        "amount": 0.045,
        "price": 2.89,
        "oldPrice": null,
-       "product": "Noz Moscada Moída Margão · Margão",
+       "product": "Noz Moscada Moída em Saqueta Margão · Margão",
        "loose": false
       },
       {
        "amount": 0.07,
        "price": 4.64,
        "oldPrice": null,
-       "product": "Noz Moscada em Grão em Saqueta Margão · Margão",
+       "product": "Noz Moscada Grão em Saqueta Margão · Margão",
        "loose": false
       }
      ]
@@ -7556,7 +7577,7 @@
        "amount": 0.022,
        "price": 1.84,
        "oldPrice": null,
-       "product": "Cravinho Grão Saquetas Margão · Margão",
+       "product": "Cravinho Grão em Saquetas Margão · Margão",
        "loose": false
       },
       {
@@ -7588,14 +7609,14 @@
      "price": 2.29,
      "oldPrice": null,
      "pack": "emb. 20 gr",
-     "product": "Pimenta Jamaica em Grão em Saqueta Margão · Margão",
-     "url": "https://www.continente.pt/produto/pimenta-jamaica-em-grao-em-saqueta-margao-7626338.html",
+     "product": "Pimenta Jamaica Grão em Saqueta Margão · Margão",
+     "url": "https://www.continente.pt/produto/pimenta-jamaica-grao-em-saqueta-margao-7626338.html",
      "packs": [
       {
        "amount": 0.02,
        "price": 2.29,
        "oldPrice": null,
-       "product": "Pimenta Jamaica em Grão em Saqueta Margão · Margão",
+       "product": "Pimenta Jamaica Grão em Saqueta Margão · Margão",
        "loose": false
       }
      ]
@@ -7606,8 +7627,8 @@
      "price": 4.49,
      "oldPrice": null,
      "pack": "emb. 25 gr",
-     "product": "Cardamomo para Gin Gin Mix · Gin Mix",
-     "url": "https://www.continente.pt/produto/cardamomo-para-gin-gin-mix-8518398.html",
+     "product": "Cardamomo Grão para Gin em Frasco Gin Mix · Gin Mix",
+     "url": "https://www.continente.pt/produto/cardamomo-grao-para-gin-em-frasco-gin-mix-8518398.html",
      "packs": [
       {
        "amount": 0.024,
@@ -7620,7 +7641,7 @@
        "amount": 0.025,
        "price": 4.49,
        "oldPrice": null,
-       "product": "Cardamomo para Gin Gin Mix · Gin Mix",
+       "product": "Cardamomo Grão para Gin em Frasco Gin Mix · Gin Mix",
        "loose": false
       }
      ]
@@ -7693,6 +7714,13 @@
       },
       {
        "amount": 0.011,
+       "price": 2.01,
+       "oldPrice": null,
+       "product": "Manjericão em Frasco Margão · Margão",
+       "loose": false
+      },
+      {
+       "amount": 0.011,
        "price": 2.09,
        "oldPrice": null,
        "product": "Manjericão Folha em Frasco Margão · Margão",
@@ -7720,7 +7748,7 @@
        "amount": 0.011,
        "price": 1.29,
        "oldPrice": null,
-       "product": "Tomilho Folhas Saqueta Margão · Margão",
+       "product": "Tomilho Folha em Saqueta Margão · Margão",
        "loose": false
       },
       {
@@ -7746,6 +7774,13 @@
        "price": 1.09,
        "oldPrice": null,
        "product": "Salsa Folha em Saqueta Margão · Margão",
+       "loose": false
+      },
+      {
+       "amount": 0.007,
+       "price": 1.86,
+       "oldPrice": null,
+       "product": "Salsa Folha em Frasco Margão · Margão",
        "loose": false
       },
       {
@@ -7784,7 +7819,14 @@
        "amount": 0.016,
        "price": 1.71,
        "oldPrice": null,
-       "product": "Ervas de Provence Margão · Margão",
+       "product": "Ervas de Provence em Frasco Margão · Margão",
+       "loose": false
+      },
+      {
+       "amount": 0.018,
+       "price": 1.99,
+       "oldPrice": null,
+       "product": "Ervas de Provence em Frasco Margão · Margão",
        "loose": false
       },
       {
@@ -7806,13 +7848,6 @@
      "url": "https://www.continente.pt/produto/caril-de-tofu-continente-8020950.html",
      "packs": [
       {
-       "amount": 0.035,
-       "price": 1.54,
-       "oldPrice": null,
-       "product": "Caril Saqueta Margão · Margão",
-       "loose": false
-      },
-      {
        "amount": 0.036,
        "price": 2.54,
        "oldPrice": null,
@@ -7823,7 +7858,14 @@
        "amount": 0.045,
        "price": 0.69,
        "oldPrice": null,
-       "product": "Caril em Frasco Continente · Continente",
+       "product": "Caril Moído em Frasco Continente · Continente",
+       "loose": false
+      },
+      {
+       "amount": 0.102,
+       "price": 3.65,
+       "oldPrice": null,
+       "product": "Caril em Pó Suave Sharwood's · Sharwood's",
        "loose": false
       },
       {
@@ -7841,14 +7883,14 @@
      "price": 3.68,
      "oldPrice": null,
      "pack": "emb. 100 gr",
-     "product": "Garam Masala em Lata Khanum · Khanum",
-     "url": "https://www.continente.pt/produto/garam-masala-em-lata-khanum-6395593.html",
+     "product": "Garam Masala Khanum · Khanum",
+     "url": "https://www.continente.pt/produto/garam-masala-khanum-6395593.html",
      "packs": [
       {
        "amount": 0.1,
        "price": 3.68,
        "oldPrice": null,
-       "product": "Garam Masala em Lata Khanum · Khanum",
+       "product": "Garam Masala Khanum · Khanum",
        "loose": false
       }
      ]
@@ -9336,9 +9378,9 @@
       },
       {
        "amount": 5,
-       "price": 67.99,
+       "price": 57.99,
        "oldPrice": null,
-       "product": "Óleo Motor 5W30 Galp · Galp",
+       "product": "Óleo Motor 5W40 Galp · Galp",
        "loose": false
       }
      ]
@@ -10153,10 +10195,10 @@
      "url": "https://www.continente.pt/produto/bicarbonato-de-sodio-alimentar-continente-7410907.html",
      "packs": [
       {
-       "amount": 0.06,
-       "price": 0.99,
+       "amount": 0.077,
+       "price": 2.04,
        "oldPrice": null,
-       "product": "Bicarbonato de Sódio Alimentar em Saqueta Margão · Margão",
+       "product": "Bicarbonato de Sódio em Frasco Margão · Margão",
        "loose": false
       },
       {
@@ -10270,6 +10312,13 @@
        "loose": false
       },
       {
+       "amount": 0.1,
+       "price": 4.49,
+       "oldPrice": null,
+       "product": "Cacau Cru em Pó Origens Bio · Origens Bio",
+       "loose": false
+      },
+      {
        "amount": 0.125,
        "price": 1.99,
        "oldPrice": null,
@@ -10281,13 +10330,6 @@
        "price": 1.99,
        "oldPrice": null,
        "product": "Cacau Magro em Pó Jerónimos · Jerónimos",
-       "loose": false
-      },
-      {
-       "amount": 0.125,
-       "price": 2.79,
-       "oldPrice": null,
-       "product": "Cacau em Pó sem Glúten Pantagruel · Pantagruel",
        "loose": false
       }
      ]
@@ -12146,13 +12188,6 @@
        "loose": false
       },
       {
-       "amount": 0.6,
-       "price": 1.29,
-       "oldPrice": null,
-       "product": "Bebida Vegetal de Soja Baunilha Continente · Continente",
-       "loose": false
-      },
-      {
        "amount": 1,
        "price": 0.79,
        "oldPrice": null,
@@ -12164,6 +12199,13 @@
        "price": 0.94,
        "oldPrice": null,
        "product": "Bebida Vegetal de Soja Continente Bio · Continente Bio",
+       "loose": false
+      },
+      {
+       "amount": 1,
+       "price": 0.99,
+       "oldPrice": null,
+       "product": "Bebida Vegetal de Soja Baunilha Continente · Continente",
        "loose": false
       }
      ]
@@ -12364,8 +12406,8 @@
        "loose": false
       },
       {
-       "amount": 5,
-       "price": 9.95,
+       "amount": 4.95,
+       "price": 12.44,
        "oldPrice": null,
        "product": "Cerveja com Álcool Sagres · Sagres",
        "loose": false
@@ -13128,24 +13170,6 @@
        "price": 1.79,
        "oldPrice": null,
        "product": "Erva Doce · Nossa Fruta e Legumes",
-       "loose": true
-      }
-     ]
-    },
-    "Asparagus": {
-     "unitPrice": 19.96,
-     "unit": "kg",
-     "price": 4.99,
-     "oldPrice": null,
-     "pack": "0.25 Kg",
-     "product": "Espargos Verdes Embalados · Nossa Fruta e Legumes",
-     "url": "https://www.pingodoce.pt/home/produtos/frutas-e-vegetais/vegetais/outros-vegetais/espargos-verdes-embalados-nossa-fruta-e-legumes-643332.html",
-     "packs": [
-      {
-       "amount": 0.25,
-       "price": 4.99,
-       "oldPrice": null,
-       "product": "Espargos Verdes Embalados · Nossa Fruta e Legumes",
        "loose": true
       }
      ]
@@ -22620,9 +22644,9 @@
      ]
     },
     "Aubergine": {
-     "unitPrice": 12.51,
+     "unitPrice": 11.97,
      "unit": "kg",
-     "price": 4.69,
+     "price": 4.49,
      "oldPrice": null,
      "pack": null,
      "product": "BERINGELAS BONDUELLE À MEDITERRIÂNEA 375G · BONDUELLE",
@@ -22630,7 +22654,7 @@
      "packs": [
       {
        "amount": 0.375,
-       "price": 4.69,
+       "price": 4.49,
        "oldPrice": null,
        "product": "BERINGELAS BONDUELLE À MEDITERRIÂNEA 375G · BONDUELLE",
        "loose": false
@@ -22648,7 +22672,7 @@
      "packs": [
       {
        "amount": 0.035,
-       "price": 5.39,
+       "price": 4.58,
        "oldPrice": null,
        "product": "MALAGUETA ESSENTIA 35G · ESSENTIA",
        "loose": false
@@ -23106,13 +23130,13 @@
      ]
     },
     "Salmon": {
-     "unitPrice": 24.92,
+     "unitPrice": 28.09,
      "unit": "kg",
-     "price": 2.99,
+     "price": 3.09,
      "oldPrice": null,
      "pack": null,
-     "product": "SALMÃO MINERVA AO NATURAL 120G · MINERVA",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/conservas/conservas-especialidades/salmao-minerva-ao-natural-120g/3665023.html",
+     "product": "SALMÃO AO NATURAL RAMIREZ 110G · RAMIREZ",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/conservas/conservas-especialidades/salmao-ao-natural-ramirez-110g/3377997.html",
      "packs": [
       {
        "amount": 0.11,
@@ -23123,7 +23147,7 @@
       },
       {
        "amount": 0.12,
-       "price": 2.99,
+       "price": 3.99,
        "oldPrice": null,
        "product": "SALMÃO MINERVA AO NATURAL 120G · MINERVA",
        "loose": false
@@ -23200,7 +23224,7 @@
        "amount": 0.27,
        "price": 1.49,
        "oldPrice": null,
-       "product": "DELÍCIA AUCHAN CARAMELO 2X135G · AUCHAN",
+       "product": "DELÍCIA AUCHAN SABOR TOFFEE 2X135G · AUCHAN",
        "loose": false
       }
      ]
@@ -23216,7 +23240,7 @@
      "packs": [
       {
        "amount": 0.115,
-       "price": 2.21,
+       "price": 2.95,
        "oldPrice": null,
        "product": "LULAS PITEU RECHEADAS 115G · PITEU",
        "loose": false
@@ -23331,9 +23355,9 @@
      ]
     },
     "Whole milk": {
-     "unitPrice": 1.19,
+     "unitPrice": 1.08,
      "unit": "l",
-     "price": 1.19,
+     "price": 1.08,
      "oldPrice": null,
      "pack": null,
      "product": "LEITE VIGOR PASTEURIZADO ESPECIAL GORDO 1L · VIGOR",
@@ -23348,7 +23372,7 @@
       },
       {
        "amount": 1,
-       "price": 1.19,
+       "price": 1.08,
        "oldPrice": null,
        "product": "LEITE VIGOR PASTEURIZADO ESPECIAL GORDO 1L · VIGOR",
        "loose": false
@@ -23476,7 +23500,7 @@
      "packs": [
       {
        "amount": 0.125,
-       "price": 1.59,
+       "price": 1.39,
        "oldPrice": null,
        "product": "MANTEIGA MIMOSA COM SAL 125G · MIMOSA",
        "loose": false
@@ -23490,14 +23514,14 @@
       },
       {
        "amount": 0.25,
-       "price": 2.19,
+       "price": 2.44,
        "oldPrice": null,
        "product": "MANTEIGA PRIMOR SEM SAL 250G · PRIMOR",
        "loose": false
       },
       {
        "amount": 0.25,
-       "price": 2.44,
+       "price": 2.09,
        "oldPrice": null,
        "product": "MANTEIGA MIMOSA COM SAL 250G · MIMOSA",
        "loose": false
@@ -23607,7 +23631,7 @@
       },
       {
        "amount": 0.2,
-       "price": 1.42,
+       "price": 1.19,
        "oldPrice": null,
        "product": "NATAS PARMALAT UHT PARA BATER 0% LACTOSE 200ML · PARMALAT",
        "loose": false
@@ -23796,9 +23820,9 @@
      ]
     },
     "Fresh cheese": {
-     "unitPrice": 5.45,
+     "unitPrice": 5.75,
      "unit": "kg",
-     "price": 1.09,
+     "price": 1.15,
      "oldPrice": null,
      "pack": null,
      "product": "QUEIJO FRESCO AUCHAN 200G · AUCHAN",
@@ -23806,7 +23830,7 @@
      "packs": [
       {
        "amount": 0.2,
-       "price": 1.09,
+       "price": 1.15,
        "oldPrice": null,
        "product": "QUEIJO FRESCO AUCHAN 200G · AUCHAN",
        "loose": false
@@ -23905,7 +23929,7 @@
       },
       {
        "amount": 0.125,
-       "price": 1.99,
+       "price": 1.79,
        "oldPrice": null,
        "product": "QUEIJO MOZZARELLA GALBANI 125G · GALBANI",
        "loose": false
@@ -23913,9 +23937,9 @@
      ]
     },
     "Goat cheese": {
-     "unitPrice": 8.6,
+     "unitPrice": 11.93,
      "unit": "kg",
-     "price": 1.29,
+     "price": 1.79,
      "oldPrice": null,
      "pack": null,
      "product": "QUEIJO DE CABRA FRESCO AUCHAN 150G · AUCHAN",
@@ -23930,7 +23954,7 @@
       },
       {
        "amount": 0.15,
-       "price": 1.29,
+       "price": 1.79,
        "oldPrice": null,
        "product": "QUEIJO DE CABRA FRESCO AUCHAN 150G · AUCHAN",
        "loose": false
@@ -24583,7 +24607,7 @@
       },
       {
        "amount": 0.25,
-       "price": 3.09,
+       "price": 3.89,
        "oldPrice": null,
        "product": "NOODLES SIMPLES BLUE DRAGON NOODLES DE OVO 250G · BLUE DRAGON",
        "loose": false
@@ -24591,9 +24615,9 @@
      ]
     },
     "Rice noodles": {
-     "unitPrice": 7.48,
+     "unitPrice": 9.96,
      "unit": "kg",
-     "price": 1.87,
+     "price": 2.49,
      "oldPrice": null,
      "pack": null,
      "product": "NOODLES GOTAN ARROZ PAD THAI 250G · GOTAN",
@@ -24608,7 +24632,7 @@
       },
       {
        "amount": 0.25,
-       "price": 1.87,
+       "price": 2.49,
        "oldPrice": null,
        "product": "NOODLES GOTAN ARROZ PAD THAI 250G · GOTAN",
        "loose": false
@@ -24623,9 +24647,9 @@
      ]
     },
     "Soba noodles": {
-     "unitPrice": 16.58,
+     "unitPrice": 13.42,
      "unit": "kg",
-     "price": 1.84,
+     "price": 1.49,
      "oldPrice": null,
      "pack": null,
      "product": "SOBA NISSIN NOODLES CHILI 111G · NISSIN",
@@ -24633,28 +24657,28 @@
      "packs": [
       {
        "amount": 0.09,
-       "price": 2.55,
+       "price": 1.99,
        "oldPrice": null,
        "product": "SOBA NISSIN CUP CLÁSSICO 90G · NISSIN",
        "loose": false
       },
       {
        "amount": 0.09,
-       "price": 2.55,
+       "price": 1.99,
        "oldPrice": null,
        "product": "SOBA NISSIN CUP TERIYAKI 90G · NISSIN",
        "loose": false
       },
       {
        "amount": 0.092,
-       "price": 2.55,
+       "price": 1.99,
        "oldPrice": null,
        "product": "SOBA CUP NISSIN CHILLI 92G · NISSIN",
        "loose": false
       },
       {
        "amount": 0.111,
-       "price": 1.84,
+       "price": 1.49,
        "oldPrice": null,
        "product": "SOBA NISSIN NOODLES CHILI 111G · NISSIN",
        "loose": false
@@ -25034,7 +25058,7 @@
      "packs": [
       {
        "amount": 0.2,
-       "price": 1.49,
+       "price": 1.11,
        "oldPrice": null,
        "product": "TAPIOCA GRANULADA FERBAR 200G · FERBAR",
        "loose": false
@@ -25286,14 +25310,14 @@
       },
       {
        "amount": 0.125,
-       "price": 0.99,
+       "price": 0.69,
        "oldPrice": null,
        "product": "BOLACHA VIEIRA AGUA E SAL 125 G · VIEIRA",
        "loose": false
       },
       {
        "amount": 0.168,
-       "price": 2.87,
+       "price": 2,
        "oldPrice": null,
        "product": "BOLACHA VIEIRA ÁGUA E SAL 168 G · VIEIRA",
        "loose": false
@@ -25716,14 +25740,14 @@
       },
       {
        "amount": 0.215,
-       "price": 3.69,
+       "price": 2.74,
        "oldPrice": null,
        "product": "HÚMUS MÉZETE C/ ERVAS 215G · MÉZETE",
        "loose": false
       },
       {
        "amount": 0.215,
-       "price": 3.69,
+       "price": 2.74,
        "oldPrice": null,
        "product": "HÚMUS MÉZETE CLÁSSICO 215G · MÉZETE",
        "loose": false
@@ -26552,7 +26576,7 @@
       },
       {
        "amount": 0.02,
-       "price": 4.99,
+       "price": 4.24,
        "oldPrice": null,
        "product": "OREGÃOS ESSENTIA 20G · ESSENTIA",
        "loose": false
@@ -26923,7 +26947,7 @@
       },
       {
        "amount": 0.145,
-       "price": 2.32,
+       "price": 3.09,
        "oldPrice": null,
        "product": "MOLHOS GO TAN PEIXE 145ML · GO TAN",
        "loose": false
@@ -26938,9 +26962,9 @@
      ]
     },
     "Oyster sauce": {
-     "unitPrice": 12.46,
+     "unitPrice": 16.63,
      "unit": "l",
-     "price": 2.99,
+     "price": 3.99,
      "oldPrice": null,
      "pack": null,
      "product": "MOLHOS GO TAN WOK OSTRA ALHO 240ML · GO TAN",
@@ -26948,21 +26972,21 @@
      "packs": [
       {
        "amount": 0.14,
-       "price": 2.69,
+       "price": 3.59,
        "oldPrice": null,
        "product": "MOLHOS GO TAN OSTRAS 140ML · GO TAN",
        "loose": false
       },
       {
        "amount": 0.15,
-       "price": 3.59,
+       "price": 4.49,
        "oldPrice": null,
        "product": "MOLHO BLUE DRAGON DE OSTRA 150ML · BLUE DRAGON",
        "loose": false
       },
       {
        "amount": 0.24,
-       "price": 2.99,
+       "price": 3.99,
        "oldPrice": null,
        "product": "MOLHOS GO TAN WOK OSTRA ALHO 240ML · GO TAN",
        "loose": false
@@ -27065,7 +27089,7 @@
       },
       {
        "amount": 0.215,
-       "price": 2.77,
+       "price": 3.69,
        "oldPrice": null,
        "product": "MOLHO SRIRACHA GO TAN ORIGINAL 215ML · GO TAN",
        "loose": false
@@ -27370,7 +27394,7 @@
       },
       {
        "amount": 0.25,
-       "price": 1.99,
+       "price": 2.49,
        "oldPrice": null,
        "product": "VINAGRE GALLO BALSÂMICO ROSÉ 250ML · GALLO",
        "loose": false
@@ -27378,17 +27402,17 @@
      ]
     },
     "Apple cider vinegar": {
-     "unitPrice": 5.96,
+     "unitPrice": 7.3,
      "unit": "l",
-     "price": 1.49,
+     "price": 3.65,
      "oldPrice": null,
      "pack": null,
-     "product": "VINAGRE OLIVEIRA DA SERRA MAÇÃ 0.25L · OLIVEIRA DA SERRA",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/azeite-oleo-e-vinagre/vinagre/vinagre-oliveira-da-serra-maca-0.25l/2485639.html",
+     "product": "VINAGRE DE MAÇÃ BIO CARANDINI 500ML · CARANDINI",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/azeite-oleo-e-vinagre/vinagre/vinagre-de-maca-bio-carandini-500ml/3716494.html",
      "packs": [
       {
        "amount": 0.25,
-       "price": 1.49,
+       "price": 1.99,
        "oldPrice": null,
        "product": "VINAGRE OLIVEIRA DA SERRA MAÇÃ 0.25L · OLIVEIRA DA SERRA",
        "loose": false
@@ -27402,7 +27426,7 @@
       },
       {
        "amount": 0.5,
-       "price": 4.29,
+       "price": 3.65,
        "oldPrice": null,
        "product": "VINAGRE DE MAÇÃ BIO CARANDINI 500ML · CARANDINI",
        "loose": false
@@ -27690,7 +27714,7 @@
      "packs": [
       {
        "amount": 0.25,
-       "price": 4.72,
+       "price": 5.55,
        "oldPrice": null,
        "product": "MEL PRISCA BIO 250G · PRISCA",
        "loose": false
@@ -28021,7 +28045,7 @@
       },
       {
        "amount": 0.283,
-       "price": 4.79,
+       "price": 6.49,
        "oldPrice": null,
        "product": "PASTA PATAKS CARIL 283G · PATAKS",
        "loose": false
@@ -28046,7 +28070,7 @@
      "packs": [
       {
        "amount": 0.34,
-       "price": 4.79,
+       "price": 5.99,
        "oldPrice": null,
        "product": "CHUTNEY PATAKS DE MANGA 340G · PATAKS",
        "loose": false
@@ -28170,7 +28194,7 @@
       },
       {
        "amount": 1,
-       "price": 2.29,
+       "price": 2.7,
        "oldPrice": null,
        "product": "ÓLEO ALIMENTAR GIRASSOL FULA 3 ÀS EQUILIBRIO 1L · FULA",
        "loose": false
@@ -28209,7 +28233,7 @@
       },
       {
        "amount": 1,
-       "price": 2.19,
+       "price": 2.79,
        "oldPrice": null,
        "product": "ÓLEO ALIMENTAR FULA 1L · FULA",
        "loose": false
@@ -28224,9 +28248,9 @@
      ]
     },
     "Corn oil": {
-     "unitPrice": 2.19,
+     "unitPrice": 2.96,
      "unit": "l",
-     "price": 2.19,
+     "price": 2.96,
      "oldPrice": null,
      "pack": null,
      "product": "ÓLEO ALIMENTAR FULA PURO MILHO 1L · FULA",
@@ -28234,7 +28258,7 @@
      "packs": [
       {
        "amount": 1,
-       "price": 2.19,
+       "price": 2.96,
        "oldPrice": null,
        "product": "ÓLEO ALIMENTAR FULA PURO MILHO 1L · FULA",
        "loose": false
@@ -28693,7 +28717,7 @@
       },
       {
        "amount": 0.5,
-       "price": 2.69,
+       "price": 1.99,
        "oldPrice": null,
        "product": "FARINHA FERBAR MANDIOCA 500G · FERBAR",
        "loose": false
@@ -28740,13 +28764,13 @@
      ]
     },
     "Brown sugar": {
-     "unitPrice": 1.49,
+     "unitPrice": 1.59,
      "unit": "kg",
-     "price": 1.49,
+     "price": 1.59,
      "oldPrice": null,
      "pack": null,
-     "product": "AÇUCAR AUCHAN AMARELO 1 KG · AUCHAN",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/acucar-e-adocante/acucar/acucar-auchan-amarelo-1-kg/3899183.html",
+     "product": "AÇÚCAR SIDUL AMARELO 1KG · SIDUL",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/acucar-e-adocante/acucar/acucar-sidul-amarelo-1kg/332513.html",
      "packs": [
       {
        "amount": 0.5,
@@ -28756,10 +28780,10 @@
        "loose": false
       },
       {
-       "amount": 1,
-       "price": 1.49,
+       "amount": 0.5,
+       "price": 1.05,
        "oldPrice": null,
-       "product": "AÇUCAR AUCHAN AMARELO 1 KG · AUCHAN",
+       "product": "AÇÚCAR SIDUL AMARELO 500G · SIDUL",
        "loose": false
       },
       {
@@ -28839,7 +28863,7 @@
      "packs": [
       {
        "amount": 0.02,
-       "price": 0.51,
+       "price": 0.46,
        "oldPrice": null,
        "product": "AÇÚCAR CIMARROM BAUNILHADO 20G · CIMARROM",
        "loose": false
@@ -29269,7 +29293,7 @@
       },
       {
        "amount": 0.39,
-       "price": 1.95,
+       "price": 1.44,
        "oldPrice": null,
        "product": "TOMATE EM PEDAÇOS GULOSO 390G · GULOSO",
        "loose": false
@@ -29291,9 +29315,9 @@
      ]
     },
     "Canned tuna in oil": {
-     "unitPrice": 10.75,
+     "unitPrice": 14.58,
      "unit": "kg",
-     "price": 1.29,
+     "price": 1.75,
      "oldPrice": null,
      "pack": null,
      "product": "ATUM POSTA MINERVA EM OLEO 120G · MINERVA",
@@ -29301,7 +29325,7 @@
      "packs": [
       {
        "amount": 0.12,
-       "price": 1.29,
+       "price": 1.75,
        "oldPrice": null,
        "product": "ATUM POSTA MINERVA EM OLEO 120G · MINERVA",
        "loose": false
@@ -29309,9 +29333,9 @@
      ]
     },
     "Canned tuna in water": {
-     "unitPrice": 10.75,
+     "unitPrice": 14.58,
      "unit": "kg",
-     "price": 1.29,
+     "price": 1.75,
      "oldPrice": null,
      "pack": null,
      "product": "ATUM POSTA MINERVA AO NATURAL 120G(78G) · MINERVA",
@@ -29319,7 +29343,7 @@
      "packs": [
       {
        "amount": 0.12,
-       "price": 1.29,
+       "price": 1.75,
        "oldPrice": null,
        "product": "ATUM POSTA MINERVA AO NATURAL 120G(78G) · MINERVA",
        "loose": false
@@ -29626,7 +29650,7 @@
      "packs": [
       {
        "amount": 0.1,
-       "price": 1.45,
+       "price": 1.3,
        "oldPrice": null,
        "product": "CÔCO CIMARROM RALADO 100G · CIMARROM",
        "loose": false
@@ -29789,31 +29813,6 @@
        "price": 5.59,
        "oldPrice": null,
        "product": "CHOCOLATE AUCHAN EM PÓ BIO 500G · AUCHAN BIO",
-       "loose": false
-      }
-     ]
-    },
-    "Oat milk": {
-     "unitPrice": 1.89,
-     "unit": "l",
-     "price": 1.89,
-     "oldPrice": null,
-     "pack": null,
-     "product": "BEBIDA VEGETAL PLENO AVEIA 1L · PLENO",
-     "url": "https://www.auchan.pt/pt/alimentacao/produtos-lacteos/bebidas-vegetais/aveia/bebida-vegetal-pleno-aveia-1l/3617490.html",
-     "packs": [
-      {
-       "amount": 1,
-       "price": 1.89,
-       "oldPrice": null,
-       "product": "BEBIDA VEGETAL PLENO AVEIA 1L · PLENO",
-       "loose": false
-      },
-      {
-       "amount": 1,
-       "price": 2.55,
-       "oldPrice": null,
-       "product": "BEBIDA VEGETAL PROVIDA AVEIA BIO SEM GLÚTEN 1L · PROVIDA",
        "loose": false
       }
      ]
