@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-11-26T13:30:31.077Z",
+ "updatedAt": "2026-11-27T13:16:18.537Z",
  "note": "Online prices, a reference only.",
  "shops": {
   "continente": {
@@ -69,7 +69,7 @@
       },
       {
        "amount": 0.75,
-       "price": 1.99,
+       "price": 1.89,
        "oldPrice": null,
        "product": "Cebola Biológica Continente Bio · Continente Bio",
        "loose": false
@@ -340,7 +340,7 @@
      ]
     },
     "Parsnip": {
-     "unitPrice": 1.04,
+     "unitPrice": 2.09,
      "unit": "un",
      "price": 5.49,
      "oldPrice": null,
@@ -604,11 +604,11 @@
      "packs": []
     },
     "Galician kale": {
-     "unitPrice": 3.82,
+     "unitPrice": 3.62,
      "unit": "kg",
      "price": 2.79,
      "oldPrice": null,
-     "pack": "emb. 730 g",
+     "pack": "emb. 770 g",
      "product": "Couve Portuguesa Biológica Continente Bio · Continente Bio",
      "url": "https://www.continente.pt/produto/couve-portuguesa-biologica-continente-bio-2087617.html",
      "packs": [
@@ -620,7 +620,7 @@
        "loose": false
       },
       {
-       "amount": 0.73,
+       "amount": 0.77,
        "price": 2.79,
        "oldPrice": null,
        "product": "Couve Portuguesa Biológica Continente Bio · Continente Bio",
@@ -841,31 +841,6 @@
        "price": 3.69,
        "oldPrice": null,
        "product": "Espargos Brancos Extra Grosso Continente · Continente",
-       "loose": false
-      }
-     ]
-    },
-    "Fresh broad beans": {
-     "unitPrice": 1.99,
-     "unit": "kg",
-     "price": 1.99,
-     "oldPrice": null,
-     "pack": "emb. 1 kg",
-     "product": "Favas Continente · Continente",
-     "url": "https://www.continente.pt/produto/favas-continente-8857512.html",
-     "packs": [
-      {
-       "amount": 0.7,
-       "price": 2.99,
-       "oldPrice": null,
-       "product": "Favas Iglo · Iglo",
-       "loose": false
-      },
-      {
-       "amount": 1,
-       "price": 1.99,
-       "oldPrice": null,
-       "product": "Favas Continente · Continente",
        "loose": false
       }
      ]
@@ -1467,9 +1442,9 @@
      ]
     },
     "Plum": {
-     "unitPrice": 0.24,
+     "unitPrice": 0.2,
      "unit": "un",
-     "price": 2.99,
+     "price": 2.49,
      "oldPrice": null,
      "pack": null,
      "product": "Ameixa Preta / Vermelha Continente · Continente",
@@ -1562,7 +1537,7 @@
      "packs": [
       {
        "amount": 0.3,
-       "price": 2.09,
+       "price": 2.05,
        "oldPrice": null,
        "product": "Abacate Biológico Continente Bio · Continente Bio",
        "loose": false
@@ -1675,45 +1650,6 @@
       }
      ]
     },
-    "Dried figs": {
-     "unitPrice": 6.73,
-     "unit": "kg",
-     "price": 2.69,
-     "oldPrice": null,
-     "pack": "emb. 400 gr",
-     "product": "Figo Seco Continente · Continente",
-     "url": "https://www.continente.pt/produto/figo-seco-continente-8116819.html",
-     "packs": [
-      {
-       "amount": 0.2,
-       "price": 3.79,
-       "oldPrice": null,
-       "product": "Figo Seco Turco Continente · Continente",
-       "loose": false
-      },
-      {
-       "amount": 0.2,
-       "price": 2.99,
-       "oldPrice": null,
-       "product": "Figo Pingo de Mel Seco Biológico Jomavil · Jomavil",
-       "loose": false
-      },
-      {
-       "amount": 0.25,
-       "price": 4.49,
-       "oldPrice": null,
-       "product": "Figo Seco Os Originais · Os Originais",
-       "loose": false
-      },
-      {
-       "amount": 0.4,
-       "price": 2.69,
-       "oldPrice": null,
-       "product": "Figo Seco Continente · Continente",
-       "loose": false
-      }
-     ]
-    },
     "Dried dates": {
      "unitPrice": 4.95,
      "unit": "kg",
@@ -1739,7 +1675,7 @@
       },
       {
        "amount": 0.2,
-       "price": 1.29,
+       "price": 1.39,
        "oldPrice": null,
        "product": "Tâmara Seca Descaroçada Continente · Continente",
        "loose": false
@@ -2076,7 +2012,7 @@
      "url": "https://www.continente.pt/produto/lombinhos-de-porco-continente-2588815.html",
      "packs": [
       {
-       "amount": 0.45,
+       "amount": 0.56,
        "price": 7.99,
        "oldPrice": null,
        "product": "Lombinho de Porco Duroc Continente Seleção · Continente Seleção",
@@ -2170,9 +2106,9 @@
      ]
     },
     "Pork shoulder": {
-     "unitPrice": 2.14,
+     "unitPrice": 1.9,
      "unit": "kg",
-     "price": 4.49,
+     "price": 3.99,
      "oldPrice": null,
      "pack": "emb. 2,1 kg (aprox.)",
      "product": "Pá de Porco com Osso Continente · Continente",
@@ -2180,7 +2116,7 @@
      "packs": [
       {
        "amount": 2.1,
-       "price": 4.49,
+       "price": 3.99,
        "oldPrice": null,
        "product": "Pá de Porco com Osso Continente · Continente",
        "loose": false
@@ -3206,9 +3142,9 @@
      ]
     },
     "Surimi": {
-     "unitPrice": 5.16,
+     "unitPrice": 3.96,
      "unit": "kg",
-     "price": 1.29,
+     "price": 0.99,
      "oldPrice": null,
      "pack": "emb. 250 gr",
      "product": "Delícias do Mar Ultracongeladas Continente · Continente",
@@ -3216,7 +3152,7 @@
      "packs": [
       {
        "amount": 0.25,
-       "price": 1.29,
+       "price": 0.99,
        "oldPrice": null,
        "product": "Delícias do Mar Ultracongeladas Continente · Continente",
        "loose": false
@@ -3480,9 +3416,9 @@
      ]
     },
     "Tiger prawns": {
-     "unitPrice": 2.88,
+     "unitPrice": 2.16,
      "unit": "un",
-     "price": 35.99,
+     "price": 26.99,
      "oldPrice": null,
      "pack": null,
      "product": "Camarão Tigre Selvagem Médio Congelado",
@@ -5233,7 +5169,7 @@
       },
       {
        "amount": 0.5,
-       "price": 2.66,
+       "price": 1.98,
        "oldPrice": null,
        "product": "Massa Lasanha com Ovo Milaneza · Milaneza",
        "loose": false
@@ -5390,13 +5326,6 @@
       },
       {
        "amount": 0.5,
-       "price": 3.99,
-       "oldPrice": null,
-       "product": "Gnocchi com Molho de Tomate e Espinafres Continente · Continente",
-       "loose": false
-      },
-      {
-       "amount": 0.5,
        "price": 1.99,
        "oldPrice": null,
        "product": "Gnocchi Batata Garofalo · Garofalo",
@@ -5407,6 +5336,13 @@
        "price": 2.79,
        "oldPrice": null,
        "product": "Gnocchi Di Patate Rummo · Rummo",
+       "loose": false
+      },
+      {
+       "amount": 0.5,
+       "price": 2.04,
+       "oldPrice": null,
+       "product": "Gnocchi Di Patate La Molisana · La Molisana",
        "loose": false
       }
      ]
@@ -8049,7 +7985,7 @@
      "packs": [
       {
        "amount": 0.05,
-       "price": 2.75,
+       "price": 1.79,
        "oldPrice": null,
        "product": "Molho Piri-Piri Calvé · Calvé",
        "loose": false
@@ -8173,7 +8109,7 @@
       },
       {
        "amount": 0.257,
-       "price": 2.59,
+       "price": 1.68,
        "oldPrice": null,
        "product": "Mostarda Top Down Calvé · Calvé",
        "loose": false
@@ -8898,7 +8834,7 @@
      "packs": [
       {
        "amount": 0.251,
-       "price": 2.99,
+       "price": 1.94,
        "oldPrice": null,
        "product": "Molho Pickles Calvé · Calvé",
        "loose": false
@@ -11265,7 +11201,7 @@
       },
       {
        "amount": 0.2,
-       "price": 2.89,
+       "price": 2.99,
        "oldPrice": null,
        "product": "Pistácio Torrado com Casca e Sal Continente · Continente",
        "loose": false
@@ -12361,8 +12297,8 @@
      "price": 15.09,
      "oldPrice": null,
      "pack": null,
-     "product": "Vinho da Madeira Vintners 5 anos Meio Doce · Madeira Vintners",
-     "url": "https://www.continente.pt/produto/vinho-da-madeira-vintners-5-anos-meio-doce-8034956.html",
+     "product": "Vinho da Madeira Vintners 5 anos Doce · Madeira Vintners",
+     "url": "https://www.continente.pt/produto/vinho-da-madeira-vintners-5-anos-doce-8034961.html",
      "packs": []
     },
     "Sparkling wine": {
@@ -12472,24 +12408,6 @@
      "product": "Rum Zacapa Reserva Limitada · Zacapa",
      "url": "https://www.continente.pt/produto/rum-zacapa-reserva-limitada-8012484.html",
      "packs": []
-    },
-    "Whisky": {
-     "unitPrice": 11.96,
-     "unit": "l",
-     "price": 2.99,
-     "oldPrice": null,
-     "pack": "emb. 250 ml",
-     "product": "Molho Whisky Cocktail Calvé · Calvé",
-     "url": "https://www.continente.pt/produto/molho-whisky-cocktail-calve-2002232.html",
-     "packs": [
-      {
-       "amount": 0.25,
-       "price": 2.99,
-       "oldPrice": null,
-       "product": "Molho Whisky Cocktail Calvé · Calvé",
-       "loose": false
-      }
-     ]
     }
    }
   },
@@ -12699,8 +12617,8 @@
      "packs": [
       {
        "amount": 0.25,
-       "price": 1.69,
-       "oldPrice": null,
+       "price": 1.19,
+       "oldPrice": 1.69,
        "product": "Batata Vermelha · Nossa Fruta e Legumes",
        "loose": true
       },
@@ -14123,8 +14041,8 @@
      "packs": [
       {
        "amount": 0.5,
-       "price": 6.49,
-       "oldPrice": null,
+       "price": 6.19,
+       "oldPrice": 6.49,
        "product": "Bife/Peito de Frango a granel · Nosso Talho",
        "loose": true
       },
@@ -14383,6 +14301,13 @@
        "price": 14.99,
        "oldPrice": null,
        "product": "Perna de Borrego · Pingo Doce",
+       "loose": true
+      },
+      {
+       "amount": 1,
+       "price": 29.99,
+       "oldPrice": null,
+       "product": "Perna de Borrego Assada em Slow Cooked · Callimaci",
        "loose": true
       },
       {
@@ -15131,10 +15056,10 @@
      ]
     },
     "Octopus": {
-     "unitPrice": 12.49,
+     "unitPrice": 10.83,
      "unit": "kg",
-     "price": 14.99,
-     "oldPrice": null,
+     "price": 12.99,
+     "oldPrice": 15.99,
      "pack": "1.2 Kg",
      "product": "Polvo Fresco · Nossa Peixaria",
      "url": "https://www.pingodoce.pt/home/produtos/peixaria/polvo-lula-pota-e-choco/fresco/polvo-fresco-nossa-peixaria-570063.html",
@@ -15155,8 +15080,8 @@
       },
       {
        "amount": 1.2,
-       "price": 14.99,
-       "oldPrice": null,
+       "price": 12.99,
+       "oldPrice": 15.99,
        "product": "Polvo Fresco · Nossa Peixaria",
        "loose": true
       }
@@ -15202,10 +15127,10 @@
      ]
     },
     "Cuttlefish": {
-     "unitPrice": 14.43,
+     "unitPrice": 12.21,
      "unit": "kg",
-     "price": 12.99,
-     "oldPrice": null,
+     "price": 10.99,
+     "oldPrice": 12.99,
      "pack": "0.9 Kg",
      "product": "Choco Fresco · Nossa Peixaria",
      "url": "https://www.pingodoce.pt/home/produtos/peixaria/polvo-lula-pota-e-choco/fresco/choco-fresco-nossa-peixaria-570078.html",
@@ -15226,8 +15151,8 @@
       },
       {
        "amount": 0.9,
-       "price": 12.99,
-       "oldPrice": null,
+       "price": 10.99,
+       "oldPrice": 12.99,
        "product": "Choco Fresco · Nossa Peixaria",
        "loose": true
       }
@@ -15338,10 +15263,10 @@
      ]
     },
     "Prawns": {
-     "unitPrice": 14.99,
+     "unitPrice": 11.99,
      "unit": "kg",
-     "price": 14.99,
-     "oldPrice": null,
+     "price": 11.99,
+     "oldPrice": 14.99,
      "pack": "1 Kg",
      "product": "Camarão Cozido 20/30 Fresco Embalado · Pingo Doce",
      "url": "https://www.pingodoce.pt/home/produtos/peixaria/marisco/marisco-vivo-e-cozido/camarao-cozido-20%2F30-fresco-embalado-pingo-doce-868404.html",
@@ -15355,22 +15280,22 @@
       },
       {
        "amount": 0.4,
-       "price": 12.99,
-       "oldPrice": null,
+       "price": 10.99,
+       "oldPrice": 12.99,
        "product": "Camarão Cozido Fresco 30/50 · Pingo Doce",
        "loose": true
       },
       {
        "amount": 0.5,
-       "price": 14.99,
-       "oldPrice": null,
+       "price": 11.99,
+       "oldPrice": 14.99,
        "product": "Camarão Cozido Fresco 20/30 · Pingo Doce",
        "loose": true
       },
       {
        "amount": 1,
-       "price": 14.99,
-       "oldPrice": null,
+       "price": 11.99,
+       "oldPrice": 14.99,
        "product": "Camarão Cozido 20/30 Fresco Embalado · Pingo Doce",
        "loose": true
       }
@@ -16656,8 +16581,8 @@
       },
       {
        "amount": 0.5,
-       "price": 0.89,
-       "oldPrice": null,
+       "price": 0.69,
+       "oldPrice": 0.89,
        "product": "Arroz Integral · Bom Sucesso",
        "loose": true
       },
@@ -16695,8 +16620,8 @@
       },
       {
        "amount": 0.5,
-       "price": 3.99,
-       "oldPrice": null,
+       "price": 3.39,
+       "oldPrice": 3.99,
        "product": "Arroz Risotto Negro · Riso Gallo",
        "loose": true
       },
@@ -16709,8 +16634,8 @@
       },
       {
        "amount": 1,
-       "price": 3.09,
-       "oldPrice": null,
+       "price": 2.44,
+       "oldPrice": 3.09,
        "product": "Arroz para Risotto · Bom Sucesso",
        "loose": true
       }
@@ -17227,17 +17152,17 @@
      "url": "https://www.pingodoce.pt/home/produtos/bolachas-cereais-e-guloseimas/cereais-barras-e-bolsas-de-fruta/muesli-e-granola/muesli-crunchy-classico-pingo-doce-857044.html",
      "packs": [
       {
-       "amount": 0.5,
-       "price": 2.59,
+       "amount": 0.4,
+       "price": 5.99,
        "oldPrice": null,
-       "product": "Muesli Crunchy com Frutas · Pingo Doce",
+       "product": "Muesli Proteico Chocolate · Prozis",
        "loose": true
       },
       {
        "amount": 0.5,
-       "price": 2.09,
+       "price": 2.59,
        "oldPrice": null,
-       "product": "Muesli Crunchy com Frutos Secos · Pingo Doce",
+       "product": "Muesli Crunchy com Frutas · Pingo Doce",
        "loose": true
       },
       {
@@ -19942,10 +19867,10 @@
      ]
     },
     "Sunflower oil": {
-     "unitPrice": 2.14,
+     "unitPrice": 1.99,
      "unit": "l",
-     "price": 2.14,
-     "oldPrice": null,
+     "price": 1.99,
+     "oldPrice": 2.14,
      "pack": "1 L",
      "product": "Óleo de Girassol · Fula",
      "url": "https://www.pingodoce.pt/home/produtos/mercearia/azeite-oleo-e-vinagre/oleo/oleo-de-girassol-fula-767814.html",
@@ -19966,8 +19891,8 @@
       },
       {
        "amount": 1,
-       "price": 2.14,
-       "oldPrice": null,
+       "price": 1.99,
+       "oldPrice": 2.14,
        "product": "Óleo de Girassol · Fula",
        "loose": false
       }
@@ -19991,8 +19916,8 @@
       },
       {
        "amount": 1,
-       "price": 2.19,
-       "oldPrice": null,
+       "price": 1.99,
+       "oldPrice": 2.19,
        "product": "Óleo Alimentar · Fula",
        "loose": false
       },
@@ -20005,8 +19930,8 @@
       },
       {
        "amount": 3,
-       "price": 6.39,
-       "oldPrice": null,
+       "price": 5.99,
+       "oldPrice": 6.39,
        "product": "Óleo Alimentar · Fula",
        "loose": false
       }
@@ -21563,10 +21488,10 @@
      "url": "https://www.pingodoce.pt/home/produtos/as-nossas-marcas/pingo-doce/pistachios-torrados-com-sal-pingo-doce-968949.html",
      "packs": [
       {
-       "amount": 0.175,
-       "price": 2.99,
-       "oldPrice": 3.79,
-       "product": "Pistáchios Torrados com Sal · Frutorra",
+       "amount": 0.12,
+       "price": 3.99,
+       "oldPrice": null,
+       "product": "Pistáchios Cobertos com Chocolate de Leite e Massa Kadayif · Especial Pingo Doce",
        "loose": true
       },
       {
@@ -22861,7 +22786,7 @@
       },
       {
        "amount": 0.41,
-       "price": 1.59,
+       "price": 1.99,
        "oldPrice": null,
        "product": "ERVILHAS COM CENOURA COMPAL 410G · COMPAL",
        "loose": false
@@ -22869,9 +22794,9 @@
      ]
     },
     "Fresh broad beans": {
-     "unitPrice": 3.88,
+     "unitPrice": 4.85,
      "unit": "kg",
-     "price": 1.59,
+     "price": 1.99,
      "oldPrice": null,
      "pack": null,
      "product": "FAVAS COMPAL HORTA 410G · COMPAL",
@@ -22879,7 +22804,7 @@
      "packs": [
       {
        "amount": 0.41,
-       "price": 1.59,
+       "price": 1.99,
        "oldPrice": null,
        "product": "FAVAS COMPAL HORTA 410G · COMPAL",
        "loose": false
@@ -23172,24 +23097,6 @@
       }
      ]
     },
-    "Anchovy fillets": {
-     "unitPrice": 54.9,
-     "unit": "kg",
-     "price": 5.49,
-     "oldPrice": null,
-     "pack": null,
-     "product": "ANCHOVAS EM AZEITE EXTRA ECOLÓGICO LOREA 100G · LOREA",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/conservas/conservas-especialidades/anchovas-em-azeite-extra-ecologico-lorea-100g/2143628.html",
-     "packs": [
-      {
-       "amount": 0.1,
-       "price": 5.49,
-       "oldPrice": null,
-       "product": "ANCHOVAS EM AZEITE EXTRA ECOLÓGICO LOREA 100G · LOREA",
-       "loose": false
-      }
-     ]
-    },
     "Surimi": {
      "unitPrice": 5.52,
      "unit": "kg",
@@ -23207,6 +23114,13 @@
        "loose": false
       },
       {
+       "amount": 0.25,
+       "price": 3.99,
+       "oldPrice": null,
+       "product": "TEX-MEX DELICIAS MED MEDITERRÂNICO 250G · DELICIAS MED",
+       "loose": false
+      },
+      {
        "amount": 0.27,
        "price": 1.49,
        "oldPrice": null,
@@ -23218,13 +23132,6 @@
        "price": 1.49,
        "oldPrice": null,
        "product": "DELÍCIA AUCHAN BOLACHA 2X135G · AUCHAN",
-       "loose": false
-      },
-      {
-       "amount": 0.27,
-       "price": 1.49,
-       "oldPrice": null,
-       "product": "DELÍCIA AUCHAN SABOR TOFFEE 2X135G · AUCHAN",
        "loose": false
       }
      ]
@@ -24590,9 +24497,9 @@
      ]
     },
     "Egg noodles": {
-     "unitPrice": 6,
+     "unitPrice": 10.2,
      "unit": "kg",
-     "price": 1.5,
+     "price": 2.55,
      "oldPrice": null,
      "pack": null,
      "product": "MASSA NOODLES CHINESA SOUBRY COM OVO 250G · SOUBRY",
@@ -24600,7 +24507,7 @@
      "packs": [
       {
        "amount": 0.25,
-       "price": 1.5,
+       "price": 2.55,
        "oldPrice": null,
        "product": "MASSA NOODLES CHINESA SOUBRY COM OVO 250G · SOUBRY",
        "loose": false
@@ -25189,7 +25096,7 @@
       },
       {
        "amount": 0.5,
-       "price": 1.89,
+       "price": 2.39,
        "oldPrice": null,
        "product": "PÃO BIMBO INTEGRAL 500G · BIMBO",
        "loose": false
@@ -25342,16 +25249,16 @@
       },
       {
        "amount": 0.5,
-       "price": 0.98,
+       "price": 1.05,
        "oldPrice": null,
-       "product": "GRÃO CAÇAROLA BICO 500G · CAÇAROLA",
+       "product": "GRÃO DE BICO SECO AUCHAN 500G · AUCHAN",
        "loose": false
       },
       {
-       "amount": 0.54,
-       "price": 2.99,
+       "amount": 0.5,
+       "price": 0.98,
        "oldPrice": null,
-       "product": "GRÃO ORIGENS DE BICO BIO 540G · ORIGENS BIO",
+       "product": "GRÃO CAÇAROLA BICO 500G · CAÇAROLA",
        "loose": false
       },
       {
@@ -25364,13 +25271,13 @@
      ]
     },
     "Kidney beans (dried)": {
-     "unitPrice": 2.12,
+     "unitPrice": 2.18,
      "unit": "kg",
-     "price": 1.79,
+     "price": 1.09,
      "oldPrice": null,
      "pack": null,
-     "product": "FEIJÃO COMPAL DA HORTA ENCARNADO 845G · COMPAL",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/conservas/cogumelo-milho-ervilha-feijao-e-outros/feijao-compal-da-horta-encarnado-845g/22797.html",
+     "product": "FEIJÃO AUCHAN ENCARNADO SECO 500G · AUCHAN",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/conservas/vegetais-secos/feijao-auchan-encarnado-seco-500g/387445.html",
      "packs": [
       {
        "amount": 0.41,
@@ -25388,16 +25295,16 @@
       },
       {
        "amount": 0.5,
-       "price": 1.3,
+       "price": 1.15,
        "oldPrice": null,
-       "product": "FEIJÃO CAÇAROLA ENCARNADO 500G · CAÇAROLA",
+       "product": "FEIJÃO ENCARNADO SECO AUCHAN 500G · AUCHAN",
        "loose": false
       },
       {
-       "amount": 0.845,
-       "price": 1.79,
+       "amount": 0.5,
+       "price": 1.3,
        "oldPrice": null,
-       "product": "FEIJÃO COMPAL DA HORTA ENCARNADO 845G · COMPAL",
+       "product": "FEIJÃO CAÇAROLA ENCARNADO 500G · CAÇAROLA",
        "loose": false
       }
      ]
@@ -25427,9 +25334,9 @@
       },
       {
        "amount": 0.5,
-       "price": 0.96,
+       "price": 0.95,
        "oldPrice": null,
-       "product": "FEIJÃO CAÇAROLA PRETO SECO 500G · CAÇAROLA",
+       "product": "FEIJÃO PRETO SECO AUCHAN 500G · AUCHAN",
        "loose": false
       },
       {
@@ -25465,14 +25372,14 @@
      "price": 0.95,
      "oldPrice": null,
      "pack": null,
-     "product": "FEIJÃO AUCHAN BRANCO SECO FIDALGO 500G · AUCHAN",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/conservas/vegetais-secos/feijao-auchan-branco-seco-fidalgo-500g/387449.html",
+     "product": "FEIJÃO BRANCO SECO AUCHAN 500G · AUCHAN",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/conservas/vegetais-secos/feijao-branco-seco-auchan-500g/4042207.html",
      "packs": [
       {
-       "amount": 0.41,
-       "price": 1.49,
+       "amount": 0.5,
+       "price": 0.95,
        "oldPrice": null,
-       "product": "FEIJÃO COMPAL DA HORTA BRANCO 410G · COMPAL",
+       "product": "FEIJÃO BRANCO SECO AUCHAN 500G · AUCHAN",
        "loose": false
       },
       {
@@ -25538,13 +25445,13 @@
      ]
     },
     "Black-eyed peas (dried)": {
-     "unitPrice": 2.12,
+     "unitPrice": 2.3,
      "unit": "kg",
-     "price": 1.79,
+     "price": 1.15,
      "oldPrice": null,
      "pack": null,
-     "product": "FEIJÃO COMPAL DA HORTA FRADE 845G · COMPAL",
-     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/conservas/cogumelo-milho-ervilha-feijao-e-outros/feijao-compal-da-horta-frade-845g/22802.html",
+     "product": "FEIJÃO AUCHAN FRADE SECO 500G · AUCHAN",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/conservas/vegetais-secos/feijao-auchan-frade-seco-500g/387438.html",
      "packs": [
       {
        "amount": 0.41,
@@ -25562,16 +25469,16 @@
       },
       {
        "amount": 0.5,
-       "price": 1.2,
+       "price": 1.15,
        "oldPrice": null,
-       "product": "FEIJÃO CAÇAROLA FRADE 500G · CAÇAROLA",
+       "product": "FEIJÃO FRADE SECO AUCHAN 500G · AUCHAN",
        "loose": false
       },
       {
-       "amount": 0.845,
-       "price": 1.79,
+       "amount": 0.5,
+       "price": 1.2,
        "oldPrice": null,
-       "product": "FEIJÃO COMPAL DA HORTA FRADE 845G · COMPAL",
+       "product": "FEIJÃO CAÇAROLA FRADE 500G · CAÇAROLA",
        "loose": false
       }
      ]
@@ -25612,7 +25519,7 @@
      "packs": [
       {
        "amount": 0.41,
-       "price": 1.59,
+       "price": 1.99,
        "oldPrice": null,
        "product": "LENTILHAS COMPAL HORTA 410GR · COMPAL",
        "loose": false
@@ -27934,6 +27841,84 @@
       }
      ]
     },
+    "Stock cube (beef)": {
+     "unitPrice": 21.21,
+     "unit": "kg",
+     "price": 5.09,
+     "oldPrice": null,
+     "pack": null,
+     "product": "CALDO KNORR CARNE 24 CUBOS 240G · KNORR",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/polpas-caldos-e-temperos/caldo-carne-peixe-e-legumes/caldo-knorr-carne-24-cubos-240g/1683.html",
+     "packs": [
+      {
+       "amount": 0.08,
+       "price": 2.35,
+       "oldPrice": null,
+       "product": "CALDO KNORR CARNE 8 CUBOS 80G · KNORR",
+       "loose": false
+      },
+      {
+       "amount": 0.08,
+       "price": 1.85,
+       "oldPrice": null,
+       "product": "CALDOS CARNE MAGGI 8 CUBOS 80G · MAGGI",
+       "loose": false
+      },
+      {
+       "amount": 0.16,
+       "price": 3.91,
+       "oldPrice": null,
+       "product": "CALDO KNORR CARNE 16 CUBOS 160G · KNORR",
+       "loose": false
+      },
+      {
+       "amount": 0.24,
+       "price": 5.09,
+       "oldPrice": null,
+       "product": "CALDO KNORR CARNE 24 CUBOS 240G · KNORR",
+       "loose": false
+      }
+     ]
+    },
+    "Stock cube (chicken)": {
+     "unitPrice": 21.21,
+     "unit": "kg",
+     "price": 5.09,
+     "oldPrice": null,
+     "pack": null,
+     "product": "CALDO KNORR GALINHA 24 CUBOS 240G · KNORR",
+     "url": "https://www.auchan.pt/pt/alimentacao/mercearia/polpas-caldos-e-temperos/caldo-carne-peixe-e-legumes/caldo-knorr-galinha-24-cubos-240g/343702.html",
+     "packs": [
+      {
+       "amount": 0.08,
+       "price": 2.35,
+       "oldPrice": null,
+       "product": "CALDO KNORR GALINHA 8 CUBOS 80G · KNORR",
+       "loose": false
+      },
+      {
+       "amount": 0.08,
+       "price": 1.85,
+       "oldPrice": null,
+       "product": "CALDOS GALINHA MAGGI 8 CUBOS 80G · MAGGI",
+       "loose": false
+      },
+      {
+       "amount": 0.16,
+       "price": 3.91,
+       "oldPrice": null,
+       "product": "CALDO KNORR GALINHA 16 CUBOS 160G · KNORR",
+       "loose": false
+      },
+      {
+       "amount": 0.24,
+       "price": 5.09,
+       "oldPrice": null,
+       "product": "CALDO KNORR GALINHA 24 CUBOS 240G · KNORR",
+       "loose": false
+      }
+     ]
+    },
     "Stock cube (vegetable)": {
      "unitPrice": 42.9,
      "unit": "kg",
@@ -29554,7 +29539,7 @@
       },
       {
        "amount": 0.19,
-       "price": 3.76,
+       "price": 4.15,
        "oldPrice": null,
        "product": "TOMATE SECO POLLI EM ÓLEO GIRASSOL 190G · POLLI",
        "loose": false
